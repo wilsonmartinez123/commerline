@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-title>
+      <a><img  width="200" height="50" src="../assets/imgs/commerline.png"> </a>
+    </ion-title>
+
+    <ion-buttons end>
+        <ion-searchbar
+  [(ngModel)]="myInput"
+  [showCancelButton]="shouldShowCancel"
+  (ionInput)="onInput($event)"
+  (ionCancel)="onCancel($event)">
+</ion-searchbar> 
+      <button ion-button icon-only (click)="gologin()">
+        <ion-icon name="md-contact"></ion-icon>
+      </button>
+
+
+
+    </ion-buttons>  
+  </ion-navbar>
+ 
+</ion-header>
+
+
+<ion-content padding>
+  <h3>OFERTAS</h3>
+<ion-list>
+<button ion-item *ngFor='let usuario of usuarios'>
+
+{{usuario.nombre_prod}}
+{{usuario.precio_prod}}
+
+ </button>
+
+</ion-list>
+
+
+</ion-content>
+
+
