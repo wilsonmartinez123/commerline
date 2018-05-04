@@ -1,0 +1,69 @@
+<ion-header>
+	<ion-navbar>
+		<button ion-button menuToggle>
+			<ion-icon name="menu"></ion-icon>
+		</button>
+		<ion-title>Registro</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content class="login-page">
+
+	<div class="logo">
+		<img src="assets/img/commerline.png" alt="Commerline Logo">
+	</div>
+
+	<form #signupForm="ngForm" validate>
+		<ion-list no-lines>
+			<ion-item>
+				<ion-label stacked color="primary">Nombre</ion-label>
+				<ion-input [(ngModel)]="signup.username" name="username" type="text" #username="ngModel" required>
+				</ion-input>
+			</ion-item>
+			<p ion-text [hidden]="username.valid || submitted == false" color="danger" padding-left>
+				Nombre de usuario es requerido
+			</p>
+
+			<ion-item>
+				<ion-label stacked color="primary">Correo</ion-label>
+				<ion-input [(ngModel)]="signup.email" name="email" type="email" #email="ngModel" required pattern="[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})">
+				</ion-input>
+			</ion-item>
+			<p ion-text [hidden]="email.valid || submitted == false" color="danger" padding-left>
+				Email es requerido
+			</p>
+
+			<ion-item>
+				<ion-label stacked color="primary">Contraseña</ion-label>
+				<ion-input [(ngModel)]="signup.password" name="password" type="password" #password="ngModel" required>
+				</ion-input>
+			</ion-item>
+			<p ion-text [hidden]="password.valid || submitted == false" color="danger" padding-left>
+				Contraseña es requerido
+			</p>
+
+			<ion-item>
+				<ion-label stacked color="primary">Repita Contraseña</ion-label>
+				<ion-input type="password" [(ngModel)]="signup.passwordRetyped" name="passwordRetyped" #password="ngModel" required>
+				</ion-input>
+			</ion-item>
+
+			<ion-item>
+				<ion-checkbox [(ngModel)]="signup.terms" secondary #terms="ngModel" name="terms" value="" checked="false" required></ion-checkbox>
+				<ion-label>I accept the
+					<a href="#">Terms & Conditions</a>
+				</ion-label>
+			</ion-item>
+			<p ion-text [hidden]="terms.valid || submitted == false" color="danger" padding-left>
+				debe aceptar terminos y condiciones
+			</p>
+
+		</ion-list>
+
+
+		<div padding>
+			<button ion-button (click)="signups(signupForm) " type="submit" block>Crear</button>
+		</div>
+	</form>
+
+</ion-content>
