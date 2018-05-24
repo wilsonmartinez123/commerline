@@ -23,9 +23,10 @@ public class jsoup4 {
     public static void main(String[] args) {
         try {
 
-            List<String> list = new ArrayList<String>();//guardar urls de paginacion
+            ArrayList<String> list = new ArrayList<String>();//guardar urls de paginacion
+            ArrayList<String> list2 = new ArrayList<String>();// guardar urls de nombre de cada producto
 
-            Document doc = Jsoup.connect("http://www.alkosto.com/telefonos-celulares").get();
+            Document doc = Jsoup.connect("http://www.alkosto.com/telefonos-celulares").timeout(30000).get();
 
             String title = "ALKOSTO";
             System.out.println("title : " + title);
@@ -36,21 +37,32 @@ public class jsoup4 {
                 list.add(element.absUrl("href")); //guarda en una lista las direcciones de paginacion
 
                 for (int i = 0; i < list.size(); i++) {
-                    doc = Jsoup.connect(list.get(i)).get();//se conecta a cada uno de los links de paginacion 1,2,3... etc
+                    doc = Jsoup.connect(list.get(i)).timeout(30000).get();//se conecta a cada uno de los links de paginacion 1,2,3... etc
 
-                    Elements nombre = doc.select(".product-name a[href][title]");
-                    Elements precio = doc.select(".price");
-                    Elements imagen = doc.select(".amlabel-div > a > img[src]");
+                    Elements linkNombre = doc.select(".product-name > a");
 
-                    for (int j = 0; j < nombre.size(); j++) {
+                    for (Element linksNombre : linkNombre) {
 
-                        System.out.println("\nNombre : " + nombre.get(j).attr("title"));
-                        System.out.println("Precio : " + precio.get(j).text());
-                        System.out.println("Imagen : " + imagen.get(j).attr("src"));
+                        list2.add(linksNombre.absUrl("href")); //almacena los linkNombre
+
                     }
+                    for (int x = 0; x < list2.size(); x++) {
+                        doc = Jsoup.connect(list2.get(x)).timeout(30000).get();// se conecta a cada uno de los links nombre del producto
+
+                        Element name = doc.select(".product-name > h1").first();
+                        Elements descripcion = doc.select(".content > p");
+                        Element precio = doc.select(".price").first();
+                        Elements imagen = doc.select(".amlabel-div > a[id=zoom01]");
+
+                        System.out.println("\nNombre : " + name.text());
+                        System.out.println("Precio : " + precio.text());
+                        System.out.println("Imagen : " + imagen.attr("href"));
+                        System.out.println("Descripcion : " + descripcion.text());
+
+                    }
+
                 }
             }
-
             // Pagina web distinta
             System.out.println();
             System.out.println();
@@ -85,3 +97,4 @@ public class jsoup4 {
         }
     }
 }
+
