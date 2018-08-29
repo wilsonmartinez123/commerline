@@ -1,112 +1,139 @@
-import { Component } from '@angular/core';
-//import { NgForm } from '@angular/forms';
-import { AngularFireAuth } from 'angularfire2/auth';
-//declare var firebase:any;
-//import firebase from 'firebase/app';
-import { NavController, NavParams, AlertController } from 'ionic-angular';
-import { UserData } from '../../providers/user-data';
-import { UserOptions } from '../../interfaces/user-options';
-
-//import { TabsPage } from '../tabs-page/tabs-page';
-//import { LoginPage } from '../login/login';
-import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
-
+import { Component, ViewChild } from '@angular/core';
+import { NavController, AlertController } from 'ionic-angular';
+//import { HomePage } from '../home/home';
+import { Http, RequestOptions, Headers } from "@angular/http";
+import { LoadingController } from 'ionic-angular';
+import 'rxjs/add/operator/map';
+//import { AngularFireAuth } from 'angularfire2/auth';
+//import * as firebase from 'firebase';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { LoginPage } from '../login/login';
 
 @Component({
-  selector: 'page-user',
-  templateUrl: 'signup.html'
+    selector: 'page-user',
+    templateUrl: 'signup.html'
 })
 export class SignupPage {
-  responseData : any;
-  signup: UserOptions = { username: '', email: '', password: '', passwordRetyped: '' };
-  submitted = false;
 
-  constructor(public navCtrl: NavController, public userData: UserData,
-    public authService:AuthServiceProvider,
-    private alertCtrl: AlertController,
-    private navParams: NavParams,
-    private afAuth: AngularFireAuth) {
-    this.signup.email = this.navParams.get('email');
-  }
+    authForm: FormGroup;
 
-  
- /* envioDato( req)
-  {
-      this.authService.dataRegister(req.value)
-      .subscribe(
-         data=> {
-             this.showAlert(data.mensaje);
-             //this.navCtrl.setRoot(IndexPage);
-             console.log(data.mensaje)
-         },
-         err=>console.log(err)
-      );
-  }
-
-  showAlert(men)
-  {	
-      let alert = this.alertCtrl.create({
-          title: 'Informacion',
-          subTitle: men,
-          buttons :['OK']
-      });
-      alert.present();	
-  }*/
+    @ViewChild("email") email;
+    @ViewChild("username") username;
+    @ViewChild("mobile") mobile;
+    @ViewChild("password") password;
+    @ViewChild("passwordRetyped") passwordRetyped;
+    @ViewChild("terms") terms;
 
 
-    //onSignup(form: NgForm) {
-      onSignup() {
-    this.submitted = true;
+    submitted = false;
+    constructor(public navCtrl: NavController, public alertCtrl: AlertController, private http: Http, public loading: LoadingController,
+        //public afAuth: AngularFireAuth
+    ) {
 
-    if (this.signup.password !== this.signup.passwordRetyped) {
-      let alert = this.alertCtrl.create({
-        title: 'Error',
-        message: 'Las contraseñas no coinciden.',
-        buttons: ['OK']
-      });
-      alert.present();
-      return;
-    }
-    
 
- 
-    /*if (form.valid) {
-      this.userData.signup(this.signup.username);
-      this.navCtrl.push(TabsPage);
-    }*/
+        let EMAILPATTERN = "[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})";
+        this.authForm = new FormGroup({
+            username: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.minLength(4), Validators.maxLength(10)]),
+            password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]),
+            //name: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.minLength(4), Validators.maxLength(30)]),
+            email: new FormControl('', [Validators.required, Validators.pattern(EMAILPATTERN)]),
+            passwordRetyped: new FormControl('', [Validators.required]),
+            mobile: new FormControl('', [Validators.required, Validators.minLength(10)]),
+            terms: new FormControl('', [Validators.required]),
 
-    this.afAuth.auth.createUserWithEmailAndPassword(this.signup.email, this.signup.password)
-      .then(() => {
-          // Could do something with the Auth-Response
-          // let user = firebase.auth().currentUser;
-          //user.sendEmailVerification();
-          this.navCtrl.setRoot('LoginPage');
-        })
-      .catch(err => {
-        // Handle error
-        let alert = this.alertCtrl.create({
-          title: 'Error',
-          message: err.message,
-          buttons: ['OK']
         });
-        alert.present();
-      });
 
-      
+    }
 
-  }
-  signups(){
-    this.authService.postData(this.signup,'signup').then((result) => {
-     this.responseData = result;
-     if(this.responseData.signup){
-     console.log(this.responseData);
-     localStorage.setItem('userData', JSON.stringify(this.responseData));
-     //this.navCtrl.push(TabsPage);
-     }
-     else{ console.log("User already exists"); }
-   }, () => {
-      });
 
- }
- 
+
+
+
+    Register() {
+
+        this.submitted = true;
+
+        if (this.password.value !== this.passwordRetyped.value) {
+            let alert = this.alertCtrl.create({
+                title: 'Error',
+                message: 'Las contraseñas no coinciden.',
+                buttons: ['OK']
+            });
+            alert.present();
+            return;
+        }
+        
+        else {
+            
+            
+            var headers = new Headers();
+                headers.append("Accept", 'application/json');
+                headers.append('Content-Type', 'application/json' );
+                let options = new RequestOptions({ headers: headers });
+            
+
+            let data = {
+                username: this.username.value,
+                password: this.password.value,
+                mobile: this.mobile.value,
+                email: this.email.value
+            };
+
+
+            let loader = this.loading.create({
+                content: 'Procesando por favor espere...',
+            });
+
+            loader.present().then(() => {
+                this.http.post('http://localhost/ionic-mysql/register.php', data, options)
+                    .map(res => res.json())
+                    .subscribe(res => {
+
+                        loader.dismiss()
+
+                        if (res == "Registro exitoso") {
+
+                            /*this.afAuth.auth.createUserWithEmailAndPassword(this.email.value, this.password.value)
+                              .then(() => {
+              
+                                let user = firebase.auth().currentUser.reload();
+                                //user.sendEmailVerification();
+                                // this.navCtrl.setRoot('LoginPage');*/
+
+
+                            let alert = this.alertCtrl.create({
+                                title: "Felicitaciones",
+                                subTitle: (res),
+                                buttons: ['OK']
+                            });
+
+                            alert.present();
+                            this.navCtrl.push(LoginPage);
+                            // })
+
+                            /*.catch(err => {
+                              // Handle error
+                              let alert = this.alertCtrl.create({
+                                title: 'Error',
+                                message: err.message,
+                                buttons: ['OK']
+                              });
+                              alert.present();
+                            });
+                            */
+
+                        } else {
+                            let alert = this.alertCtrl.create({
+                                title: "ERROR",
+                                subTitle: (res),
+                                buttons: ['OK']
+                            });
+
+                            alert.present();
+                        }
+                    });
+            });
+        }
+
+    }
 }
