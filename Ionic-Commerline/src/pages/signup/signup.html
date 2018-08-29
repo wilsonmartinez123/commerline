@@ -1,69 +1,103 @@
 <ion-header>
-	<ion-navbar>
-		<button ion-button menuToggle>
-			<ion-icon name="menu"></ion-icon>
-		</button>
-		<ion-title>Registro</ion-title>
-	</ion-navbar>
+    <ion-navbar>
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Registro</ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content class="login-page">
+    <ion-list no-line>
 
-	<div class="logo">
-		<img src="assets/img/commerline.png" alt="Commerline Logo">
-	</div>
+        <div class="logo">
+            <img src="assets/img/commerline.png" alt="Commerline Logo">
+        </div>
 
-	<form #signupForm="ngForm" validate>
-		<ion-list no-lines>
-			<ion-item>
-				<ion-label stacked color="primary">Nombre</ion-label>
-				<ion-input [(ngModel)]="signup.username" name="username" type="text" #username="ngModel" required>
-				</ion-input>
-			</ion-item>
-			<p ion-text [hidden]="username.valid || submitted == false" color="danger" padding-left>
-				Nombre de usuario es requerido
-			</p>
+        <form [formGroup]="authForm" (ngSubmit)="Register()">
+            <ion-item [ngClass]="{'error-border':!authForm.controls.username.valid && authForm.controls.username.touched}">
+                <ion-label floating>Nombre de usuario</ion-label>
+                <ion-input formControlName="username" type="text" name="fullname" #username></ion-input>
+            </ion-item>
 
-			<ion-item>
-				<ion-label stacked color="primary">Correo</ion-label>
-				<ion-input [(ngModel)]="signup.email" name="email" type="email" #email="ngModel" required pattern="[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})">
-				</ion-input>
-			</ion-item>
-			<p ion-text [hidden]="email.valid || submitted == false" color="danger" padding-left>
-				Email es requerido
-			</p>
-
-			<ion-item>
-				<ion-label stacked color="primary">Contraseña</ion-label>
-				<ion-input [(ngModel)]="signup.password" name="password" type="password" #password="ngModel" required>
-				</ion-input>
-			</ion-item>
-			<p ion-text [hidden]="password.valid || submitted == false" color="danger" padding-left>
-				Contraseña es requerido
-			</p>
-
-			<ion-item>
-				<ion-label stacked color="primary">Repita Contraseña</ion-label>
-				<ion-input type="password" [(ngModel)]="signup.passwordRetyped" name="passwordRetyped" #password="ngModel" required>
-				</ion-input>
-			</ion-item>
-
-			<ion-item>
-				<ion-checkbox [(ngModel)]="signup.terms" secondary #terms="ngModel" name="terms" value="" checked="false" required></ion-checkbox>
-				<ion-label>I accept the
-					<a href="#">Terms & Conditions</a>
-				</ion-label>
-			</ion-item>
-			<p ion-text [hidden]="terms.valid || submitted == false" color="danger" padding-left>
-				debe aceptar terminos y condiciones
-			</p>
-
-		</ion-list>
+            <ion-item *ngIf="authForm.controls.username.hasError('required') && authForm.controls.username.touched">
+                <p>Nombre de usuario es requerido</p>
+            </ion-item>
+            <ion-item *ngIf="authForm.controls.username.hasError('pattern') && authForm.controls.username.touched">
+                <p>Permitido solo letras</p>
+            </ion-item>
+            <ion-item *ngIf="authForm.controls.username.hasError('minlength') && authForm.controls.username.touched">
+                <p>Longitud mínima del nombre de usuario es 4!</p>
+            </ion-item>
+            <ion-item *ngIf="authForm.controls.username.hasError('maxlength') && authForm.controls.username.touched">
+                <p>Longiud máxima del nombre de usuario es 10!</p>
+            </ion-item>
 
 
-		<div padding>
-			<button ion-button (click)="signups(signupForm) " type="submit" block>Crear</button>
-		</div>
-	</form>
+            <ion-item [ngClass]="{'error-border':!authForm.controls.email.valid && authForm.controls.email.touched}">
+                <ion-label floating>Correo</ion-label>
+                <ion-input formControlName="email" type="email" name="email" #email></ion-input>
+            </ion-item>
+            <ion-item *ngIf="authForm.controls.email.hasError('required') && authForm.controls.email.touched">
+                <p>Ingrese su correo electrónico</p>
+            </ion-item>
+            <ion-item *ngIf="authForm.controls.email.hasError('pattern') && authForm.controls.email.touched">
+                <p>Dirección de correo electrónico no válida</p>
+            </ion-item>
 
+
+            <ion-item [ngClass]="{'error-border':!authForm.controls.mobile.valid && authForm.controls.mobile.touched}">
+                <ion-label floating>Número de celular</ion-label>
+                <ion-input formControlName="mobile" type="number" name="mobile" #mobile></ion-input>
+            </ion-item>
+            <ion-item *ngIf="authForm.controls.mobile.hasError('required') && authForm.controls.mobile.touched">
+                <p>campo Número celular es requerido!</p>
+            </ion-item>
+            <ion-item *ngIf="authForm.controls.mobile.hasError('minlength') && authForm.controls.mobile.touched">
+                <p>longitud 10 Digitos!</p>
+            </ion-item>
+
+
+
+
+            <ion-item [ngClass]="{'error-border':!authForm.controls.password.valid && authForm.controls.password.touched}">
+                <ion-label floating>Contraseña</ion-label>
+                <ion-input formControlName="password" type="password" name="password" #password></ion-input>
+            </ion-item>
+            <ion-item *ngIf="authForm.controls.password.hasError('required') && authForm.controls.password.touched">
+                <p>campo contraseña es requerido!</p>
+            </ion-item>
+            <ion-item *ngIf="authForm.controls.password.hasError('minlength') && authForm.controls.password.touched">
+                <p>longitud minima de contraseña es 6!</p>
+            </ion-item>
+
+
+
+            <ion-item [ngClass]="{'error-border':!authForm.controls.passwordRetyped.valid && authForm.controls.passwordRetyped.touched}">
+                <ion-label floating>Repita contraseña</ion-label>
+                <ion-input formControlName="passwordRetyped" type="password" name="passwordRetyped" #passwordRetyped></ion-input>
+            </ion-item>
+            <ion-item *ngIf="authForm.controls.passwordRetyped.hasError('required') && authForm.controls.passwordRetyped.touched">
+                <p>repita contraseña es requerido!</p>
+            </ion-item>
+
+            <ion-item [ngClass]="{'error-border':!authForm.controls.terms.valid && authForm.controls.terms.touched}">
+
+                <ion-label>I accept the
+                    <a href="#">Terms & Conditions</a>
+                </ion-label>
+                <ion-checkbox formControlName="terms" #terms name="terms" value="" checked="false"></ion-checkbox>
+            </ion-item>
+            <ion-item *ngIf="authForm.controls.terms.hasError('required') && authForm.controls.terms.touched">
+                <p>Debe aceptar terminos y condiciones!</p>
+            </ion-item>
+
+
+            <div padding>
+
+                <button ion-button round outline block color="primary" [disabled]="!authForm.valid" style="margin-top: 20px;" type="submit">Registrar</button>
+            </div>
+
+        </form>
+    </ion-list>
 </ion-content>
