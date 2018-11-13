@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Detalles</ion-title>
+
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-item *ngIf="item" text-wrap>
+
+      <h1>Descripción</h1>
+
+      <img [src]="item.imagen_pro" class="img-res" />
+
+      <h2> {{item.desripcion_pro}}</h2>
+
+
+
+    </ion-item>
+  </ion-list>
+
+</ion-content>
