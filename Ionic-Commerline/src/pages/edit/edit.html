@@ -1,0 +1,51 @@
+<!--
+  Generated template for the EditPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>edit</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list no-line>
+
+    <ion-item>
+      <ion-label floating>Nombre</ion-label>
+      <ion-input id="newName" type="text" name="newName" #newName [(ngModel)]="name"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Imagen</ion-label>
+      <ion-input type="file" accept="image/*" (change)="selectFileToUpload($event)"></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="isSelected">
+      <img [src]="newImage" width="250" height="250" align="middle" />
+    </ion-item>
+
+
+    <ion-item>
+      <ion-label floating>Precio</ion-label>
+      <ion-input id="newPrice" type="text" name="newPrice" #newPrice [(ngModel)]="price"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Descripción del producto</ion-label>
+      <ion-textarea id="newDescription" rows="6" maxLength="500" name="newDescription" #newDescription [(ngModel)]="description"></ion-textarea>
+    </ion-item>
+
+  </ion-list>
+
+  <div>
+    <button ion-button round outline block (click)="Edit()">Actualizar</button>
+  </div>
+
+</ion-content>
