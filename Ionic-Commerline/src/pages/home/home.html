@@ -7,40 +7,153 @@
 <ion-header>
 
   <ion-navbar>
-    	<button ion-button menuToggle>
-          <ion-icon name="menu"></ion-icon>
-        </button>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
     <ion-title>Mis productos</ion-title>
   </ion-navbar>
+
+
+  <ion-toolbar no-border-top>
+    <ion-searchbar color="primary" (ionInput)="getItems($event)" placeholder="Buscar">
+    </ion-searchbar>
+  </ion-toolbar>
 
 </ion-header>
 
 
 <ion-content padding>
 
-    <ion-item>
-       <button
-          class="add"
-          ion-button
-          item-right
-          icon-right
-          margin-bottom
-          color="primary"
-          (click)="addEntry()">
-            Agregar Producto
-             <ion-icon name="add"></ion-icon>
-       </button>
+  <ion-item>
+    <button class="add" ion-button item-right icon-right margin-bottom color="primary" (click)="Post()">
+      Agregar Producto
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Ordenar por</ion-label>
+    <ion-select [(ngModel)]="pricefilter">
+      <ion-option value="max">Precio: Mayor a menor</ion-option>
+      <ion-option value="min">Precio: Menor a mayor</ion-option>
+      <ion-option value="az">Producto: A-Z</ion-option>
+      <ion-option value="za">Porducto: Z-A</ion-option>
+    </ion-select>
+  </ion-item>
+
+  <div *ngIf=" (  !pricefilter )  ">
+    <ion-item *ngFor="let item of items | paginate: { itemsPerPage: 20, currentPage: p } " text-wrap>
+      <h2>{{ item.name }} </h2>
+
+      <ion-thumbnail item-left>
+        <img src="http://localhost/ionic-php-mysql/{{item.image_name}}">
+      </ion-thumbnail>
+
+      <h2>precio: {{item.price}}</h2>
+      <p>descripción: {{item.description}}</p>
+
+      <button ion-button icon-end color="primary" item-right (click)="editPost(item)">Editar
+        <ion-icon name="create"></ion-icon>
+      </button>
+      <button ion-button icon-end color="secondary" item-right (click)="deletePost(item)">Eliminar
+        <ion-icon name="close"></ion-icon>
+      </button>
+
     </ion-item>
- 
- 
-    <ion-item *ngFor="let item of items">
-       <h2>{{ item.name }} </h2>
-       <button
-          ion-button
-          color="primary"
-          item-right
-          (click)="viewEntry({ record: item })">Mirar</button>
+  </div>
+
+  <div *ngIf=" (  pricefilter=='max')  ">
+    <ion-item *ngFor=" let content of items  | replace: 'price'  | orderBy: 'price': false | paginate: { itemsPerPage: 20, currentPage: p } "
+      text-wrap>
+
+      <h2>{{ content.name }} </h2>
+
+      <ion-thumbnail item-left>
+        <img src="http://localhost/ionic-php-mysql/{{content.image_name}}">
+      </ion-thumbnail>
+
+      <h2>precio: $ {{content.price | number | replace}}</h2>
+      <p>descripción: {{content.description}}</p>
+
+      <button ion-button icon-end color="primary" item-right (click)="editPost(item)">Editar
+        <ion-icon name="create"></ion-icon>
+      </button>
+      <button ion-button icon-end color="secondary" item-right (click)="deletePost(item)">Eliminar
+        <ion-icon name="close"></ion-icon>
+      </button>
+
     </ion-item>
- 
- 
- </ion-content>
+  </div>
+
+  <div *ngIf=" (  pricefilter=='min')  ">
+    <ion-item *ngFor=" let content of items | orderBy:'price':true | paginate: { itemsPerPage: 20, currentPage: p } " text-wrap>
+
+      <h2>{{ content.name }} </h2>
+
+      <ion-thumbnail item-left>
+        <img src="http://localhost/ionic-php-mysql/{{content.image_name}}">
+      </ion-thumbnail>
+
+      <h2>precio: $ {{content.price | number | replace}}</h2>
+      <p>descripción: {{content.description}}</p>
+
+      <button ion-button icon-end color="primary" item-right (click)="editPost(item)">Editar
+        <ion-icon name="create"></ion-icon>
+      </button>
+      <button ion-button icon-end color="secondary" item-right (click)="deletePost(item)">Eliminar
+        <ion-icon name="close"></ion-icon>
+      </button>
+
+    </ion-item>
+  </div>
+
+  <div *ngIf=" (  pricefilter=='az')  ">
+    <ion-item *ngFor=" let content of items | orderBy:'name':true | paginate: { itemsPerPage: 20, currentPage: p } " text-wrap>
+
+      <h2>{{ content.name }} </h2>
+
+      <ion-thumbnail item-left>
+        <img src="http://localhost/ionic-php-mysql/{{content.image_name}}">
+      </ion-thumbnail>
+
+      <h2>precio: $ {{content.price | number | replace}}</h2>
+      <p>descripción: {{content.description}}</p>
+
+      <button ion-button icon-end color="primary" item-right (click)="editPost(item)">Editar
+        <ion-icon name="create"></ion-icon>
+      </button>
+      <button ion-button icon-end color="secondary" item-right (click)="deletePost(item)">Eliminar
+        <ion-icon name="close"></ion-icon>
+      </button>
+
+    </ion-item>
+  </div>
+
+  <div *ngIf=" (  pricefilter=='za')  ">
+    <ion-item *ngFor=" let content of items | orderBy:'name':false | paginate: { itemsPerPage: 20, currentPage: p } " text-wrap>
+
+      <h2>{{ content.name }} </h2>
+
+      <ion-thumbnail item-left>
+        <img src="http://localhost/ionic-php-mysql/{{content.image_name}}">
+      </ion-thumbnail>
+
+      <h2>precio: $ {{content.price | number | replace}}</h2>
+      <p>descripción: {{content.description}}</p>
+
+      <button ion-button icon-end color="primary" item-right (click)="editPost(item)">Editar
+        <ion-icon name="create"></ion-icon>
+      </button>
+      <button ion-button icon-end color="secondary" item-right (click)="deletePost(item)">Eliminar
+        <ion-icon name="close"></ion-icon>
+      </button>
+
+    </ion-item>
+  </div>
+
+  <pagination-controls class="my-pagination" (pageChange)="p = $event" maxSize="12" directionLinks="true" autoHide="true" responsive="true"
+    previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page">
+  </pagination-controls>
+
+
+</ion-content>
