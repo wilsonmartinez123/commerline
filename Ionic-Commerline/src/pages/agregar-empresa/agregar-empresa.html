@@ -1,0 +1,138 @@
+<!--
+  Generated template for the AgregarEmpresaPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Agregar Empresa</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+
+
+
+<ion-content padding>
+
+  <h2>Registre su empresa</h2><br>
+
+  <div class="logo">
+      <img src="assets/img/commerline.png" alt="Logo">
+  </div>
+
+  <h4 text-wrap>Señor empresario por favor complete los campo de su establecimiento, una vez finalizado pueda registrar
+    su
+    productos</h4><br>
+
+  <p>Todos los campos con * son obligatorios</p>
+
+  <h4 text-wrap>Tenga en cuenta que si su establecimiento tiene pagina web, no tienes necesidad de ingresar los
+    productos
+    manualmente
+    podemos extraerlos directamente de tu pagina web.
+  </h4><br>
+
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <ion-list no-line>
+
+
+      <ion-item [ngClass]="{'error-border':!form.controls.name.valid && form.controls.name.touched}">
+        <ion-icon name="briefcase" item-start></ion-icon>
+        <ion-label stacked>Nombre de la Empresa*</ion-label>
+        <ion-input type="text" name="name" #name formControlName="name"></ion-input>
+      </ion-item>
+
+
+      <ion-item *ngIf="form.controls.name.hasError('required') && form.controls.name.touched">
+        <p>Nombre de Empresa es requerido!</p>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="more" item-start></ion-icon>
+        <ion-label>Su empresa tiene página web?</ion-label>
+
+
+        <ion-select formControlName="option" name="option" #option [(ngModel)]="membership" (ionChange)="onChange(membership)">
+          <ion-option value="2">Si</ion-option>
+          <ion-option value="1">No</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item [hidden]="!value">
+        <ion-icon name="link" item-start></ion-icon>
+        <ion-label stacked>Ingrese su página web</ion-label>
+        <ion-input type="text" name="paginaWeb" #paginaWeb required></ion-input>
+      </ion-item>
+
+      <ion-item [ngClass]="{'error-border':!form.controls.direction.valid && form.controls.direction.touched}">
+        <ion-icon name="navigate" item-start></ion-icon>
+        <ion-label stacked>Dirección de la Empresa*</ion-label>
+        <ion-input type="text" name="name" #name placeholder="CR 16 N 41-10 LOCAL 260" formControlName="direction"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="form.controls.direction.hasError('required') && form.controls.direction.touched">
+        <p>Dirección de Empresa es requerido!</p>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="list" item-start></ion-icon>
+        <ion-label>Departamento</ion-label>
+        <ion-select formControlName="country" (ionChange)="onCountryChange()">
+          <ion-option *ngFor="let country of countries" [value]="country">{{country}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+
+      <ion-item>
+        <ion-icon name="list" item-start></ion-icon>
+        <ion-label>Municipio</ion-label>
+        <ion-select formControlName="state">
+          <ion-option *ngFor="let state of states" [value]="state">{{state}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item >
+        <ion-icon name="clock" item-start></ion-icon>
+        <ion-label stacked>Horario de Atención*</ion-label>
+        <ion-input type="text" name="name" #name placeholder="Lun-dom 10:00 am a 8:30 pm"></ion-input>
+      </ion-item>
+
+      <ion-item [ngClass]="{'error-border':!form.controls.phone.valid && form.controls.phone.touched}">
+        <ion-icon name="call" item-start></ion-icon>
+        <ion-label stacked>Teléfono de la empresa*</ion-label>
+        <ion-input type="number" name="name" #name formControlName= "phone"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="form.controls.phone.hasError('required') && form.controls.phone.touched">
+          <p>Teléfono de Empresa es requerido!</p>
+        </ion-item>
+
+      <ion-item>
+        <ion-icon name="image" item-start></ion-icon>
+        <ion-label text-wrap>Imagen o logo de la empresa*</ion-label>
+        <ion-input type="file" accept="image/*" (change)="selectFileToUpload($event)"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="isSelected">
+        <img [src]="image" width="250" height="250" align="middle" />
+      </ion-item>
+
+      <div>
+        <button class="registrar" ion-button round outline block color="primary" [disabled]="!form.valid" style="margin-top: 20px;"
+          type="submit">Registrar
+          Empresa</button>
+
+      </div>
+
+    </ion-list>
+
+
+  </form>
+
+</ion-content>
