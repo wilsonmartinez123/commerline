@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Administrador</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="outer-content">
+
+
+  <div padding-top text-center *ngIf="username">
+    <img src="http://www.gravatar.com/avatar?d=mm&s=140" alt="avatar">
+    <h2>{{username}}</h2>
+
+
+    <div *ngFor="let item of users">
+      <h2 *ngIf="(item.correo_cli === username)">Bienvenido: {{item.nombre_cli}}
+      </h2>
+    </div>
+
+
+    <ion-list inset>
+
+
+      <button ion-item (click)="verEmpresas()">Ver Empresas y sucursales</button>
+      <button ion-item (click)="verClientes()">Ver Clientes</button>
+      <button ion-item (click)="updateDate()">Actualizar Datos</button>
+      <button ion-item (click)="changePassword()">Cambiar contraseña</button>
+      <button ion-item (click)="logout()">Salir</button>
+
+
+    </ion-list>
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+</ion-content>
