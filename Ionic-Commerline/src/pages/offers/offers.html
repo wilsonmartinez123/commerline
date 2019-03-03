@@ -1,0 +1,175 @@
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Ofertas</ion-title>
+  </ion-navbar>
+
+  <ion-toolbar no-border-top>
+    <ion-searchbar color="primary" [(ngModel)]="searchTerm" (ionInput)="onInput($event)" (ionCancel)="onCancel($event)"
+      placeholder="Buscar">
+    </ion-searchbar>
+  </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list *ngIf="showList">
+
+
+    <div *ngIf="filter?.length == 0">
+      <p>No se encontraron resultados, por favor intenta de nuevo.</p>
+    </div>
+
+
+    <ion-item *ngIf="filter?.length != 0">
+      <ion-label>Ordenar por</ion-label>
+      <ion-select [(ngModel)]="pricefilter">
+        <ion-option value="max">Precio: Mayor a menor</ion-option>
+        <ion-option value="min">Precio: Menor a mayor</ion-option>
+        <ion-option value="az">Producto: A-Z</ion-option>
+        <ion-option value="za">Porducto: Z-A</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <div *ngIf=" (  !pricefilter )  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of filter | paginate: { itemsPerPage: 40, currentPage: p }"
+            text-wrap>
+
+            <button ion-item (click)="postDetail(product)">
+
+
+              <span class="producto">{{product.nombre_pro}}</span>
+              <ion-thumbnail item-left>
+                <img [src]="product.imagen_pro" />
+              </ion-thumbnail>
+
+              <h2>precio: {{product.precioNuevo_pro}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+
+    <div *ngIf=" (pricefilter=='max')  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of filter | replace: 'precioNuevo_pro'  | orderBy: 'precioNuevo_pro': false | paginate: { itemsPerPage: 40, currentPage: p } ">
+
+            <button ion-item text-wrap (click)="postDetail(product)">
+
+              <span class="producto">{{product.nombre_pro}}</span>
+              <ion-thumbnail item-left>
+                <img [src]="product.imagen_pro" />
+              </ion-thumbnail>
+
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <div *ngIf=" (pricefilter=='min')  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of filter | replace: 'precioNuevo_pro'  | orderBy: 'precioNuevo_pro': true | paginate: { itemsPerPage: 40, currentPage: p } ">
+
+            <button ion-item text-wrap (click)="postDetail(product)">
+
+              <span class="producto">{{product.nombre_pro}}</span>
+              <ion-thumbnail item-left>
+                <img [src]="product.imagen_pro" />
+              </ion-thumbnail>
+
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <div *ngIf=" (pricefilter=='az')  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of filter | orderBy:'nombre_pro':true | paginate: { itemsPerPage: 40, currentPage: p } ">
+
+            <button ion-item text-wrap (click)="postDetail(producto)">
+
+              <span class="producto">{{product.nombre_pro}}</span>
+              <ion-thumbnail item-left>
+                <img [src]="product.imagen_pro" />
+              </ion-thumbnail>
+
+              <h2>precio: {{product.precioNuevo_pro}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <div *ngIf=" ( pricefilter=='za')  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of filter | orderBy:'nombre_pro':false | paginate: { itemsPerPage: 40, currentPage: p } ">
+
+            <button ion-item text-wrap (click)="postDetail(producto)">
+
+              <span class="producto">{{product.nombre_pro}}</span>
+              <ion-thumbnail item-left>
+                <img [src]="product.imagen_pro" />
+              </ion-thumbnail>
+
+              <h2>precio: {{product.precioNuevo_pro}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+
+    <pagination-controls class="my-pagination" (pageChange)="p = $event" maxSize="12" directionLinks="true" autoHide="true"
+      responsive="true" previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Pagination"
+      screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page">
+    </pagination-controls>
+
+  </ion-list>
+
+</ion-content>
