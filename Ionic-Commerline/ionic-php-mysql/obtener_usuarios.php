@@ -1,53 +1,49 @@
 <?php
-//header("Access-Control-Allow-Origin: *");
 
+Header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Max-Age: 86400'); // cache for 1 day
 header('Content-Type: text/html; charset=utf-8');
 header('Content-type: application/json');
 
+// Access-Control headers are received during OPTIONS requests
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
-try {
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+    }
 
-    $conn = mysqli_connect('localhost', 'root', '3809', 'crawler');
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
+        header("Access-Control-Allow-Headers:        {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+    }
 
+    exit(0);
+}
 
-    if(!$conn){
+require "dbconnect.php";
 
-        echo "No se puede conectar a la base de datos";
+$query = "SELECT * FROM clientes INNER JOIN empresa  ON clientes.id_cliente = empresa.id_cliente ";
+$result = mysqli_query($con, $query);
 
-    }	
+$response = array();
+while ($row = mysqli_fetch_array($result)) {
 
+    $row = array_map('utf8_encode', $row);
+    array_push($response, array('id_cliente' => $row[0],
 
-    $query = "SELECT * FROM usuarios ";
-    $result = mysqli_query($conn,$query);
+        'id_rol' => $row[1],
+        'nombre_cli' => $row[2],
+        'identificacion_cli' => $row[3],
+        'matricula_mercantil_cli' => $row[4],
+        'clave_cli' => $row[5],
+        'correo_cli' => $row[6],
+        'telefono_cli' => $row[7],
+        'id_empresa' => $row['id_empresa'],
 
-
-
-    $response = array();
-    While($row= mysqli_fetch_array($result))
-
-    {
-
-        $row = array_map('utf8_encode', $row);
-        array_push($response,array('id_usuario'=>$row[0], 
-
-        'nombre_usu'=>$row[1],
-        'correo_usu'=>$row[3],
-        'telefono_usu'=>$row[4],
-        
     ));
 
 }
 
+echo json_encode(array('usuarios' => $response));
 
-echo json_encode(array('usuarios'=>$response));
-
-
-
-} catch (Exception $e) {
-    echo "Erro: ". $e->getMessage();
-};
-
-mysqli_close($conn);
-?>
-
-
+mysqli_close($con);

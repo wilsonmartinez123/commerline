@@ -22,25 +22,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 require "dbconnect.php";
 
-$query = "SELECT * FROM empresa ";
+$query = "SELECT * FROM productos ";
 $result = mysqli_query($con, $query);
 
 $response = array();
 while ($row = mysqli_fetch_array($result)) {
 
     $row = array_map('utf8_encode', $row);
-    array_push($response, array('id_empresa' => $row[0],
+    array_push($response, array('id' => $row[0],
 
-        'nombre_emp' => $row[2],
-        'direccion_emp' => $row[3],
-        'horario_emp' => $row[4],
-        'logo_emp' => $row[5],
+        'id_empresa' => $row[1],
+        'nombre_pro' => $row[2],
+        'desripcion_pro' => $row[3],
+        'imagen_pro' => $row[4],
+        'precioAnterior_pro' => $row[5],
+        'precioNuevo_pro' => $row[6],
+        'categoria_pro' => $row[7],
+        'fecha_registro_pro' => $row[8],
 
     ));
 
 }
 
-echo json_encode(array('empresa' => $response));
+echo json_encode(array('productos' => $response));
 
 mysqli_close($con);
 
