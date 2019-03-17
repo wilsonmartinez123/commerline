@@ -45,9 +45,19 @@
 
 
               <span class="producto">{{product.nombre_pro}}</span>
-              <ion-thumbnail item-left>
+              <!--<ion-thumbnail item-left>
                 <img [src]="product.imagen_pro" />
+              </ion-thumbnail>-->
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
+                <img src="{{product.imagen_pro}}">
               </ion-thumbnail>
+
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('uploads/')">
+                <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
+              </ion-thumbnail>
+
 
               <h2>precio: {{product.precioNuevo_pro}}</h2>
               <div *ngIf="product.precioAnterior_pro">
@@ -74,6 +84,10 @@
               <span class="producto">{{product.nombre_pro}}</span>
               <ion-thumbnail item-left>
                 <img [src]="product.imagen_pro" />
+              </ion-thumbnail>
+
+              <ion-thumbnail item-left>
+                <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
               </ion-thumbnail>
 
               <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
