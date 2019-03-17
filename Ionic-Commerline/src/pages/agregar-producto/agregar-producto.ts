@@ -1,299 +1,236 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
+import { Http, Headers, RequestOptions } from "@angular/http";
+import { LoadingController } from 'ionic-angular';
+import 'rxjs/add/operator/map';
+import { HomePage } from '../home/home';
+//import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
+import { ImageProvider } from '../../providers/image/image';
 
-/**
- * Generated class for the AgregarProductoPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
-@IonicPage()
 @Component({
     selector: 'page-agregar-producto',
-    templateUrl: 'agregar-producto.html',
+    templateUrl: 'agregar-producto.html'
 })
 export class AgregarProductoPage {
 
-    /**
-     * @name form
-     * @type {FormGroup}
-     * @public
-     * @description     Define FormGroup property for managing form validation / data retrieval
-     */
+
     public form: FormGroup;
 
 
-    /**
-     * @name productName
-     * @type {Any}
-     * @public
-     * @description     Model for managing productName field
-     */
-    public productName: any;
+    //Will store the selected image file data (in the form of a base64 data URI)
 
-    /**
-  * @name productPrice
-  * @type {Any}
-  * @public
-  * @description     Model for managing productPrice field
-  */
-    public productPrice: any;
+    public image: string;
 
 
-    /**
-     * @name productDescription
-     * @type {Any}
-     * @public
-     * @description     Model for managing productDescription field
-     */
-    public productDescription: any;
+    //Used to switch DOM elements on/off depending on whether an image has been selected
 
-    /**
-     * @name isEdited
-     * @type {Boolean}
-     * @public
-     * @description     Flag to be used for checking whether we are adding/editing an entry
-     */
-    public isEdited: boolean = false;
+    public isSelected: boolean = false;
 
-    /**
-     * @name hideForm
-     * @type {Boolean}
-     * @public
-     * @description     Flag to hide the form upon successful completion of remote operation
-     */
-    public hideForm: boolean = false;
+    //Will store the selected image's MimeType
 
-    /**
-     * @name pageTitle
-     * @type {String}
-     * @public
-     * @description     Property to help set the page title
-     */
-    public pageTitle: string;
+    private _SUFFIX: string;
 
 
-    /**
-     * @name recordID
-     * @type {String}
-     * @public
-     * @description     Property to store the recordID for when an existing entry is being edited
-     */
-    public recordID: any = null;
+    @ViewChild("name") name;
+    @ViewChild("price") price;
+    @ViewChild("description") description;
+    
+    productos: any;
+    id_cliente: any;
+
+    constructor(public navCtrl: NavController, public navParams: NavParams, public http: Http, public toast: ToastController,
+        public alertCtrl: AlertController, public loading: LoadingController, public fb: FormBuilder, private _IMAGES: ImageProvider, ) {
 
 
-    /**
-     * @name baseURI
-     * @type {String}
-     * @public
-     * @description     Remote URI for retrieving data from and sending data to
-     */
-    private baseURI: string = "http://localhost/ionic-php-mysql/";
+    }
+
+    ngOnInit() {
+        this.id_cliente = this.navParams.get('id_cliente');
 
 
+        this.form = this.fb.group({
+            productos: this.initProductoFields()
+        })
 
+    }
 
-    // Initialise module classes
-    constructor(public navCtrl: NavController,
-        public http: HttpClient,
-        public NP: NavParams,
-        public fb: FormBuilder,
-        public toastCtrl: ToastController) {
+    initProductoFields(): FormArray {
+        this.productos = this.fb.array([
+            this.buildGroup()
+        ]);
+        return this.productos;
+    }
 
-        // Create form builder validation rules
-        this.form = fb.group({
-            "name": ["", Validators.required],
-            "price": ["", Validators.required],
-            "description": ["", Validators.required]
+    buildGroup(): FormGroup {
+        return this.fb.group({
+
+            name: ["", Validators.required],
+            namefile: '',
+            price: ["", Validators.required],
+            description: ["", Validators.required],
+            categoria: ["", Validators.required],
+            IdEmpresario: '',
+            picture: ["", Validators.required],
+           
         });
     }
 
+    addNewInputField() {
+        this.productos.push(this.buildGroup());
+    }
 
-    /**
-     * Triggered when template view is about to be entered
-     * Determine whether we adding or editing a record
-     * based on any supplied navigation parameters
-     *
-     * @public
-     * @method ionViewWillEnter
-     * @return {None}
-     */
-    ionViewWillEnter(): void {
-        this.resetFields();
+    removeInputField(i: number): void {
+        this.productos.removeAt(i);
+    }
 
-        if (this.NP.get("record")) {
-            this.isEdited = true;
-            this.selectEntry(this.NP.get("record"));
-            this.pageTitle = 'Amend entry';
+
+    selectFileToUpload(event, index): void {
+
+        this.productos.controls[index].value.IdEmpresario = this.id_cliente;
+
+        if (event.target.files[0]) {
+
+
+            this.productos.controls[index].value.namefile = event.target.files[0].name;
+
+
+            this._IMAGES
+                .handleImageSelection(event)
+                .subscribe((res) => {
+
+                    // Retrieve the file type from the base64 data URI string
+                    this._SUFFIX = res.split(':')[1].split('/')[1].split(";")[0];
+
+
+
+                    // Do we have correct file type?
+                    if (this._IMAGES.isCorrectFileType(this._SUFFIX)) {
+
+                        // Hide the file input field, display the image in the component template
+                        // and display an upload button
+                        this.isSelected = true
+                        this.image = res;
+                        this.productos.controls[index].value.picture = res;
+
+
+                    }
+
+
+                    // If we don't alert the user
+                    else {
+                        this.displayAlert('Debe seleccionar un archivo de imagen con uno de los siguientes tipos: jpg, gif o png');
+                    }
+
+
+                },
+                    (error) => {
+                        console.dir(error);
+                        this.displayAlert(error.message);
+                    });
         }
         else {
-            this.isEdited = false;
-            this.pageTitle = 'Create entry';
+
+            this.isSelected = false;
         }
-    }
 
 
-    /**
-     * Assign the navigation retrieved data to properties
-     * used as models on the page's HTML form
-     *
-     * @public
-     * @method selectEntry
-     * @param item 		{any} 			Navigation data
-     * @return {None}
-     */
-    selectEntry(item: any): void {
-        this.productName = item.name;
-        this.productPrice = item.price;
-        this.productDescription = item.description;
-        this.recordID = item.id;
     }
 
 
 
-
-    /**
-     * Save a new record that has been added to the page's HTML form
-     * Use angular's http post method to submit the record data
-     *
-     * @public
-     * @method createEntry
-     * @param name 			{String} 			Name value from form field
-     * * @param price 			{String} 			Price value from form field
-     * @param description 	{String} 			Description value from form field
-     * @return {None}
-     */
-    createEntry(name: string, price: string, description: string): void {
-        let headers: any = new HttpHeaders({ 'Content-Type': 'application/json' }),
-            options: any = { "key": "create", "name": name, "price": price, "description": description },
-            url: any = this.baseURI + "manage-data.php";
-
-        this.http.post(url, JSON.stringify(options), headers)
-            .subscribe(() => {
-                // If the request was successful notify the user
-                this.hideForm = true;
-                this.sendNotification(`el producto: ${name} fue agregado con éxito`);
-            },
-                () => {
-                    this.sendNotification('Algo salió mal!');
-                });
-    }
+    submitForm(): void {
 
 
-    /**
-     * Update an existing record that has been edited in the page's HTML form
-     * Use angular's http post method to submit the record data
-     * to our remote PHP script
-     *
-     * @public
-     * @method updateEntry
-     * @param name 			{String} 			Name value from form field
-     * * @param price 			{String} 			Price value from form field
-     * @param description 	{String} 			Description value from form field
-     * @return {None}
-     */
-    updateEntry(name: string, price: string, description: string): void {
-        let headers: any = new HttpHeaders({ 'Content-Type': 'application/json' }),
-            options: any = { "key": "update", "name": name, "price": price, "description": description, "recordID": this.recordID },
-            url: any = this.baseURI + "manage-data.php";
+       
 
-        this.http
-            .post(url, JSON.stringify(options), headers)
-            .subscribe(() => {
-                // If the request was successful notify the user
-                this.hideForm = true;
-                this.sendNotification(`el producto: ${name} fue actualizado con éxito`);
-            },
-                () => {
-                    this.sendNotification('algo salió mal!');
-                });
-    }
-
-    /**
-     * Remove an existing record that has been selected in the page's HTML form
-     * Use angular's http post method to submit the record data
-     * to our remote PHP script
-     *
-     * @public
-     * @method deleteEntry
-     * @return {None}
-     */
-    deleteEntry(): void {
-        let name: string = this.form.controls["name"].value,
-            headers: any = new HttpHeaders({ 'Content-Type': 'application/json' }),
-            options: any = { "key": "delete", "recordID": this.recordID },
-            url: any = this.baseURI + "manage-data.php";
-
-        this.http
-            .post(url, JSON.stringify(options), headers)
-            .subscribe(() => {
-                this.hideForm = true;
-                this.deleteEntry();
-                this.sendNotification(`el producto: ${name} fue eliminado con éxito`);
-            },
-                () => {
-                    this.sendNotification('algo salió mal!');
-                });
-    }
-
-
-    /**
-     * Handle data submitted from the page's HTML form
-     * Determine whether we are adding a new record or amending an
-     * existing record
-     *
-     * @public
-     * @method saveEntry
-     * @return {None}
-     */
-    saveEntry(): void {
-        let name: string = this.form.controls["name"].value,
-            price: string = this.form.controls["price"].value,
-            description: string = this.form.controls["description"].value;
-
-        if (this.isEdited) {
-            this.updateEntry(name, price, description);
-        }
-        else {
-            this.createEntry(name, price, description);
-        }
-    }
-
-    /**
-     * Clear values in the page's HTML form fields
-     *
-     * @public
-     * @method resetFields
-     * @return {None}
-     */
-    resetFields(): void {
-        this.productName = "";
-        this.productPrice = "";
-        this.productDescription = "";
-    }
+        /* var arrayControl = this.form.get('productos') as FormArray;
+         var items = arrayControl.at(0);
+ 
+         console.log("2", this.form.controls.image);
+         console.log("3", items); */
 
 
 
+        let resources = JSON.stringify(this.form.value);
+        console.log(resources);
 
-    /**
-     * Manage notifying the user of the outcome of remote operations
-     *
-     * @public
-     * @method sendNotification
-     * @param message 	{String} 			Message to be displayed in the notification
-     * @return {None}
-     */
-    sendNotification(message: string): void {
-        let notification = this.toastCtrl.create({
-            message: message,
-            duration: 3000
+
+        var headers = new Headers();
+        headers.append("Accept", 'application/json');
+        headers.append('Content-Type', 'application/json;charset=UTF-8');
+        let options = new RequestOptions({ headers: headers });
+
+
+        /*
+                let data = {
+        
+                    name: this.name.value,
+                    image: this.image,
+                    price: this.price.value,
+                    description: this.description.value,
+        
+                }*/
+
+        let loader = this.loading.create({
+
+            content: 'Procesando por favor espere…',
+
         });
-        notification.present();
+
+        loader.present().then(() => {
+
+            this.http.post('http://localhost/ionic-php-mysql/post_data(1).php', resources, options)
+                .map(res => res.json())
+                .subscribe(res => {
+
+                    loader.dismiss()
+
+                    if (res == "registro exitoso") {
+
+                        let alert = this.alertCtrl.create({
+
+                            title: "HECHO",
+                            subTitle: (res),
+                            buttons: ['OK']
+
+                        });
+
+                        alert.present();
+                        this.navCtrl.push(HomePage);
+                    }
+
+                    else {
+
+                        let alert = this.alertCtrl.create({
+
+                            title: "ERROR",
+                            subTitle: (res),
+                            buttons: ['OK']
+
+                        });
+
+                        alert.present();
+
+                    }
+
+                });
+
+        });
+
+        // }
+
     }
 
 
+    displayAlert(message: string): void {
+        let alert: any = this.alertCtrl.create({
+            title: 'Heads up!',
+            subTitle: message,
+            buttons: ['Got it']
+        });
+        alert.present();
+    }
 
 }
+
