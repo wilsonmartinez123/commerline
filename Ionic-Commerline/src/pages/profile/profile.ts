@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 
-import { AlertController, App, FabContainer, ItemSliding, List, ModalController, NavController, ToastController, LoadingController, Refresher, NavParams } from 'ionic-angular';
+import { AlertController, App, FabContainer, List, ModalController, NavController, ToastController, LoadingController, Refresher, NavParams } from 'ionic-angular';
 import 'rxjs/add/operator/filter';
 
 /*
@@ -11,7 +11,6 @@ import 'rxjs/add/operator/filter';
 
 import { ConferenceData } from '../../providers/conference-data';
 import { UserData } from '../../providers/user-data';
-import { ScheduleFilterPage } from '../schedule-filter/schedule-filter';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { DetailsPage } from '../details/details';
@@ -117,7 +116,7 @@ export class ProfilePage {
     // if the value is an empty string don't filter the items
     if (val && val.trim() != '') {
       this.items = this.items.filter((product) => {
-        return (product.nombre_pro.toLowerCase().indexOf(val.toLowerCase()) > -1);
+        return (product.nombre_pro.replace(/\á/g, 'a').replace(/\é/g, 'e').replace(/\í/g, 'i').replace(/\ó/g, 'o').replace(/\ú/g, 'u').toLowerCase().indexOf(val.toLowerCase()) > -1);
       })
     }
   }
@@ -131,76 +130,6 @@ export class ProfilePage {
       this.shownSessions = data.shownSessions;
       this.groups = data.groups;
     });
-  }
-
-  presentFilter() {
-    let modal = this.modalCtrl.create(ScheduleFilterPage, this.excludeTracks);
-    modal.present();
-
-    modal.onWillDismiss((data: any[]) => {
-      if (data) {
-        this.excludeTracks = data;
-        this.updateSchedule();
-      }
-    });
-
-  }
-
-  addFavorite(slidingItem: ItemSliding, sessionData: any) {
-
-    if (this.user.hasFavorite(sessionData.name)) {
-      // woops, they already favorited it! What shall we do!?
-      // prompt them to remove it
-      this.removeFavorite(slidingItem, sessionData, 'Favorite already added');
-    } else {
-      // remember this session as a user favorite
-      this.user.addFavorite(sessionData.name);
-
-      // create an alert instance
-      let alert = this.alertCtrl.create({
-        title: 'Favorite Added',
-        buttons: [{
-          text: 'OK',
-          handler: () => {
-            // close the sliding item
-            slidingItem.close();
-          }
-        }]
-      });
-      // now present the alert on top of all other content
-      alert.present();
-    }
-
-  }
-
-  removeFavorite(slidingItem: ItemSliding, sessionData: any, title: string) {
-    let alert = this.alertCtrl.create({
-      title: title,
-      message: 'Would you like to remove this session from your favorites?',
-      buttons: [
-        {
-          text: 'Cancel',
-          handler: () => {
-            // they clicked the cancel button, do not remove the session
-            // close the sliding item and hide the option buttons
-            slidingItem.close();
-          }
-        },
-        {
-          text: 'Remove',
-          handler: () => {
-            // they want to remove this session from their favorites
-            this.user.removeFavorite(sessionData.name);
-            this.updateSchedule();
-
-            // close the sliding item and hide the option buttons
-            slidingItem.close();
-          }
-        }
-      ]
-    });
-    // now present the alert on top of all other content
-    alert.present();
   }
 
   openSocial(network: string, fab: FabContainer) {

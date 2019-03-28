@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>edit</ion-title>
+    <ion-title>Editar</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -23,7 +23,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-label floating>Imagen</ion-label>
+      <ion-label stacked>Imagen</ion-label>
       <ion-input type="file" accept="image/*" (change)="selectFileToUpload($event)"></ion-input>
     </ion-item>
 
@@ -42,10 +42,12 @@
       <ion-textarea id="newDescription" rows="6" maxLength="500" name="newDescription" #newDescription [(ngModel)]="description"></ion-textarea>
     </ion-item>
 
+    <div>
+      <button ion-button round outline block (click)="Edit()">Actualizar</button>
+    </div>
+
   </ion-list>
 
-  <div>
-    <button ion-button round outline block (click)="Edit()">Actualizar</button>
-  </div>
+
 
 </ion-content>

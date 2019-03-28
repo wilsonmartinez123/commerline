@@ -7,6 +7,7 @@ import { HomePage } from '../home/home';
 //import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { ImageProvider } from '../../providers/image/image';
+import { ParametroServiceProvider } from '../../providers/parametro-service/parametro-service';
 
 @Component({
     selector: 'page-agregar-producto',
@@ -35,18 +36,48 @@ export class AgregarProductoPage {
     @ViewChild("name") name;
     @ViewChild("price") price;
     @ViewChild("description") description;
-    
+
     productos: any;
     id_cliente: any;
+    id_clientes: any;
+    empresa: any;
+    posts: any;
+    items: any;
 
     constructor(public navCtrl: NavController, public navParams: NavParams, public http: Http, public toast: ToastController,
-        public alertCtrl: AlertController, public loading: LoadingController, public fb: FormBuilder, private _IMAGES: ImageProvider, ) {
+        public alertCtrl: AlertController, public loading: LoadingController, public fb: FormBuilder, private _IMAGES: ImageProvider,
+        public ParametroService: ParametroServiceProvider) {
+
+        this.id_clientes = localStorage.getItem('id_cliente');
+
+
+        this.http.get('http://localhost/ionic-php-mysql/obtener_empresas.php').map(res => res.json()).subscribe(
+            data => {
+
+                let headers = new Headers();
+                headers.append('Content-Type', 'application/json');
+
+                this.posts = data.empresa.filter(item => item.id_cliente === this.id_clientes);
+                this.initializeItems();
+
+            },
+            error => {
+                console.log("Oops!", error);
+            }
+
+        );
+
 
 
     }
 
     ngOnInit() {
-        this.id_cliente = this.navParams.get('id_cliente');
+        //this.id_cliente = this.navParams.get('id_cliente');
+        //this.id_cliente = this.ParametroService.parametroIdCliente;
+        this.id_cliente = localStorage.getItem('id_cliente');
+        //
+        this.empresa = this.ParametroService.myParam;
+
 
 
         this.form = this.fb.group({
@@ -54,6 +85,11 @@ export class AgregarProductoPage {
         })
 
     }
+
+    initializeItems() {
+        this.items = this.posts;
+    }
+
 
     initProductoFields(): FormArray {
         this.productos = this.fb.array([
@@ -67,12 +103,13 @@ export class AgregarProductoPage {
 
             name: ["", Validators.required],
             namefile: '',
+            typefile: '',
             price: ["", Validators.required],
             description: ["", Validators.required],
             categoria: ["", Validators.required],
             IdEmpresario: '',
             picture: ["", Validators.required],
-           
+
         });
     }
 
@@ -93,6 +130,7 @@ export class AgregarProductoPage {
 
 
             this.productos.controls[index].value.namefile = event.target.files[0].name;
+            this.productos.controls[index].value.typefile = event.target.files[0].type;
 
 
             this._IMAGES
@@ -142,7 +180,7 @@ export class AgregarProductoPage {
     submitForm(): void {
 
 
-       
+
 
         /* var arrayControl = this.form.get('productos') as FormArray;
          var items = arrayControl.at(0);
@@ -180,7 +218,7 @@ export class AgregarProductoPage {
 
         loader.present().then(() => {
 
-            this.http.post('http://localhost/ionic-php-mysql/post_data(1).php', resources, options)
+            this.http.post('http://localhost/ionic-php-mysql/post_data.php', resources, options)
                 .map(res => res.json())
                 .subscribe(res => {
 
@@ -197,6 +235,7 @@ export class AgregarProductoPage {
                         });
 
                         alert.present();
+                        //this.ParametroService.myParam = this.empresa;
                         this.navCtrl.push(HomePage);
                     }
 

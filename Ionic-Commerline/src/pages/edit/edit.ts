@@ -40,11 +40,14 @@ export class EditPage {
   oldImageValue: any;
   oldPriceValue: any;
   oldDescriptionValue: any;
+  oldDate: any;
   items: any;
 
   @ViewChild("newName") newName;
   @ViewChild("newPrice") newPrice;
   @ViewChild("newDescription") newDescription;
+  namefile: any;
+  empresa: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public alertCtrl: AlertController, private http: Http, public loading: LoadingController, private _IMAGES: ImageProvider
@@ -53,14 +56,17 @@ export class EditPage {
 
   ngOnInit() {
 
-    this.name = this.navParams.get('name');
-    //this.image = this.navParams.get('image');
-    this.price = this.navParams.get('price');
-    this.description = this.navParams.get('description');
-    this.oldNameValue = this.navParams.get('name');
-    this.oldImageValue = this.navParams.get('name');
-    this.oldPriceValue = this.navParams.get('price');
-    this.oldDescriptionValue = this.navParams.get('description');
+    this.name = this.navParams.get('nombre_pro');
+    this.image = this.navParams.get('imagen_pro');
+    this.price = this.navParams.get('precioNuevo_pro');
+    this.description = this.navParams.get('desripcion_pro');
+
+    this.oldNameValue = this.navParams.get('nombre_pro');
+    this.oldImageValue = this.navParams.get('imagen_pro');
+    this.oldPriceValue = this.navParams.get('precioNuevo_pro');
+    this.oldDescriptionValue = this.navParams.get('desripcion_pro');
+    this.oldDate = this.navParams.get('fecha_registro_pro');
+    this.empresa = this.navParams.get('id_empresa');
 
   }
 
@@ -76,8 +82,10 @@ export class EditPage {
         // Do we have correct file type?
         if (this._IMAGES.isCorrectFileType(this._SUFFIX)) {
 
+          this.namefile = event.target.files[0].name;
+
           // Oculte el campo de entrada del archivo, muestre la imagen en la plantilla del componente
-           // y mostrar un botón de carga
+          // y mostrar un botón de carga
           this.isSelected = true
           this.newImage = res;
         }
@@ -151,11 +159,17 @@ export class EditPage {
             price: this.oldPriceValue,
             image: this.oldImageValue,
             description: this.oldDescriptionValue,
+            date: this.oldDate,
+            empresa: this.empresa,
+
             newName: this.newName.value,
             newPrice: this.newPrice.value,
             newDescription: this.newDescription.value,
             newImage: this.newImage,
+            namefile: this.namefile,
           };
+
+          console.log(data);
 
           let loader = this.loading.create({
             content: 'Procesando por favor espera...',
