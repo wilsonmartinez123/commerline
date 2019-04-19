@@ -25,40 +25,72 @@ $data = file_get_contents("php://input");
 
 if (isset($data)) {
 
-    $request = json_decode($data);
-    $name = $request->nombre_pro;
-    $image_name = $request->imagen_pro;
-    $price = $request->precioNuevo_pro;
-    $description = $request->desripcion_pro;
-}
+    $request = json_decode($data, true);
 
-//$name = stripslashes($name);
-//eliminar sin inconvenientes de tildes
-$name = stripslashes(utf8_decode($name));
-$image_name = stripslashes($image_name);
-$price = stripslashes($price);
-$description = stripslashes($description);
+    $array_data = $request;
 
-$sql = "DELETE FROM productos  WHERE nombre_pro ='$name' AND imagen_pro = '$image_name' ;";
+    if (is_array($array_data)) {
+
+        foreach ($array_data as $value) {
+
+            $nombre = utf8_decode($value["nombre_pro"]);
+            $imagenNombre = utf8_decode($value["imagen_pro"]);
+
+            $sql = "DELETE FROM productos  WHERE nombre_pro ='$nombre' AND imagen_pro = '$imagenNombre' ;";
+            $query = $con->query($sql);
+
+            //elimina la imagen en el servidor
+            if (file_exists($imagenNombre)) {
+
+                unlink($imagenNombre);
+            }
+
+        }
+
+        if ($query === true) {
+
+            $response = "datos eliminados exitosamente";
+
+        } else {
+
+            // $response= "Error: " . $sql . "<br>" . $con->error;
+            $response = "Error ";
+        }
+
+        echo json_encode($response);
+
+    } else {
+
+        $name = $request->nombre_pro;
+        $image_name = $request->imagen_pro;
+        $price = $request->precioNuevo_pro;
+        $description = $request->desripcion_pro;
+
+        //eliminar sin inconvenientes de tildes
+        $name = stripslashes(utf8_decode($name));
+        $image_name = stripslashes($image_name);
+        $price = stripslashes($price);
+        $description = stripslashes($description);
+
+        $sql = "DELETE FROM productos  WHERE nombre_pro ='$name' AND imagen_pro = '$image_name' ;";
 
 //elimina la imagen en el servidor
-if (file_exists($image_name)) {
+        if (file_exists($image_name)) {
 
-    unlink($image_name);
+            unlink($image_name);
+        }
+
+        if ($con->query($sql) === true) {
+
+            $response = "datos eliminados exitosamente";
+
+        } else {
+
+// $response= "Error: " . $sql . "<br>" . $con->error;
+            $response = "Error ";
+        }
+
+        echo json_encode($response);
+        $con->close();
+    }
 }
-
-/*else{
-
-$sql = "DELETE FROM productos  WHERE name ='$name';"; */
-
-if ($con->query($sql) === true) {
-
-    $response = "datos eliminados exitosamente";
-
-} else {
-
-    // $response= "Error: " . $sql . "<br>" . $con->error;
-    $response = "Error ";
-}
-//}
-echo json_encode($response);
