@@ -1,0 +1,392 @@
+<!--
+  Generated template for the BusinessProductsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{nombre_empresa}}</ion-title>
+  </ion-navbar>
+
+  <ion-toolbar no-border-top>
+    <ion-searchbar color="primary" (ionInput)="onInput($event)" (ionCancel)="onCancel($event)" placeholder="Buscar">
+    </ion-searchbar>
+  </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <div *ngIf="items?.length == 0">
+    <p>No se encontraron resultados, por favor intenta de nuevo.</p>
+  </div>
+
+  <!--<div *ngIf="items">-->
+
+  <ion-item *ngIf="items?.length != 0">
+    <ion-label>Categoria:</ion-label>
+    <ion-select [(ngModel)]="category" name="categoria" #categoria (ionChange)="CategorySelected($event)">
+      <ion-option value="">Seleccione</ion-option>
+      <ion-option *ngFor="let product of posts | unique; let i = index" value="{{product.categoria_pro}}">{{product.categoria_pro}}</ion-option>
+    </ion-select>
+  </ion-item>
+
+
+
+  <div *ngIf="(category)">
+
+    <ion-item>
+      <ion-label>Ordenar por</ion-label>
+      <ion-select [(ngModel)]="filter">
+        <ion-option value="maxi">Precio: Mayor a menor</ion-option>
+        <ion-option value="mini">Precio: Menor a mayor</ion-option>
+        <ion-option value="a-z">Producto: A-Z</ion-option>
+        <ion-option value="z-a">Porducto: Z-A</ion-option>
+      </ion-select>
+    </ion-item>
+
+
+    <ion-item *ngIf=" (  !filter ) ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of selectedCategories  | replace: 'precioNuevo_pro' | paginate: { itemsPerPage: 20, currentPage: p }"
+            text-wrap>
+
+            <button ion-item (click)="postDetail(product)">
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
+                <img src="{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('uploads/')">
+                <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+              <h2>{{ product.nombre_pro }} </h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+    <ion-item *ngIf=" (filter=='maxi')  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of selectedCategories | replace: 'precioNuevo_pro'  | orderBy: 'precioNuevo_pro': false  | paginate: { itemsPerPage: 40, currentPage: p } "
+            text-wrap>
+
+            <button ion-item (click)="postDetail(product)">
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
+                <img src="{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('uploads/')">
+                <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+              <h2>{{ product.nombre_pro }} </h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+    <ion-item *ngIf=" (filter=='mini')  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of selectedCategories | replace: 'precioNuevo_pro'  | orderBy: 'precioNuevo_pro': true   | paginate: { itemsPerPage: 40, currentPage: p } "
+            text-wrap>
+
+            <button ion-item (click)="postDetail(product)">
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
+                <img src="{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('uploads/')">
+                <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+              <h2>{{ product.nombre_pro }} </h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+
+    <ion-item *ngIf=" (filter=='a-z')  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of selectedCategories  | orderBy:'nombre_pro':true | paginate: { itemsPerPage: 40, currentPage: p } ">
+
+            <button ion-item text-wrap (click)="postDetail(producto)">
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
+                <img src="{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('uploads/')">
+                <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+              <h2>{{ product.nombre_pro }} </h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+
+    <ion-item *ngIf=" (filter=='z-a')  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of selectedCategories | orderBy:'nombre_pro':false | paginate: { itemsPerPage: 40, currentPage: p } ">
+
+            <button ion-item text-wrap (click)="postDetail(producto)">
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
+                <img src="{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('uploads/')">
+                <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+              <h2>{{ product.nombre_pro }} </h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </div>
+
+
+  <div *ngIf=" (!category) ">
+
+    <ion-item>
+      <ion-label>Ordenar por</ion-label>
+      <ion-select [(ngModel)]="pricefilter">
+        <ion-option value="max">Precio: Mayor a menor</ion-option>
+        <ion-option value="min">Precio: Menor a mayor</ion-option>
+        <ion-option value="az">Producto: A-Z</ion-option>
+        <ion-option value="za">Porducto: Z-A</ion-option>
+      </ion-select>
+    </ion-item>
+
+
+    <ion-item *ngIf=" (  !pricefilter ) ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of items  | replace: 'precioNuevo_pro' | paginate: { itemsPerPage: 20, currentPage: p }"
+            text-wrap>
+
+            <button ion-item (click)="postDetail(product)">
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
+                <img src="{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('uploads/')">
+                <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+              <h2>{{ product.nombre_pro }} </h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+
+
+    <ion-item *ngIf=" (pricefilter=='max')  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of items | replace: 'precioNuevo_pro'  | orderBy: 'precioNuevo_pro': false | paginate: { itemsPerPage: 40, currentPage: p } ">
+
+            <button ion-item text-wrap (click)="postDetail(product)">
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
+                <img src="{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('uploads/')">
+                <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+              <h2>{{ product.nombre_pro }} </h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+
+
+
+    <ion-item *ngIf=" (pricefilter=='min')  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of items | replace: 'precioNuevo_pro'  | orderBy: 'precioNuevo_pro': true | paginate: { itemsPerPage: 40, currentPage: p } ">
+
+            <button ion-item text-wrap (click)="postDetail(product)">
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
+                <img src="{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('uploads/')">
+                <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+              <h2>{{ product.nombre_pro }} </h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+
+    <ion-item *ngIf=" (pricefilter=='az')  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of items | orderBy:'nombre_pro':true | paginate: { itemsPerPage: 40, currentPage: p } ">
+
+            <button ion-item text-wrap (click)="postDetail(producto)">
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
+                <img src="{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('uploads/')">
+                <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+              <h2>{{ product.nombre_pro }} </h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+    <ion-item *ngIf=" ( pricefilter=='za')  ">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of items | orderBy:'nombre_pro':false | paginate: { itemsPerPage: 40, currentPage: p } ">
+
+            <button ion-item text-wrap (click)="postDetail(producto)">
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
+                <img src="{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+
+              <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('uploads/')">
+                <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
+              </ion-thumbnail>
+
+              <h2>{{ product.nombre_pro }} </h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+              <div *ngIf="product.precioAnterior_pro">
+                <h2>Antes:
+                  <del>{{product.precioAnterior_pro}}</del>
+                </h2>
+              </div>
+
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+
+    <pagination-controls class="my-pagination" (pageChange)="p = $event" maxSize="12" directionLinks="true" autoHide="true"
+      responsive="true" previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Pagination"
+      screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page">
+    </pagination-controls>
+
+
+  </div>
+
+  <!--</div>-->
+
+</ion-content>
