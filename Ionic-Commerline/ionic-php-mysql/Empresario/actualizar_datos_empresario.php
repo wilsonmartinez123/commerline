@@ -1,10 +1,11 @@
 <?php
 
-Header('Access-Control-Allow-Origin: *');
+Header('Access-Control-Allow-Origin *');
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Max-Age: 86400'); // cache for 1 day
 header('Content-Type: text/html; charset=utf-8');
 
+// Access-Control headers are received during OPTIONS requests
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
@@ -25,27 +26,30 @@ $data = file_get_contents("php://input");
 if (isset($data)) {
 
     $request = json_decode($data);
-    $nombre = $request->nombre_cli;
-    $correo = $request->correo_cli;
-    $identificacion = $request->identificacion_cli;
+    $cliente = $request->cliente;
+   
+
+    $newName = $request->newName;
+    $newEmail = $request->newEmail;
+    $newPhone = $request->newPhone;
 
 }
 
-$nombre = stripslashes($nombre);
-$correo = stripslashes($correo);
-$identificacion = stripslashes($identificacion);
+$newName = stripslashes(utf8_decode($newName));
+$newEmail = stripslashes(utf8_decode($newEmail));
+$newPhone = stripslashes($newPhone);
 
-$sql = "DELETE FROM clientes  WHERE correo_cli ='$correo';";
+$sql = "UPDATE clientes SET nombre_cli = '$newName', correo_cli ='$newEmail', telefono_cli ='$newPhone'  WHERE id_cliente ='$cliente';";
 
 if ($con->query($sql) === true) {
 
-    $response = "datos eliminados exitosamente";
+    $response = "actualización de datos exitosa";
 
 } else {
 
-    $response = "Error ";
+    $response = "Error: " . $sql . "<br>" . $con->error;
 }
 
 echo json_encode($response);
 
-?>
+$con->close();

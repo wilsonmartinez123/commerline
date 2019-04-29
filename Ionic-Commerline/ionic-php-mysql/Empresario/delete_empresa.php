@@ -25,21 +25,28 @@ $data = file_get_contents("php://input");
 if (isset($data)) {
 
     $request = json_decode($data);
-    $nombre = $request->nombre_cli;
-    $correo = $request->correo_cli;
-    $identificacion = $request->identificacion_cli;
+    $empresa = $request->id_empresa;
+    $imagen_empresa = $request->logo_emp;
 
 }
 
-$nombre = stripslashes($nombre);
-$correo = stripslashes($correo);
-$identificacion = stripslashes($identificacion);
+$empresa = stripslashes($empresa);
+$imagen_empresa = stripslashes(utf8_decode($imagen_empresa));
 
-$sql = "DELETE FROM clientes  WHERE correo_cli ='$correo';";
+
+$sql = "DELETE FROM empresa  WHERE id_empresa ='$empresa';";
+
+//elimina la imagen en el servidor
+$file = "../".$imagen_empresa;
+if (file_exists($file)) {
+
+    unlink($file);
+}
+
 
 if ($con->query($sql) === true) {
 
-    $response = "datos eliminados exitosamente";
+    $response = "empresa eliminada exitosamente";
 
 } else {
 
@@ -47,5 +54,3 @@ if ($con->query($sql) === true) {
 }
 
 echo json_encode($response);
-
-?>

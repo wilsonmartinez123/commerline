@@ -5,6 +5,7 @@ header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Max-Age: 86400'); // cache for 1 day
 header('Content-Type: text/html; charset=utf-8');
 
+// Access-Control headers are received during OPTIONS requests
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
@@ -25,27 +26,24 @@ $data = file_get_contents("php://input");
 if (isset($data)) {
 
     $request = json_decode($data);
-    $nombre = $request->nombre_cli;
-    $correo = $request->correo_cli;
-    $identificacion = $request->identificacion_cli;
+    $password = $request->password;
+    $password = md5($password);
+    $name = $request->name;
 
 }
 
-$nombre = stripslashes($nombre);
-$correo = stripslashes($correo);
-$identificacion = stripslashes($identificacion);
+$name = stripslashes($name);
+$password = stripslashes($password);
 
-$sql = "DELETE FROM clientes  WHERE correo_cli ='$correo';";
+$sql = "UPDATE clientes SET clave_cli = '$password'  WHERE correo_cli ='$name';";
 
 if ($con->query($sql) === true) {
 
-    $response = "datos eliminados exitosamente";
+    $response = "su clave se cambio con exito";
 
 } else {
 
-    $response = "Error ";
+    $response = "Error: " . $sql . "<br>" . $con->error;
 }
 
 echo json_encode($response);
-
-?>
