@@ -109,12 +109,14 @@ export class VerEmpresaEditPage {
 
     let data = {
       empresa: this.empresa,
+      logo: this.logo,
      
 
       newName: this.name.value,
       newDirection: this.direction.value,
       newHorario: this.Horario.value,
       newPhone: this.mobile.value,
+      newImage: this.image,
 
     };
 

@@ -88,7 +88,7 @@
 
       <ion-item [ngClass]="{'error-border':!form.controls.mobile.valid && form.controls.mobile.touched}">
         <ion-icon name="call" item-start></ion-icon>
-        <ion-label floating>Número de Contacto</ion-label>
+        <ion-label stacked>Número de Contacto</ion-label>
         <ion-input formControlName="mobile" type="number" name="mobile" #mobile [(ngModel)]="telefono"></ion-input>
       </ion-item>
       <ion-item *ngIf="form.controls.mobile.hasError('required') && form.controls.mobile.touched">
@@ -100,16 +100,12 @@
       <ion-item *ngIf="form.controls.mobile.hasError('maxlength') && form.controls.mobile.touched">
         <p>longitud 10 Digitos, para Número Celular!</p>
       </ion-item>
+      <br>
 
 
       <div *ngIf="logo">
-
-        <img src="http://localhost/ionic-php-mysql/{{logo}}">
-
-      </div>
-
-      <div>
-        <img src="http://localhost/ionic-php-mysql/logo">
+        <h5>Imagen Logo empresa</h5>
+        <img class="resize" src="http://localhost/ionic-php-mysql/{{logo}}">
       </div>
 
 
