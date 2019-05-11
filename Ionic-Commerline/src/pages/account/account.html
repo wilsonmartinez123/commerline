@@ -11,34 +11,37 @@
 
 
   <div padding-top text-center *ngIf="username">
-    <img src="http://www.gravatar.com/avatar?d=mm&s=140" alt="avatar">
-    <h2>{{username}}</h2>
+    <!--<img src="http://www.gravatar.com/avatar?d=mm&s=140" alt="avatar">-->
+    <!--<h2>{{username}}</h2>-->
 
 
 
-    <ion-list inset>
+    <div *ngFor="let item of users">
+      <div *ngIf="(item.correo_cli === username)">
+        <h2>Bienvenido: {{item.nombre_cli}}
+        </h2>
 
-      <button ion-item (click)="agregarEmpresa()">Agregar Empresa</button>
-      <button ion-item (click)="agregarProducto()">Agregar Producto</button>
-      <button ion-item (click)="verProducto()">Ver mis productos</button>
-      <button ion-item (click)="updatePicture()">Actualizar imagen</button>
-      <button ion-item (click)="changeUsername()">Cambiar nombre de usuario</button>
+        <h4>Para poder registrar productos primero registre su Empresa, Gracias.</h4>
 
-      <!--- <button ion-item (click)="changePassword(item)">Cambiar contraseña</button>-->
+        <ion-list inset>
 
 
-      <div *ngFor="let item of users">
-        <button ion-item *ngIf="(item.correo_usu === username)" (click)="changePassword(item)">Cambiar contraseña
-        </button>
+          <button ion-item (click)="agregarEmpresa(item)">Agregar Empresa </button>
+          <!--<button ion-item (click)="agregarSucursal(item)">Agregar Sucursal </button>-->
+          <button ion-item (click)="agregarProducto(item.id_cliente)">Agregar Producto</button>
+          <button ion-item (click)="verProducto(item.id_empresa)">Ver mis productos</button>
+          <button ion-item (click)="verEmpresa(item)">Ver Empresa</button>
+          <button ion-item (click)="updateData(item)">Actualizar mis datos</button>
+          <button ion-item (click)="changePassword(item)">Cambiar contraseña </button>
+          <button ion-item (click)="support()">Contactanos</button>
+          <button ion-item (click)="logout()">Salir</button>
+
+
+        </ion-list>
+
       </div>
 
-      <button ion-item (click)="support()">Contactanos</button>
-      <button ion-item (click)="logout()">Salir</button>
-
-
-    </ion-list>
-
-
+    </div>
 
 
 
