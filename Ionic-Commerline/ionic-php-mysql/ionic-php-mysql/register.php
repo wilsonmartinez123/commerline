@@ -22,6 +22,7 @@ require "dbconnect.php";
 $data = file_get_contents("php://input");
 if (isset($data)) {
     $request = json_decode($data);
+    $option = $request->option;
     $username = $request->username;
     $password = $request->password;
     $password = md5($password);
@@ -45,37 +46,84 @@ $emailadd = mysql_real_escape_string($emailadd);
 $identificacion = mysql_real_escape_string($identificacion);
 $matricula = mysql_real_escape_string($matricula);
 
+if ($option == '2') {
+
 // check if user is already existed with the same email
-$sql = "SELECT correo_cli from clientes WHERE correo_cli like '$emailadd'";
+    //verifica que el correo que esta registrando no aparezca tanto como empresario o usuario
+    $sql = "SELECT correo_cli from clientes WHERE correo_cli like '$emailadd'";
+    $sql2 = "SELECT correo_usu from usuarios WHERE correo_usu like '$emailadd'";
 
-if ($result = mysqli_query($con, $sql)) {
+    $result = mysqli_query($con, $sql);
+    $result2 = mysqli_query($con, $sql2);
 
-    if ($row = $result->fetch_assoc()) {
+    if ($result or $result2) {
 
-        //$response["error"] = TRUE;
-        $response = "El correo ya esta registrado!!";
-        echo json_encode($response);
-    } else {
+        if ($result->fetch_assoc() or $result2->fetch_assoc()) {
 
-        $sql = "INSERT INTO clientes (id_rol, nombre_cli, clave_cli, telefono_cli, correo_cli, identificacion_cli, matricula_mercantil_cli)
+            //$response["error"] = TRUE;
+            $response = "El correo ya esta registrado!!";
+            echo json_encode($response);
+        } else {
+
+            $sql = "INSERT INTO clientes (id_rol, nombre_cli, clave_cli, telefono_cli, correo_cli, identificacion_cli, matricula_mercantil_cli)
         VALUES (2,'$username', '$password', '$mobile', '$emailadd', '$identificacion', '$matricula')";
 
-        if ($con->query($sql) === true) {
+            if ($con->query($sql) === true) {
 
-            $response = "Registro exitoso";
+                $response = "Registro exitoso";
+
+            } else {
+
+                $response = "Error: " . $sql . "<br>" . $db->error;
+            }
+
+            echo json_encode($response);
+
+        }
+    }
+} else {
+
+    // check if user is already existed with the same email
+    $sql = "SELECT correo_usu from usuarios WHERE correo_usu like '$emailadd'";
+    $sql2 = "SELECT correo_cli from clientes WHERE correo_cli like '$emailadd'";
+
+    $result = mysqli_query($con, $sql);
+    $result2 = mysqli_query($con, $sql2);
+
+    /* if ($result) {
+    $registerAs = "Usuario";
+    } else if ($result2) {
+    $registerAs = "Empresario";
+    } */
+
+    if ($result or $result2) {
+
+        if ($result->fetch_assoc() or $result2->fetch_assoc()) {
+
+            $response = "El correo ya esta registrado !!";
+            echo json_encode($response);
 
         } else {
 
-            $response = "Error: " . $sql . "<br>" . $db->error;
+            $sql = "INSERT INTO usuarios ( nombre_usu, clave_usu, telefono_usu, correo_usu)
+        VALUES ('$username', '$password', '$mobile', '$emailadd')";
+
+            if ($con->query($sql) === true) {
+
+                $response = "Registro exitoso";
+
+            } else {
+
+                $response = "Error: " . $sql . "<br>" . $db->error;
+            }
+
+            echo json_encode($response);
+
         }
 
+    } else {
+
+        $response = "El servidor no funciona correctamente!!!!";
         echo json_encode($response);
     }
-
-} else {
-
-    $response = "El servidor no funciona correctamente!!!!";
-    echo json_encode($response);
 }
-
-?>

@@ -38,11 +38,58 @@ $password = md5($password);
 
 $sql = "SELECT * FROM clientes WHERE correo_cli = '$correo' and clave_cli = '$password'";
 
+/*
 $result = mysqli_query($con, $sql);
 $row = mysqli_fetch_array($result);
 
 $response = $row[1];
 echo json_encode($response);
+ */
+
+$result = mysqli_query($con, $sql);
+$row = mysqli_fetch_array($result);
+
+if ($row) {
+
+    $response = $row[1];
+    echo json_encode($response);
+
+} else {
+
+    $sqls = "SELECT * FROM administrador WHERE correo_admin = '$correo' and clave_admin = '$password'";
+
+    $result = mysqli_query($con, $sqls);
+    $row = mysqli_fetch_array($result);
+
+    if ($row) {
+
+        $response = $row[1];
+        echo json_encode($response);
+
+
+    } else {
+
+        $sqls = "SELECT * FROM usuarios WHERE correo_usu = '$correo' and clave_usu = '$password'";
+
+        $result = mysqli_query($con, $sqls);
+        $row = mysqli_fetch_array($result);
+
+        if ($row) {
+
+            //$response = $row[1];
+            $response = "usuario";
+
+        } else {
+            $response = "Error: ";
+        }
+
+        echo json_encode($response);
+
+    }
+
+}
+
+//echo json_encode($response);
 
 /*
 if($correo == $row['correo_cli'] && $password == $row['clave_cli']){
@@ -99,4 +146,3 @@ $response= "registro exitoso";
 $response= "Error: " . $sql . "<br>" . $db->error;
 }
 echo json_encode($response); */
-?>

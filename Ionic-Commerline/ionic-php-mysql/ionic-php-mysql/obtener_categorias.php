@@ -22,31 +22,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 require "dbconnect.php";
 
-$query = "SELECT * FROM productos p left join categorias c on p.id_categoria = c.id_categoria ";
+//$query = "SELECT * FROM categorias ";
+$query = "SELECT DISTINCT c.nombre_categoria  FROM categorias c INNER JOIN productos p ON c.id_categoria = p.id_categoria";
+
 $result = mysqli_query($con, $query);
 
 $response = array();
 while ($row = mysqli_fetch_array($result)) {
 
     $row = array_map('utf8_encode', $row);
-    array_push($response, array('id' => $row[0],
+    array_push($response, array('id_categoria' => $row[0],
 
-        'id_empresa' => $row[1],
-        'nombre_pro' => $row[3],
-        'desripcion_pro' => $row[4],
-        'imagen_pro' => $row[5],
-        'precioAnterior_pro' => $row[6],
-        'precioNuevo_pro' => $row[7],
-        'diasOferta_pro' => $row[8],
-        'inicioOferta_pro' => $row[9],
-        'finOferta_pro' => $row[10],
-        'fecha_registro_pro' => $row[11],
         'nombre_categoria' => $row['nombre_categoria'],
 
     ));
 
 }
 
-echo json_encode(array('productos' => $response));
+echo json_encode(array('categorias' => $response));
 
 mysqli_close($con);

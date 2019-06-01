@@ -20,9 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
 
-require "dbconnect.php";
+require "../dbconnect.php";
 
-$query = "SELECT * FROM clientes where id_rol = '2'";
+$query = "SELECT * FROM clientes";
 $result = mysqli_query($con, $query);
 
 $response = array();

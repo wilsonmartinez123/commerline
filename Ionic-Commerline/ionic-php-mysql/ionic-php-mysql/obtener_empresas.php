@@ -36,6 +36,8 @@ while ($row = mysqli_fetch_array($result)) {
         'direccion_emp' => $row[3],
         'horario_emp' => $row[4],
         'logo_emp' => $row[5],
+        'telefono_emp' => $row[6],
+        'link_emp' => $row[7],
 
     ));
 
