@@ -9,17 +9,53 @@
 <ion-content>
 
   <ion-list>
-    <ion-item *ngIf="item" text-wrap>
 
-      <h1>Descripción</h1>
+    <div *ngIf="item">
+      <ion-item text-wrap>
 
-      <img [src]="item.imagen_pro" class="img-res" />
+        <h1>Descripción</h1>
 
-      <h2> {{item.desripcion_pro}}</h2>
+        <!--<img [src]="item.imagen_pro" class="img-res" height="550 px" width="550 px" />-->
+
+        <div *ngIf="item.imagen_pro.includes('http')">
+          <img src="{{item.imagen_pro}}" height="550 px" width="550 px" />
+        </div>
+
+
+        <div *ngIf="item.imagen_pro.includes('uploads/')">
+          <img class="resize" src="http://localhost/ionic-php-mysql/{{item.imagen_pro}}"/>
+        </div>
 
 
 
-    </ion-item>
+        <h2> {{item.desripcion_pro}}</h2>
+
+
+
+      </ion-item>
+
+      <ion-item-divider>Empresa</ion-item-divider>
+      <ion-item *ngFor="let companies of business">
+        <div *ngIf="(companies.id_empresa === item.id_empresa)">
+          <!--<img [src]="companies.logo_emp" class="img-res" height="550 px" width="550 px" />-->
+
+          <div *ngIf="companies.logo_emp.includes('http')">
+            <img src="{{companies.logo_emp}}" height="550 px" width="550 px" />
+          </div>
+
+
+          <div *ngIf="companies.logo_emp.includes('uploads/')">
+            <img src="http://localhost/ionic-php-mysql/{{companies.logo_emp}}" height="550 px" width="550 px" />
+          </div>
+
+          <h2> {{ companies.nombre_emp }}</h2>
+          <h2>Direccion: {{companies.direccion_emp}}</h2>
+          <h2>Horario: {{companies.horario_emp}}</h2>
+        </div>
+      </ion-item>
+
+    </div>
+
   </ion-list>
 
 </ion-content>

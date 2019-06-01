@@ -63,18 +63,18 @@ export class ProfilePage {
 
 
 
-    this.category = this.navParams.get('categoria_pro');
+    this.category = this.navParams.get('nombre_categoria');
 
     let loading = this.loadingCtrl.create({
       content: 'Cargando productos...',
     });
 
     loading.present().then(() => {
-      this.http.get('http://localhost/ionic-mysql/obtener_productos.php').map(res => res.json())
+      this.http.get('http://localhost/ionic-php-mysql/obtener_productos.php').map(res => res.json())
         .subscribe(
           data => {
 
-            this.posts = data.productos.filter(item => item.categoria_pro === this.category);
+            this.posts = data.productos.filter(item => item.nombre_categoria === this.category);
 
 
             //this.posts = data.productos;

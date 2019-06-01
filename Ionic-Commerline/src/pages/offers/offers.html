@@ -13,11 +13,103 @@
     </ion-searchbar>
   </ion-toolbar>
 
+
 </ion-header>
 
 
 <ion-content padding>
+
+
+  <button ion-button full color="light" icon-start (click)="selectUbication()">
+    <ion-icon name="navigate"></ion-icon>
+    Seleccione una ubicacion
+  </button>
+
+  <div *ngIf="ubication">
+    <ion-searchbar placeholder="Ingrese la Ciudad" [(ngModel)]="searchFilter" (ionInput)="SearchUbication($event)"
+      (ionCancel)="CancelSearch($event)"></ion-searchbar>
+  </div>
+
+  <ion-list *ngIf="showListUbication">
+    <div *ngFor="let item of filterUbication">
+      <button ion-item *ngFor="let municipio of item.ciudades | filterBy:searchFilter ">
+        {{municipio}}, {{item.departamento}}
+      </button>
+    </div>
+  </ion-list>
+
+
+  <!--
   <ion-list *ngIf="showList">
+    <ion-label>Sugerencia</ion-label>
+    <button ion-item *ngFor="let item of filter">
+      {{item.nombre_pro | autocompletewords | unique:nombre_pro }}
+    </button>
+  </ion-list>
+-->
+
+  <button ion-button icon-end color="primary" item-right (click)="contact()">Paute con nosotros
+    <ion-icon name="megaphone"></ion-icon>
+  </button><br><br>
+
+
+  <ion-slides height="100px" width="200px" autoplay="5000" loop="true" speed="500" pager="true" (ionSlideDidChange)="slideChanged()" zoom="true">
+    <ion-slide>
+      <h1>Slide 1</h1>
+    </ion-slide>
+    <ion-slide>
+      <h1>Slide 2</h1>
+    </ion-slide>
+    <ion-slide>
+      <h1>Slide 3</h1>
+    </ion-slide>
+  </ion-slides>
+
+
+  <!--Muestra las ofertas, si aun no ha buscado productos, de lo contario se ocultan-->
+  <ion-list *ngIf="!showList">
+
+    <ion-item-divider>Productos en oferta</ion-item-divider>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of ofertas" text-wrap>
+
+
+          <button ion-item (click)="postDetail(product)">
+
+
+            <h2 ion-text color="secondary">Dias de oferta: {{product.diasOferta_pro}}</h2>
+            <h2 ion-text color="primary"> Fecha inicio de oferta: {{product.inicioOferta_pro}}, Fin de oferta:
+              {{product.finOferta_pro}}</h2>
+            <span>{{product.nombre_pro}}</span>
+
+            <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
+              <img src="{{product.imagen_pro}}">
+            </ion-thumbnail>
+
+            <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('uploads/')">
+              <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
+            </ion-thumbnail>
+
+            <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+            <h2>Antes:
+              <del>{{product.precioAnterior_pro}}</del>
+            </h2>
+
+          </button>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+  </ion-list>
+
+
+
+
+  <ion-list *ngIf="showList">
+
 
 
     <div *ngIf="filter?.length == 0">
@@ -38,16 +130,14 @@
     <div *ngIf=" (  !pricefilter )  ">
       <ion-grid>
         <ion-row>
-          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of filter | paginate: { itemsPerPage: 40, currentPage: p }"
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-xs-12 *ngFor="let product of filter  | replace: 'precioNuevo_pro' | paginate: { itemsPerPage: 20, currentPage: p }"
             text-wrap>
 
             <button ion-item (click)="postDetail(product)">
 
 
               <span class="producto">{{product.nombre_pro}}</span>
-              <!--<ion-thumbnail item-left>
-                <img [src]="product.imagen_pro" />
-              </ion-thumbnail>-->
+
 
               <ion-thumbnail item-left *ngIf="product.imagen_pro.includes('http')">
                 <img src="{{product.imagen_pro}}">
@@ -59,13 +149,12 @@
               </ion-thumbnail>
 
 
-              <h2>precio: {{product.precioNuevo_pro}}</h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
               <div *ngIf="product.precioAnterior_pro">
                 <h2>Antes:
                   <del>{{product.precioAnterior_pro}}</del>
                 </h2>
               </div>
-
 
             </button>
           </ion-col>
@@ -151,7 +240,7 @@
                 <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
               </ion-thumbnail>
 
-              <h2>precio: {{product.precioNuevo_pro}}</h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
               <div *ngIf="product.precioAnterior_pro">
                 <h2>Antes:
                   <del>{{product.precioAnterior_pro}}</del>
@@ -181,7 +270,7 @@
                 <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
               </ion-thumbnail>
 
-              <h2>precio: {{product.precioNuevo_pro}}</h2>
+              <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
               <div *ngIf="product.precioAnterior_pro">
                 <h2>Antes:
                   <del>{{product.precioAnterior_pro}}</del>

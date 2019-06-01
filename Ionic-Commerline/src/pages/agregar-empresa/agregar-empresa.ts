@@ -1,7 +1,10 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
+import { IonicPage, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ImageProvider } from '../../providers/image/image';
+import { RequestOptions, Http, Headers } from '@angular/http';
+import { AccountPage } from '../account/account';
+//import { AgregarProductoPage } from '../agregar-producto/agregar-producto';
 
 /**
  * Generated class for the AgregarEmpresaPage page.
@@ -23,43 +26,135 @@ export class AgregarEmpresaPage {
 
   value: number;
   membership: string;
+  ubicacion: any;
+  selectedMunicipality: any;
+  public hideMe: boolean;
+  status: boolean;
+  id_cliente: any;
+
+
+  static checkPhoneSize(control: FormControl) {
+    const value: string = control.value;
+    if (value && value.length > 7) {
+      return {
+        'phoneSize': true
+      }
+    }
+    return null;
+  }
+
+  static checkCellPhoneSize(control: FormControl) {
+    const value: string = control.value;
+    if (value && value.length > 10) {
+      return {
+        'cellPhoneSize': true
+      }
+    }
+    return null;
+  }
+
+  //////////////
+  @ViewChild("name") name;
+  @ViewChild("paginaWeb") paginaWeb;
+  @ViewChild("direccion") direccion;
+  @ViewChild("horario") horario;
+  @ViewChild("numero_contacto") numero_contacto;
+  @ViewChild("departamento") departamento;
+  @ViewChild("municipio") municipio;
+
 
   form: FormGroup;
-  countries = ['Huila', 'Amazonas', 'Antioquia'];
-  statesByCountry = {
-    Huila: ['Neiva', 'Acevedo', 'Aipe', 'Algeciras', 'Altamira', ' Baraya', 'Campoalegre', 'Colombia', 'EL Agrado', 'El Pital',
-      'Elías', ' Garzón', ' Gigante', ' Guadalupe', ' Hobo', ' Iquira', ' Isnos', ' La Argentina', ' La Plata', 'Nátaga', 'Oporapa', ' Paicol',
-      ' Palermo', ' Palestina', ' Pitalito', ' Rivera', ' Saladoblanco', 'San Agustín', ' Santa María', ' Suaza', ' Tarqui', 'Tello', 'Teruel', 'Tesalia', 'Timaná',
-      'Villavieja', 'Yaguará'
-    ],
-    Amazonas: ['AzerA', 'AzerB', 'AzerC'],
-    Antioquia: ['AlbaA', 'AlbaB', 'AlbaC'],
-  };
-  states = [];
-
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, fb: FormBuilder,
-    private _cdr: ChangeDetectorRef, private _IMAGES: ImageProvider, public alertCtrl: AlertController) {
+    private _IMAGES: ImageProvider, public alertCtrl: AlertController, public http: Http, public loading: LoadingController,
+  ) {
+
+
+    this.http.get('http://localhost/ionic-php-mysql/colombia.json').map(res => res.json()).subscribe(
+      data => {
+
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+        this.ubicacion = data.colombia;
+
+
+      },
+      error => {
+        console.log("Oops!", error);
+      }
+
+    );
+
+
     this.form = fb.group({
       country: ['', Validators.required],
       state: ['', Validators.required],
       option: ["", Validators.required],
       name: ["", Validators.required],
       direction: ["", Validators.required],
-      phone: ["", Validators.required],
+      // phone: ["", Validators.required], //aqui estaba el hp problema ome
+      link: [""],
+      Horario: ["", Validators.required],
+      image: ["", Validators.required],
+      tipo_contacto: ['Telefono', [Validators.required]],
+      numero_contacto: ["", [Validators.required, AgregarEmpresaPage.checkPhoneSize]],
+
     });
+
+    this.form.get('option')
+      .valueChanges
+      .subscribe(value => {
+        console.log(value);
+        if (value === 'si') {
+          const validators = [Validators.required, Validators.pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/), Validators.maxLength(50)];
+          this.form.get('link').setValidators(validators);
+        } else {
+          const validators = [];
+          this.form.get('link').setValidators(validators);
+        }
+        this.form.updateValueAndValidity();
+      });
+
+
+
+    this.form.get('tipo_contacto')
+      .valueChanges
+      .subscribe(value => {
+        console.log(value);
+        if (value === 'Telefono') {
+          const validators = [Validators.required, AgregarEmpresaPage.checkPhoneSize];
+          this.form.get('numero_contacto').setValidators(validators);
+        } else {
+          const validators = [Validators.required, AgregarEmpresaPage.checkCellPhoneSize];
+          this.form.get('numero_contacto').setValidators(validators);
+        }
+        this.form.updateValueAndValidity();
+      });
   }
 
-  onCountryChange(): void {
-    let country = this.form.get('country').value;
-    this.states = this.statesByCountry[country];
-    this._cdr.detectChanges();
+
+  ngOnInit() {
+
+    this.id_cliente = this.navParams.get('id_cliente');
+
   }
+
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad AgregarEmpresaPage');
   }
+
+  //seleccionar municipio de acuerdo al departamento seleccionado
+  CountryChange(value: string) {
+
+    this.selectedMunicipality = this.ubicacion.filter(item => item.departamento === value)
+
+  }
+  /*hide() {
+    this.hideMe = true;
+  }*/
 
   selectFileToUpload(event: any): void {
     this._IMAGES
@@ -90,6 +185,106 @@ export class AgregarEmpresaPage {
         });
   }
 
+
+  /*
+    hide() {
+      this.hideMe = true;
+      this.navCtrl.push(AccountPage, { data: this.hideMe });
+    }
+  */
+
+  onSubmit() {
+
+
+    var headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json;charset=UTF-8');
+    let options = new RequestOptions({ headers: headers });
+
+
+
+    let data = {
+
+      name: this.name.value,
+      image: this.image,
+      paginaWeb: this.paginaWeb.value,
+      numero_contacto: this.numero_contacto.value,
+      direccion: this.direccion.value,
+      horario: this.horario.value,
+      departamento: this.departamento.value,
+      municipio: this.municipio.value,
+      id_cliente: this.id_cliente,
+
+    };
+
+    let loader = this.loading.create({
+
+      content: 'Procesando por favor espere…',
+
+    });
+
+    loader.present().then(() => {
+
+      this.http.post('http://localhost/ionic-php-mysql/registrar_empresa.php', data, options)
+        .map(res => res.json())
+        .subscribe(res => {
+
+          loader.dismiss()
+
+          if (res == "registro exitoso") {
+
+            this.form.reset();
+
+            let alert = this.alertCtrl.create({
+
+              title: "HECHO",
+              subTitle: (res),
+              buttons: ['OK']
+
+            });
+
+            alert.present();
+            this.navCtrl.push(AccountPage);
+            //
+            //this.hideMe = true;
+            //this.navCtrl.push(AgregarProductoPage, { data: this.hideMe });
+
+          }
+
+          else {
+
+            let alert = this.alertCtrl.create({
+
+              title: "ERROR",
+              subTitle: (res),
+              buttons: ['OK']
+
+            });
+
+            alert.present();
+
+          }
+
+        });
+
+    });
+
+
+
+  }
+
+  hide() {
+    this.hideMe = true;
+  }
+
+  play() {
+    this.status = false;
+  }
+
+  pause() {
+    this.status = true;
+  }
+
   displayAlert(message: string): void {
     let alert: any = this.alertCtrl.create({
       title: 'Heads up!',
@@ -99,12 +294,5 @@ export class AgregarEmpresaPage {
     alert.present();
   }
 
-  onChange() {
-    if (this.membership == '1') {
-      this.value = 0;
-    } else if (this.membership == '2') {
-      this.value = 1;
-    }
-  }
 
 }

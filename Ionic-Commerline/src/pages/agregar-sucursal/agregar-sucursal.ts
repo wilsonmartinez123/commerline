@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController, AlertController, Select, Keyboard } from 'ionic-angular';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { IonicPage, NavController, NavParams, LoadingController, AlertController, Keyboard } from 'ionic-angular';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RequestOptions, Http, Headers } from '@angular/http';
 import { AccountPage } from '../account/account';
 import { ChangeDetectorRef } from '@angular/core';
@@ -14,23 +14,22 @@ import { ChangeDetectorRef } from '@angular/core';
 export class AgregarSucursalPage {
 
 
+
   public form: FormGroup;
 
 
-  @ViewChild("state") state: Select;
-  //@ViewChild("select") select;
+  @ViewChild("state") state;
+  @ViewChild("direction") direction;
+  @ViewChild("country") country;
 
   locate: any = null;
   myIndex: any;
   locates: any;
 
-
-
   ubicacion: any;
   selectedMunicipality: any;
-  posts: any;
   value: string;
-
+  id_cliente: any;
 
 
 
@@ -39,13 +38,12 @@ export class AgregarSucursalPage {
     public loading: LoadingController, public alertCtrl: AlertController, public keyboard: Keyboard, public cdr: ChangeDetectorRef) {
 
 
+
     this.form = fb.group({
 
-      sucursales: this.fb.array([
-        this.initSucursalFields()
-      ])
-
-
+      direction: ["", [Validators.required]],
+      country: ['', Validators.required],
+      state: ['', Validators.required],
 
     });
 
@@ -57,9 +55,8 @@ export class AgregarSucursalPage {
         headers.append('Content-Type', 'application/json');
 
         this.ubicacion = data.colombia;
-        //this.posts = data.colombia.filter(item => item.departamento === "Huila");
+        //this.posts = data.colombia.filter(item => item.departamento === this.locates);
 
-        console.log("hijueputa ome", this.locate)
 
       },
       error => {
@@ -73,77 +70,18 @@ export class AgregarSucursalPage {
   }
 
 
+  ngOnInit() {
 
+    this.id_cliente = this.navParams.get('id_cliente');
+    // this.selectedMunicipality = this.ubicacion.filter(item => item.departamento === this.locate)
 
-  //genera un FormGroup objeto con campos de entrada con validacion para sucursales 
-  initSucursalFields(): FormGroup {
-    return this.fb.group({
-      direction: ["", [Validators.required]],
-      departamento: ['', Validators.required],
-      municipio: ['', Validators.required],
-      state: ['', Validators.required],
-      country: ['', Validators.required],
-
-
-
-    });
-  }
-
-  /**
-   * Genera un nuevo campo de entrada para agregar otra sucursal
- */
-  addNewInputField(): void {
-    const control = <FormArray>this.form.controls.sucursales;
-    control.push(this.initSucursalFields());
-    //this.form.reset();
-
-  }
-
-
-  /**
-   * elimina una sucursal ingresada antes de dar click en el boton registrar
-   */
-  removeInputField(i: number): void {
-    const control = <FormArray>this.form.controls.sucursales;
-    control.removeAt(i);
   }
 
 
   CountryChange(value: string) {
-    console.log(this.locate);
-    //console.log(this.country.value);
-    console.log(value);
 
 
-    this.locate = null;
-
-    if (value == "") {
-      return;
-    }
-    /* for (var i = 0; i < this.ubicacion.length; i++) {
- 
-     }*/
-
-
-    this.selectedMunicipality = this.ubicacion.filter(item => {
-      return item.departamento === value;
-    });
-
-    this.cdr.detectChanges();
-
-    //this.selectedMunicipality = this.ubicacion.filter(item => item.departamento === value)
-
-
-  }
-
-  CountryChange2() {
-    this.locates = null;
-  }
-
-
-  uppercase(value: string) {
-    this.value = value.toUpperCase();
-
+    this.selectedMunicipality = this.ubicacion.filter(item => item.departamento === value);
   }
 
 
@@ -153,8 +91,17 @@ export class AgregarSucursalPage {
   //manage(val: any) {
   manage() {
 
+    /*
+    let data = { form: this.form.value, cliente: this.id_cliente };
+    let resources = JSON.stringify(data);
 
-    let resources = JSON.stringify(this.form.value);
+    var myJson = JSON.stringify([this.form.value]);
+    JSON.stringify(JSON.parse(myJson).push('this.id_cliente'));
+*/
+
+
+
+    //let resources = JSON.stringify(data);
     //console.log(resources);
 
     var headers = new Headers();
@@ -162,8 +109,14 @@ export class AgregarSucursalPage {
     headers.append('Content-Type', 'application/json;charset=UTF-8');
     let options = new RequestOptions({ headers: headers });
 
+    let data = {
 
-    console.log(resources);
+      direction: this.direction.value,
+      country: this.country.value,
+      state: this.state.value,
+
+
+    };
 
     let loader = this.loading.create({
 
@@ -173,7 +126,7 @@ export class AgregarSucursalPage {
 
     loader.present().then(() => {
 
-      this.http.post('http://localhost/ionic-php-mysql/registrar_sucursal.php', resources, options)
+      this.http.post('http://localhost/ionic-php-mysql/registrar_sucursal.php', data, options)
         .map(res => res.json())
         .subscribe(res => {
 

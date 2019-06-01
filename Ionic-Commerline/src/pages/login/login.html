@@ -9,22 +9,38 @@
 
 <ion-content>
 	<div class="logo">
-		<img src="assets/img/commerline.png" alt="Ionic logo">
+		<img src="assets/img/commer.jpeg" alt="Ionic logo">
 	</div>
 
-	<ion-list no-lines>
-		<ion-item>
-			<ion-input round type="text" placeholder="Username" name="username" #username></ion-input>
-		</ion-item>
-
-		<ion-item>
-			<ion-input type="password" placeholder="Password" name="password" #password></ion-input>
-		</ion-item>
-
-		<button ion-button round block (click)="signIn()">Ingresar</button>
+	<form #loginForm="ngForm" novalidate>
 
 
-		<button ion-button round outline block (click)="signUp()">Registrar</button>
+		<ion-list>
 
-	</ion-list>
+			<ion-item>
+				<ion-icon name="person" item-left></ion-icon>
+				<ion-input round type="text" placeholder="Correo" name="correo" #correo></ion-input>
+			</ion-item>
+
+
+			<div (capsLock)="capsOn=$event">
+				<ion-item>
+
+					<ion-icon name="key" item-left></ion-icon>
+
+					<!--<div (capsLock)="capsOn=$event">-->
+					<ion-input type="password" placeholder="Contraseña" name="password" #password></ion-input>
+
+					<!--</div>-->
+
+				</ion-item>
+				<label *ngIf="capsOn">la tecla Bloq Mayús está activada</label>
+			</div>
+
+			<button ion-button round block (click)="signIn(loginForm)">Ingresar</button>
+			<button ion-button round outline block (click)="signUp()">Registrar</button>
+			<button ion-button round outline block (click)="ResetPassword()">Olvide contraseña</button>
+
+		</ion-list>
+	</form>
 </ion-content>

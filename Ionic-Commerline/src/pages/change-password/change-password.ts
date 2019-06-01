@@ -41,7 +41,7 @@ export class ChangePasswordPage {
 
   ngOnInit() {
 
-    this.name = this.navParams.get('correo_usu');
+    this.name = this.navParams.get('correo_cli');
 
   } 
 
@@ -88,7 +88,7 @@ export class ChangePasswordPage {
 
       loader.present().then(() => {
 
-        this.http.post('http://localhost/ionic-php-mysql/change-password.php', data, options)
+        this.http.post('http://localhost/ionic-php-mysql/Empresario/change-password.php', data, options)
           .map(res => res.json())
           .subscribe(res => {
 

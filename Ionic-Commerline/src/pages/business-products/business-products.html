@@ -30,7 +30,7 @@
     <ion-label>Categoria:</ion-label>
     <ion-select [(ngModel)]="category" name="categoria" #categoria (ionChange)="CategorySelected($event)">
       <ion-option value="">Seleccione</ion-option>
-      <ion-option *ngFor="let product of posts | unique; let i = index" value="{{product.categoria_pro}}">{{product.categoria_pro}}</ion-option>
+      <ion-option *ngFor="let product of posts | unique; let i = index" value="{{product.nombre_categoria}}">{{product.nombre_categoria}}</ion-option>
     </ion-select>
   </ion-item>
 

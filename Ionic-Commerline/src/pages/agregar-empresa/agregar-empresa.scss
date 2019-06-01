@@ -10,7 +10,7 @@ page-agregar-empresa {
         padding-left: 10px !important;
         margin-bottom: 10px !important ; 
         background-color: #f6f6f6;
-        //opacity: 0.8;
+        //opacity: 0.7;
         //font-size: 0.9em;
     }
 
@@ -22,11 +22,21 @@ page-agregar-empresa {
         border: 1px solid #fff;
     }
 
-    /*.logo{
-        width: 300px;
-        height: 300px;
-        align-content: center;
+    ion-row{
+        align-items: center;
+        text-align: center;
     }
-*/
+
+    ion-col{
+        border: none !important;
+    }
+
+    
+  .logo {
+    padding: 20px 0;
+    min-height: 200px;
+    text-align: center;
+  }
+
    
 }

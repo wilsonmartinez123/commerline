@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 import { Component } from '@angular/core';
 import { AgregarProductoPage } from '../agregar-producto/agregar-producto';
 import { UserData } from '../../providers/user-data';
-import { ParametroServiceProvider } from '../../providers/parametro-service/parametro-service';
+
 
 @IonicPage()
 @Component({
@@ -32,10 +32,10 @@ export class HomePage {
   showButton: boolean = false;
 
   constructor(public navCtrl: NavController, private http: Http, public loading: LoadingController, public navParams: NavParams,
-    public alertCtrl: AlertController, public userData: UserData, public ParametroService: ParametroServiceProvider) {
+    public alertCtrl: AlertController, public userData: UserData) {
 
     //this.empresa = this.navParams.get('id_empresa');
-    //this.empresa = this.ParametroService.myParam;
+
     this.empresa = localStorage.getItem('id_empresa');
 
     let loader = this.loading.create({
@@ -171,7 +171,7 @@ export class HomePage {
             });
 
             loader.present().then(() => {
-              this.http.post('http://localhost/ionic-php-mysql/delete_data.php', resources, options)
+              this.http.post('http://localhost/ionic-php-mysql/delete_several_data.php', resources, options)
                 .map(res => res.json())
                 .subscribe(res => {
 

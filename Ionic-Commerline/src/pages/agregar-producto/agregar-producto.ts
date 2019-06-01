@@ -7,14 +7,13 @@ import { HomePage } from '../home/home';
 //import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { ImageProvider } from '../../providers/image/image';
-import { ParametroServiceProvider } from '../../providers/parametro-service/parametro-service';
+
 
 @Component({
     selector: 'page-agregar-producto',
     templateUrl: 'agregar-producto.html'
 })
 export class AgregarProductoPage {
-
 
     public form: FormGroup;
 
@@ -40,13 +39,13 @@ export class AgregarProductoPage {
     productos: any;
     id_cliente: any;
     id_clientes: any;
-    empresa: any;
     posts: any;
     items: any;
 
+
     constructor(public navCtrl: NavController, public navParams: NavParams, public http: Http, public toast: ToastController,
         public alertCtrl: AlertController, public loading: LoadingController, public fb: FormBuilder, private _IMAGES: ImageProvider,
-        public ParametroService: ParametroServiceProvider) {
+    ) {
 
         this.id_clientes = localStorage.getItem('id_cliente');
 
@@ -73,15 +72,14 @@ export class AgregarProductoPage {
 
     ngOnInit() {
         //this.id_cliente = this.navParams.get('id_cliente');
-        //this.id_cliente = this.ParametroService.parametroIdCliente;
+
         this.id_cliente = localStorage.getItem('id_cliente');
-        //
-        this.empresa = this.ParametroService.myParam;
+
 
 
 
         this.form = this.fb.group({
-            productos: this.initProductoFields()
+            productos: this.initProductoFields(),
         })
 
     }
@@ -95,23 +93,35 @@ export class AgregarProductoPage {
         this.productos = this.fb.array([
             this.buildGroup()
         ]);
+
+
         return this.productos;
+
     }
+
+
 
     buildGroup(): FormGroup {
         return this.fb.group({
 
+
             name: ["", Validators.required],
-            namefile: '',
-            typefile: '',
+            namefile: [""],
+            typefile: [""],
             price: ["", Validators.required],
             description: ["", Validators.required],
             categoria: ["", Validators.required],
-            IdEmpresario: '',
+            IdEmpresario: [""],
             picture: ["", Validators.required],
 
+
+
+
         });
+
     }
+
+
 
     addNewInputField() {
         this.productos.push(this.buildGroup());
@@ -176,7 +186,6 @@ export class AgregarProductoPage {
     }
 
 
-
     submitForm(): void {
 
 
@@ -226,6 +235,8 @@ export class AgregarProductoPage {
 
                     if (res == "registro exitoso") {
 
+                        this.form.reset();
+
                         let alert = this.alertCtrl.create({
 
                             title: "HECHO",
@@ -236,6 +247,7 @@ export class AgregarProductoPage {
 
                         alert.present();
                         //this.ParametroService.myParam = this.empresa;
+
                         this.navCtrl.push(HomePage);
                     }
 

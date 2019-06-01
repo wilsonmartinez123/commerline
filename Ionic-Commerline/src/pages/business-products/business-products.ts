@@ -59,7 +59,7 @@ export class BusinessProductsPage {
   CategorySelected(value: string) {
 
 
-    this.selectedCategory = this.posts.filter(item => item.categoria_pro === value);
+    this.selectedCategory = this.posts.filter(item => item.nombre_categoria === value);
     this.initializeCategories()
   }
 

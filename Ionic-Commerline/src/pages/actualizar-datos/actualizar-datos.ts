@@ -29,6 +29,7 @@ export class ActualizarDatosPage {
   oldPhoneValue: any;
   oldEmailValue: any;
   oldNameValue: any;
+  cliente: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, public loading: LoadingController,
     private http: Http,
@@ -53,9 +54,7 @@ export class ActualizarDatosPage {
     this.emails = this.navParams.get('correo_cli');
     this.phone = this.navParams.get('telefono_cli');
 
-    this.oldNameValue = this.navParams.get('nombre_cli');
-    this.oldEmailValue = this.navParams.get('correo_cli');
-    this.oldPhoneValue = this.navParams.get('telefono_cli');
+    this.cliente = this.navParams.get('id_cliente');
 
 
   }
@@ -77,10 +76,7 @@ export class ActualizarDatosPage {
 
 
     let data = {
-      name: this.oldNameValue,
-      email: this.oldEmailValue,
-      phone: this.oldPhoneValue,
-
+      cliente: this.cliente,
 
       newName: this.username.value,
       newEmail: this.email.value,
@@ -95,7 +91,7 @@ export class ActualizarDatosPage {
     });
 
     loader.present().then(() => {
-      this.http.post('http://localhost/ionic-php-mysql/actualizar_datos_empresario.php', data, options)
+      this.http.post('http://localhost/ionic-php-mysql/Empresario/actualizar_datos_empresario.php', data, options)
         .map(res => res.json())
         .subscribe(res => {
 

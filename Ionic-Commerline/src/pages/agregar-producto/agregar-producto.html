@@ -13,128 +13,134 @@
 
 <ion-content padding>
 
-  <div *ngIf="items?.length == 0">
-    <h2>Para poder Agregar Productos, primero debes registrar tu Empresa, Gracias.</h2>
-  </div>
+  <div *ngIf="items">
 
-  <div *ngIf="items?.length != 0">
+    <div *ngIf="items?.length == 0">
+      <h2>Para poder Agregar Productos, primero debes registrar tu Empresa, Gracias.</h2>
+    </div>
 
-    <form [formGroup]="form" (ngSubmit)="submitForm()">
+    <div *ngIf="items?.length != 0">
 
-
-      <ion-list no-line>
-
-        <H2>Productos</H2><br>
-        <h4>Por favor registre tus productos, ten en cuenta que puedes agregar varios
-          productos a la vez
-          dando click en + AGREGAR PRODUCTO, revisa que no esten ingresando productos repetidos, por ultimo da
-          Click en el Botón Registrar. Gracias</h4>
-        <br>
-
-        <p>Todos los campos con * son obligatorios, llene todos los campos para poder registrar</p>
+      <form [formGroup]="form" (ngSubmit)="submitForm()">
 
 
-        <!-- asignar productos FormArray al formulario para generar un nuevo campo -->
+        <ion-list no-line>
 
-        <div formArrayName="productos" margin-bottom>
-          <p>Agrega productos : </p>
+          <H2>Productos</H2><br>
+          <h4>Por favor registre tus productos, ten en cuenta que puedes agregar varios
+            productos a la vez
+            dando click en + AGREGAR PRODUCTO, revisa que no esten ingresando productos repetidos, por ultimo da
+            Click en el Botón Registrar. Gracias</h4>
+          <br>
 
-          <!-- Agregar nuevos productos -->
-          <div *ngFor="let retur of productos.controls; let i=index" [formGroupName]="i">
-            <ion-item-group>
-              <ion-item-divider color="light">Producto #{{ i + 1 }}</ion-item-divider><br />
-
-              <ion-item>
-                <ion-icon name="basket" item-start></ion-icon>
-                <ion-label stacked>Nombre del producto*</ion-label>
-                <ion-input type="text" name="name" #name formControlName="name"></ion-input>
-              </ion-item>
-              <div *ngIf="retur.get('name').touched && retur.get('name').hasError('required')">
-                <p>Nombre de producto es requerido!</p>
-              </div>
-
-              <ion-item>
-                <ion-icon name="pricetag" item-start></ion-icon>
-                <ion-label stacked>Precio*</ion-label>
-                <ion-input type="number" name="price" #price formControlName="price"></ion-input>
-              </ion-item>
-              <div *ngIf="retur.get('price').touched && retur.get('price').hasError('required')">
-                <p>Precio de producto es requerido!</p>
-              </div>
-
-              <ion-item>
-                <ion-icon name="list" item-start></ion-icon>
-                <ion-label>Categoría</ion-label>
-                <ion-select name="categoria" #categoria formControlName="categoria">
-                  <ion-option value="Celulares">Celulares</ion-option>
-                  <ion-option value="Computadores">Computadores y Tablets</ion-option>
-                  <ion-option value="Audio">Audio</ion-option>
-                  <ion-option value="Videojuegos">Videojuegos</ion-option>
-                  <ion-option value="Accesorios">Accesorios</ion-option>
-                  <ion-option value="Camaras">Cámaras</ion-option>
-                  <ion-option value="Deportes">Deportes</ion-option>
-                  <ion-option value="Hogar">Hogar</ion-option>
-                  <ion-option value="Televisores">Televisores</ion-option>
-                  <ion-option value="Mercado">Mercado</ion-option>
-                  <ion-option value="Moda">Moda</ion-option>
-                  <ion-option value="ElectroHogar">ElectroHogar</ion-option>
-                  <ion-option value="Jugueteria">Jugueteía</ion-option>
-                  <ion-option value="SaludBelleza">Salud y Belleza</ion-option>
-                </ion-select>
-              </ion-item>
-              <div *ngIf="retur.get('categoria').touched && retur.get('categoria').hasError('required')">
-                <p>Categoria del producto es requerido!</p>
-              </div>
+          <p>Todos los campos con * son obligatorios, llene todos los campos para poder registrar</p>
 
 
-              <ion-item>
-                <ion-icon name="paper" item-start></ion-icon>
-                <ion-label stacked>Descripción del producto*</ion-label>
-                <ion-textarea name="description" #description formControlName="description" rows="6" maxLength="500"></ion-textarea>
-              </ion-item>
-              <div *ngIf="retur.get('description').touched && retur.get('description').hasError('required')">
-                <p>Descripción del producto es requerido!</p>
-              </div>
+          <!-- asignar productos FormArray al formulario para generar un nuevo campo -->
 
-              <ion-item>
-                <ion-icon name="image" item-start></ion-icon>
-                <ion-label>*Imagen</ion-label>
-                <ion-input type="file" accept="image/*" name="picture" #picture formControlName="picture" (change)="selectFileToUpload($event,i)"></ion-input>
-              </ion-item>
-              <div *ngIf="retur.get('picture').touched && retur.get('picture').hasError('required')">
-                <p>Imagen del producto es requerido!</p>
-              </div>
+          <div formArrayName="productos" margin-bottom>
+            <p>Agrega productos : </p>
 
-              <div *ngIf="isSelected">
-                <ion-label>Preview</ion-label>
-                <img class="imagen" [src]="retur.value.picture | safe" />
-              </div>
-              <br />
+            <!-- Agregar nuevos productos -->
+            <div *ngFor="let retur of productos.controls; let i=index" [formGroupName]="i">
+              <ion-item-group>
+                <ion-item-divider color="light">Producto #{{ i + 1 }}</ion-item-divider><br />
+
+                <ion-item>
+                  <ion-icon name="basket" item-start></ion-icon>
+                  <ion-label stacked>Nombre del producto*</ion-label>
+                  <ion-input type="text" name="name" #name formControlName="name"></ion-input>
+                </ion-item>
+                <div *ngIf="retur.get('name').touched && retur.get('name').hasError('required')">
+                  <p>Nombre de producto es requerido!</p>
+                </div>
 
 
-              <!-- Permite eliminar las productos ingresadas antes de enviar -->
-              <button float-right ion-button icon-left clear *ngIf="form.controls.productos.length > 1" (click)="removeInputField(i)">
-                <ion-icon name="close"></ion-icon>
-                Eliminar
-              </button>
-
-            </ion-item-group>
-
-          </div>
-        </div><br />
-
-        <!-- PERMITE PODER REGISTRAR OTRO PRODUCTO, POR SI TIENE MAS DE UNA -->
-        <span ion-button float-left icon-left clear (click)="addNewInputField()">
-          <ion-icon name="add"></ion-icon>
-          AGREGAR PRODUCTO
-        </span>
-
-        <button class="registrar" ion-button round outline block [disabled]="!form.valid">Guardar</button>
-
-      </ion-list>
+                <ion-item>
+                  <ion-icon name="pricetag" item-start></ion-icon>
+                  <ion-label stacked>Precio *</ion-label>
+                  <ion-input type="number" name="price" #price formControlName="price"></ion-input>
+                </ion-item>
+                <div *ngIf="retur.get('price').touched && retur.get('price').hasError('required')">
+                  <p>Precio de producto es requerido!, Ingrese el valor sin incluir el signo $, ni puntos ni comas.</p>
+                </div>
 
 
-    </form>
+                <ion-item>
+                  <ion-icon name="list" item-start></ion-icon>
+                  <ion-label>Categoría</ion-label>
+                  <ion-select name="categoria" #categoria formControlName="categoria">
+                    <ion-option value="Celulares">Celulares</ion-option>
+                    <ion-option value="Computadores">Computadores y Tablets</ion-option>
+                    <ion-option value="Audio">Audio</ion-option>
+                    <ion-option value="Videojuegos">Videojuegos</ion-option>
+                    <ion-option value="Accesorios">Accesorios</ion-option>
+                    <ion-option value="Camaras">Cámaras</ion-option>
+                    <ion-option value="Deportes">Deportes</ion-option>
+                    <ion-option value="Hogar">Hogar</ion-option>
+                    <ion-option value="Televisores">Televisores</ion-option>
+                    <ion-option value="Mercado">Mercado</ion-option>
+                    <ion-option value="Moda">Moda</ion-option>
+                    <ion-option value="ElectroHogar">ElectroHogar</ion-option>
+                    <ion-option value="Jugueteria">Jugueteía</ion-option>
+                    <ion-option value="SaludBelleza">Salud y Belleza</ion-option>
+                  </ion-select>
+                </ion-item>
+                <div *ngIf="retur.get('categoria').touched && retur.get('categoria').hasError('required')">
+                  <p>Categoria del producto es requerido!</p>
+                </div>
+
+
+                <ion-item>
+                  <ion-icon name="paper" item-start></ion-icon>
+                  <ion-label stacked>Descripción del producto*</ion-label>
+                  <ion-textarea name="description" #description formControlName="description" rows="6" maxLength="500"></ion-textarea>
+                </ion-item>
+                <div *ngIf="retur.get('description').touched && retur.get('description').hasError('required')">
+                  <p>Descripción del producto es requerido!</p>
+                </div>
+
+                <ion-item>
+                  <ion-icon name="image" item-start></ion-icon>
+                  <ion-label>*Imagen</ion-label>
+                  <ion-input type="file" accept="image/*" name="picture" #picture formControlName="picture" (change)="selectFileToUpload($event,i)"></ion-input>
+                </ion-item>
+                <div *ngIf="retur.get('picture').touched && retur.get('picture').hasError('required')">
+                  <p>Imagen del producto es requerido!</p>
+                </div>
+
+                <div *ngIf="isSelected">
+                  <ion-label>Preview</ion-label>
+                  <img class="imagen" [src]="retur.value.picture | safe" />
+                </div>
+                <br />
+
+
+                <!-- Permite eliminar las productos ingresadas antes de enviar -->
+                <button float-right ion-button icon-left clear *ngIf="form.controls.productos.length > 1" (click)="removeInputField(i)">
+                  <ion-icon name="close"></ion-icon>
+                  Eliminar
+                </button>
+
+              </ion-item-group>
+
+            </div>
+          </div><br />
+
+          <!-- PERMITE PODER REGISTRAR OTRO PRODUCTO, POR SI TIENE MAS DE UNA -->
+          <span ion-button float-left icon-left clear (click)="addNewInputField()">
+            <ion-icon name="add"></ion-icon>
+            AGREGAR PRODUCTO
+          </span>
+
+          <button class="registrar" ion-button round outline block [disabled]="!form.valid">Guardar</button>
+
+        </ion-list>
+
+
+      </form>
+
+    </div>
 
   </div>
 

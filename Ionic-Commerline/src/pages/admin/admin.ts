@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { UserData } from '../../providers/user-data';
 import { Http } from '@angular/http';
 import { AdminClientesPage } from '../admin-clientes/admin-clientes';
+import { AdminEmpresasPage } from '../admin-empresas/admin-empresas';
 
 
 @IonicPage()
@@ -51,7 +52,7 @@ export class AdminPage {
 
 
   verEmpresas() {
-
+    this.nav.push(AdminEmpresasPage);
   }
   verClientes() {
     this.nav.push(AdminClientesPage);

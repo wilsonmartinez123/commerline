@@ -13,104 +13,50 @@
     <ion-list margin-bottom>
 
       <H2>Sucursal</H2><br>
-      <h4>Por favor si tu empresa o establecimiento tiene sucursales regístrelas, ten en cuenta que si tienes varias
-        sucursales
-        puedes agregar sucursal dando click en + AGREGAR SUCURSAL, por ultimo da
+      <h4>Por favor si tu empresa o establecimiento tiene sucursales regístrelas, por ultimo da
         Click en el Botón Registrar. Gracias</h4>
       <br>
 
       <p>Todos los campos con * son obligatorios, llene todos los campos para poder registrar</p>
 
 
-      <!-- asignar sucrusales FormArray al formulario para generar un nuevo campo -->
-      <div formArrayName="sucursales" margin-bottom>
 
-        <!--generar nuevos campos de registro-->
-        <section [formGroupName]="i" *ngFor="let tech of form.controls.sucursales.controls; let i = index">
-          <ion-item-group>
-            <ion-item-divider color="light">Sucursal #{{ i + 1 }}</ion-item-divider><br>
-
-            <ion-item>
-              <ion-icon name="navigate" item-start></ion-icon>
-              <ion-label stacked>Dirección de la Empresa*</ion-label>
-              <ion-input type="text" maxlength="50" placeholder="CR 16 N 41-10 LOCAL 260" formControlName="direction"></ion-input>
-            </ion-item>
-            <!--
+      <ion-item>
+        <ion-icon name="navigate" item-start></ion-icon>
+        <ion-label stacked>Dirección de la Empresa*</ion-label>
+        <ion-input type="text" maxlength="50" placeholder="CR 16 N 41-10 LOCAL 260" #direction formControlName="direction"></ion-input>
+      </ion-item>
+      <!--
             <div *ngIf="form.controls.direction.hasError('required') && form.controls.direction.touched">
               <p>Dirección de Empresa es requerido!</p>
             </div>-->
 
 
-            <ion-item>
-              <ion-icon name="pin" item-start></ion-icon>
-              <ion-label stacked>Departamento*</ion-label>
-              <ion-input type="text" maxlength="30" formControlName="departamento"></ion-input>
-            </ion-item>
-
-            <!--  <div *ngIf="form.controls.departamento.hasError('required') && form.controls.departamento.touched">
-              <p>Departamento es requerido!</p>-->
-
-
-
-            <ion-item>
-              <ion-icon name="pin" item-start></ion-icon>
-              <ion-label stacked>Municipio*</ion-label>
-              <ion-input type="text" maxlength="30" formControlName="municipio"></ion-input>
-            </ion-item>
-
-            <!-- <div *ngIf="form.controls.municipio.hasError('required') && form.controls.municipio.touched">
-              <p>Municipio es requerido!</p>
-            </div>-->
-
-
-            <ion-item>
-              <ion-icon name="list" item-start></ion-icon>
-              <ion-label>Departamento</ion-label>
-              <ion-select [(ngModel)]="locate" name="country" #country formControlName="country" (ionChange)="CountryChange($event)">
-                <ion-option *ngFor="let department of ubicacion; let i = index" value="{{department.departamento}}">{{department.departamento}}</ion-option>
-              </ion-select>
-            </ion-item>
+      <ion-item>
+        <ion-icon name="list" item-start></ion-icon>
+        <ion-label>Departamento</ion-label>
+        <ion-select [(ngModel)]="locate" name="country" #country formControlName="country" (ionChange)="CountryChange($event)">
+          <ion-option *ngFor="let department of ubicacion; let i = index" value="{{department.departamento}}">{{department.departamento}}</ion-option>
+        </ion-select>
+      </ion-item>
 
 
 
-            <ion-item *ngFor="let x of selectedMunicipality">
+      <ion-item *ngFor="let x of selectedMunicipality">
 
-              <ion-icon name="list" item-start></ion-icon>
-              <ion-label>Municipio</ion-label>
-              <ion-select [(ngModel)]="locates" name="state" #state formControlName="state" (ionChange)="CountryChange2($event)">
-                <ion-option *ngFor="let municipio of x.ciudades" value="{{municipio}}">{{municipio}}</ion-option>
-              </ion-select>
+        <ion-icon name="list" item-start></ion-icon>
+        <ion-label>Municipio</ion-label>
+        <ion-select name="state" #state formControlName="state">
+          <ion-option *ngFor="let municipio of x.ciudades" value="{{municipio}}">{{municipio}}</ion-option>
+        </ion-select>
 
-            </ion-item>
+      </ion-item>
 
-
-            <!-- Permite eliminar las sucrusales ingresadas antes de enviar -->
-            <button float-right ion-button icon-left clear *ngIf="form.controls.sucursales.length > 1" (click)="removeInputField(i)">
-              <ion-icon name="close"></ion-icon>
-              Eliminar
-            </button>
-          </ion-item-group>
-
-
-
-
-        </section>
-
-
-
-      </div>
-
-      <!-- PERMITE PODER REGISTRAR OTRA SUCURSAL, POR SI TIENE MAS DE UNA -->
-      <span ion-button float-left icon-left clear (click)="addNewInputField()">
-        <ion-icon name="add"></ion-icon>
-        AGREGAR SUCURSAL
-      </span>
-
+      <button class="registrar" ion-button block margin-top color="primary" text-center [disabled]="!form.valid">Registrar</button>
 
 
     </ion-list>
 
-    <button class="registrar" ion-button block margin-top color="primary" text-center [disabled]="!form.valid">Registrar</button>
 
   </form>
 

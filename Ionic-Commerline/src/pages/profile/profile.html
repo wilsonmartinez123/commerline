@@ -202,7 +202,7 @@
                   <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
                 </ion-thumbnail>
 
-                <h2>precio: {{product.precioNuevo_pro}}</h2>
+                <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
                 <div *ngIf="product.precioAnterior_pro">
                   <h2>Antes:
                     <del>{{product.precioAnterior_pro}}</del>
@@ -232,7 +232,7 @@
                   <img src="http://localhost/ionic-php-mysql/{{product.imagen_pro}}">
                 </ion-thumbnail>
 
-                <h2>precio: {{product.precioNuevo_pro}}</h2>
+                <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
                 <div *ngIf="product.precioAnterior_pro">
                   <h2>Antes:
                     <del>{{product.precioAnterior_pro}}</del>
@@ -255,14 +255,6 @@
     </ion-list>
 
 
-    <ion-item-options>
-      <button ion-button color="favorite" (click)="addFavorite(slidingItem, session)" *ngIf="segment === 'all'">
-        Favorite
-      </button>
-      <button ion-button color="danger" (click)="removeFavorite(slidingItem, session, 'Remove Favorite')" *ngIf="segment === 'favorites'">
-        Remove
-      </button>
-    </ion-item-options>
 
     <!-- </ion-item-sliding> -->
 

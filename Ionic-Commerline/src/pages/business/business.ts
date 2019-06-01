@@ -1,14 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { Http } from '@angular/http';
-import { HttpHeaders } from '@angular/common/http';
+import { Http, Headers } from '@angular/http';
+import { BusinessProductsPage } from '../business-products/business-products';
 
-/**
- * Generated class for the BusinessPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+
 
 @IonicPage()
 @Component({
@@ -27,7 +22,7 @@ export class BusinessPage {
     this.http.get('http://localhost/ionic-php-mysql/obtener_empresas.php').map(res => res.json()).subscribe(
       data => {
 
-        let headers = new HttpHeaders();
+        let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
         this.business = data.empresa;
@@ -42,6 +37,11 @@ export class BusinessPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad BusinessPage');
+  }
+
+  ProductBusiness(companies) {
+    this.navCtrl.push(BusinessProductsPage, companies)
+
   }
 
 }
