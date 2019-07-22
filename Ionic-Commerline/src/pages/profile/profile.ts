@@ -61,7 +61,9 @@ export class ProfilePage {
 
   ) {
 
-
+    //limpia variables globales
+    localStorage.removeItem('product');
+    //localStorage.clear();
 
     this.category = this.navParams.get('nombre_categoria');
 
@@ -99,6 +101,8 @@ export class ProfilePage {
   public postDetail(product) {
     this.navCtrl.push(DetailsPage, { product: product });
 
+    let json = JSON.stringify(product);
+    localStorage.setItem('product', json);
   }
 
   initializeItems() {

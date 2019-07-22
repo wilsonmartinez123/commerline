@@ -6,12 +6,7 @@ import { RequestOptions, Http, Headers } from '@angular/http';
 import { AccountPage } from '../account/account';
 //import { AgregarProductoPage } from '../agregar-producto/agregar-producto';
 
-/**
- * Generated class for the AgregarEmpresaPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+
 
 @IonicPage()
 @Component({
@@ -216,6 +211,8 @@ export class AgregarEmpresaPage {
       id_cliente: this.id_cliente,
 
     };
+
+    console.log(data);
 
     let loader = this.loading.create({
 

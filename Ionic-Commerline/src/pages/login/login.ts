@@ -1,15 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
-//import { NgForm } from '@angular/forms';
-import { NavController, AlertController } from 'ionic-angular';
+import { NavController, AlertController, MenuController, ToastController } from 'ionic-angular';
 import { SignupPage } from '../signup/signup';
 
 import { Http, Headers, RequestOptions } from "@angular/http";
 import { LoadingController } from 'ionic-angular';
 import 'rxjs/add/operator/map';
-//import { AccountPage } from '../account/account';
 import { UserData } from '../../providers/user-data';
-//import { UserOptions } from '../../interfaces/user-options';
-//import { TabsPage } from '../tabs-page/tabs-page';
 import { ResetPasswordPage } from '../reset-password/reset-password';
 import { AccountPage } from '../account/account';
 import { AdminPage } from '../admin/admin';
@@ -24,16 +20,23 @@ export class LoginPage {
 
   @ViewChild("correo") correo;
   @ViewChild("password") password;
+  @ViewChild("loginMode") loginMode;
   data: string;
   items: any;
   ngForm: any;
+  email: any;
+
+  showPass: boolean = false;
+  type: string = 'password';
+  isLoggedIn: any;
 
 
 
   constructor(public navCtrl: NavController, public alertCtrl: AlertController,
-    private http: Http, public loading: LoadingController, public userData: UserData) {
-  }
+    private http: Http, public loading: LoadingController, public userData: UserData, public menuCtrl: MenuController, public toastCtrl: ToastController) {
 
+    this.isLoggedIn = localStorage.getItem('login');
+  }
 
   signUp() {
     this.navCtrl.push(SignupPage);
@@ -102,19 +105,25 @@ export class LoginPage {
               /*localStorage.setItem('response', JSON.stringify(res));
               console.log(JSON.parse(localStorage.getItem('response')));*/
               //
-              if (res == 2) {
+              if (res == "empresario") {
 
-
-                let alert = this.alertCtrl.create({
+                /*let alert = this.alertCtrl.create({
                   title: "Bienvenido",
                   subTitle: ("cliente"),
                   buttons: ['OK']
-                });
+                }); */
 
-                alert.present();
+                this.toastCtrl.create({
+                  message: "Bienvenido: Cliente",
+                  duration: 2000,
+                  position: 'middle'
+                }).present();
+
+                //alert.present();
 
                 this.userData.login(this.correo.value);
-                this.navCtrl.push(AccountPage);
+                //this.navCtrl.push(AccountPage);
+                this.navCtrl.setRoot(AccountPage);
 
 
                 this.correo.setValue('');
@@ -123,38 +132,32 @@ export class LoginPage {
                 return;
               }
 
-              else if (res == 1) {
+              else if (res == "administrador") {
 
-           let alert = this.alertCtrl.create({
-                  title: "Bienvenido",
-                  //subTitle: (res),
-                  subTitle: ("Administrador"),
-                  buttons: ['OK']
-                });
-
-                alert.present();
+                this.toastCtrl.create({
+                  message: "Bienvenido: Administrador",
+                  duration: 2000,
+                  position: 'middle'
+                }).present();
 
                 this.userData.loginAdmin(this.correo.value);
-                this.navCtrl.push(AdminPage);
+                this.navCtrl.setRoot(AdminPage);
 
                 this.correo.setValue('');
                 this.password.setValue('');
               }
 
-              else if(res == "usuario"){
+              else if (res == "usuario") {
 
-                
-                let alert = this.alertCtrl.create({
-                  title: "Bienvenido",
-                  //subTitle: (res),
-                  subTitle: ("Usuario"),
-                  buttons: ['OK']
-                });
 
-                alert.present();
+                this.toastCtrl.create({
+                  message: "Bienvenido: Usuario",
+                  duration: 2000,
+                  position: 'middle'
+                }).present();
 
                 this.userData.loginUser(this.correo.value);
-                this.navCtrl.push(UsuarioPage);
+                this.navCtrl.setRoot(UsuarioPage);
 
                 this.correo.setValue('');
                 this.password.setValue('');
@@ -179,6 +182,25 @@ export class LoginPage {
 
   ResetPassword() {
     this.navCtrl.push(ResetPasswordPage);
+  }
+
+  showPassword() {
+    this.showPass = !this.showPass;
+    if (this.showPass) {
+      this.type = 'text';
+    } else {
+      this.type = 'password';
+    }
+  }
+
+  logout() {
+
+    localStorage.clear();
+
+    this.userData.logout();
+    this.navCtrl.setRoot('LoginPage');
+
+
   }
 
 }

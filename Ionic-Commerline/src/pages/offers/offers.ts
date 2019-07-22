@@ -6,6 +6,7 @@ import { SupportPage } from '../support/support';
 
 
 
+
 @IonicPage()
 @Component({
   selector: 'page-offers',
@@ -27,13 +28,7 @@ export class OffersPage {
   filterUbication: any;
   ofertas: any;
 
-  //slides para publicidad
 
-  /*slideOpts = {
-    initialSlide: 1,
-    speed: 400
-  };
-*/
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public http: Http) {
@@ -71,6 +66,7 @@ export class OffersPage {
       }
 
     );
+
 
   }
 
@@ -156,10 +152,20 @@ export class OffersPage {
     ev.target.value = '';
   }
 
-  public postDetail(product) {
+  postDetail(product) {
     this.navCtrl.push(DetailsPage, { product: product });
 
+    let json = JSON.stringify(product);
+    localStorage.setItem('product', json);
+
+    console.log(localStorage.setItem('product', json));
+
+    //envia id del producto para verificar si el usuario ya califico un producto
+    let id = JSON.stringify(product.id);
+    localStorage.setItem('id', id);
+
   }
+
 
   contact() {
 

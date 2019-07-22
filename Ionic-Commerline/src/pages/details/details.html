@@ -23,7 +23,7 @@
 
 
         <div *ngIf="item.imagen_pro.includes('uploads/')">
-          <img class="resize" src="http://localhost/ionic-php-mysql/{{item.imagen_pro}}"/>
+          <img class="resize" src="http://localhost/ionic-php-mysql/{{item.imagen_pro}}" />
         </div>
 
 
@@ -32,26 +32,107 @@
 
 
 
-      </ion-item>
+        <!--Muestra la calificacion ya seleccionada por el usuario, y la opcion de edita o eliminar-->
+        <div *ngIf="ratingStar">
+          <div *ngFor="let rating of calificacion">
+            <!-- <div *ngIf="(rating.id_pro === item.id)">-->
 
-      <ion-item-divider>Empresa</ion-item-divider>
-      <ion-item *ngFor="let companies of business">
-        <div *ngIf="(companies.id_empresa === item.id_empresa)">
-          <!--<img [src]="companies.logo_emp" class="img-res" height="550 px" width="550 px" />-->
+            <ion-item-divider></ion-item-divider><br />
 
-          <div *ngIf="companies.logo_emp.includes('http')">
-            <img src="{{companies.logo_emp}}" height="550 px" width="550 px" />
+            <h5>Tu calificación</h5><br />
+
+            <ionic3-star-rating activeIcon="ios-star" defaultIcon="ios-star-outline" activeColor="#488aff" defaultColor="red"
+              readonly="true" [rating]="rating.valor_cal">
+            </ionic3-star-rating><br />
+
+
+
+
+            <button ion-button color="success" (click)="showedit()">
+              <ion-icon item-left name="create"></ion-icon>
+              Editar
+            </button>
+
+            <button ion-button color="warning" (click)="delete(rating)">
+              <ion-icon item-left name="trash"></ion-icon>
+              Eliminar
+            </button>
+
+
+
+
+            <!--Editar-->
+            <div *ngIf="Edit">
+
+              <br />
+              <ionic3-star-rating activeIcon="ios-star" defaultIcon="ios-star-outline" activeColor="#488aff"
+                defaultColor="red" readonly="false" [rating]="newrating">
+              </ionic3-star-rating><br />
+
+              <button ion-button size="small" (click)="edit(rating.id_calificacion)">Guardar nueva calificación</button>
+            </div>
+
+            <!--</div>-->
           </div>
 
 
-          <div *ngIf="companies.logo_emp.includes('uploads/')">
-            <img src="http://localhost/ionic-php-mysql/{{companies.logo_emp}}" height="550 px" width="550 px" />
+          <div *ngIf="calificacion?.length == ''">
+            <ion-item-divider></ion-item-divider><br />
+            <button *ngIf="!showMe" ion-button (click)="show()">Calificar Producto</button>
+            <button *ngIf="showMe" ion-button (click)="hide()">Calificar Producto</button>
+
+            <div *ngIf="showMe">
+              <br />
+              <ionic3-star-rating activeIcon="ios-star" defaultIcon="ios-star-outline" activeColor="#488aff"
+                defaultColor="red" readonly="false" [rating]="rating">
+              </ionic3-star-rating><br />
+
+
+              <div>
+                Calificación seleccionada: {{rating}}
+              </div><br />
+
+              <button ion-button size="small" (click)="saveRating(item.id)">Guardar calificación</button>
+
+            </div>
+
           </div>
 
-          <h2> {{ companies.nombre_emp }}</h2>
-          <h2>Direccion: {{companies.direccion_emp}}</h2>
-          <h2>Horario: {{companies.horario_emp}}</h2>
         </div>
+
+        <!--Si el usuario ya califico un producto, le muestra la calificación seleccionada, puede eliminarla o editarla-->
+        <!--
+      <ion-item *ngFor="let rating of calificacion">
+        <div *ngIf="(rating.id_pro === item.id) && (rating.correo_usu === {{ratingStar}} )">
+
+          <ionic3-star-rating activeIcon="ios-star" defaultIcon="ios-star-outline" activeColor="#488aff" defaultColor="red"
+            readonly="false" [rating]="rating.valor_cal">
+          </ionic3-star-rating><br />
+
+        </div>
+      </ion-item>
+    -->
+
+        <ion-item-divider>Empresa</ion-item-divider>
+        <div *ngFor="let companies of business">
+          <div *ngIf="(companies.id_empresa === item.id_empresa)">
+            <!--<img [src]="companies.logo_emp" class="img-res" height="550 px" width="550 px" />-->
+
+            <div *ngIf="companies.logo_emp.includes('http')">
+              <img src="{{companies.logo_emp}}" height="550 px" width="550 px" />
+            </div>
+
+
+            <div *ngIf="companies.logo_emp.includes('uploads/')">
+              <img src="http://localhost/ionic-php-mysql/{{companies.logo_emp}}" height="550 px" width="550 px" />
+            </div>
+
+            <h2> {{ companies.nombre_emp }}</h2>
+            <h2>Direccion: {{companies.direccion_emp}}</h2>
+            <h2>Horario: {{companies.horario_emp}}</h2>
+          </div>
+        </div>
+
       </ion-item>
 
     </div>

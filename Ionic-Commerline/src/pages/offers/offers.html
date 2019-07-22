@@ -53,7 +53,8 @@
   </button><br><br>
 
 
-  <ion-slides height="100px" width="200px" autoplay="5000" loop="true" speed="500" pager="true" (ionSlideDidChange)="slideChanged()" zoom="true">
+  <ion-slides style="height: 50%;" autoplay="5000" loop="true" speed="500" pager="true" (ionSlideDidChange)="slideChanged()"
+    zoom="true">
     <ion-slide>
       <h1>Slide 1</h1>
     </ion-slide>
@@ -68,6 +69,22 @@
 
   <!--Muestra las ofertas, si aun no ha buscado productos, de lo contario se ocultan-->
   <ion-list *ngIf="!showList">
+
+
+    <!--
+    <ion-content padding style="background-color: #f5f5ff"  >
+        <ionic3-star-rating 
+              activeIcon = "ios-star"
+              defaultIcon = "ios-star-outline"
+              activeColor = "#488aff" 
+              defaultColor = "red"
+              readonly="false"
+              [rating]="rating">
+        </ionic3-star-rating>
+      
+        Selected rating: {{rating}}
+      </ion-content>
+    -->
 
     <ion-item-divider>Productos en oferta</ion-item-divider>
 

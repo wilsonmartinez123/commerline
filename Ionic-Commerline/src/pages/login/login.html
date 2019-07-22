@@ -7,12 +7,20 @@
 	</ion-navbar>
 </ion-header>
 
+<!--<ion-menu [disabled]="!isLoggedIn"></ion-menu>-->
+
 <ion-content>
 	<div class="logo">
 		<img src="assets/img/commer.jpeg" alt="Ionic logo">
 	</div>
 
-	<form #loginForm="ngForm" novalidate>
+	<!---->
+	<ion-item *ngIf="isLoggedIn">
+		<h2>Tienes que Salir de tu cuenta actual, para poder iniciar sesion</h2><br />
+		<button ion-button round block (click)="logout()">Salir</button>
+	</ion-item>
+
+	<form #loginForm="ngForm" novalidate *ngIf="!isLoggedIn">
 
 
 		<ion-list>
@@ -28,12 +36,21 @@
 
 					<ion-icon name="key" item-left></ion-icon>
 
-					<!--<div (capsLock)="capsOn=$event">-->
-					<ion-input type="password" placeholder="Contraseña" name="password" #password></ion-input>
 
-					<!--</div>-->
+					<ion-input type="{{type}}" name="password" placeholder="Password" name="password" #password style="width: 40px;"
+					 no-lines>
+					</ion-input>
+
+					<ion-icon name="eye" *ngIf="!showPass" color="dark" item-right (click)="showPassword()">
+						<!--<ion-icon name="eye" style="font-size:25px;"></ion-icon>-->
+					</ion-icon>
+
+					<ion-icon name="eye-off" *ngIf="showPass" color="dark" item-right (click)="showPassword()">
+						<!--<ion-icon name="eye-off" style="font-size:25px;"></ion-icon>-->
+					</ion-icon>
 
 				</ion-item>
+
 				<label *ngIf="capsOn">la tecla Bloq Mayús está activada</label>
 			</div>
 

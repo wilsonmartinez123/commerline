@@ -3,12 +3,9 @@ import { IonicPage, NavController, NavParams, AlertController, LoadingController
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Http, Headers, RequestOptions } from "@angular/http";
 import { AccountPage } from '../account/account';
-/**
- * Generated class for the ChangePasswordPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { AdminPage } from '../admin/admin';
+import { UsuarioPage } from '../usuario/usuario';
+
 
 @IonicPage()
 @Component({
@@ -22,18 +19,25 @@ export class ChangePasswordPage {
   name: any;
   username: string;
 
+  @ViewChild("currentPassword") currentPassword;
   @ViewChild("password") password;
   @ViewChild("passwordRetyped") passwordRetyped;
-  
+  correo: any;
+  rol: any;
+  admin: any;
+  cliente: any;
+  usuario: any;
+
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController,
     public loading: LoadingController, public http: Http) {
 
-     
+
 
     this.authForm = new FormGroup({
       password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]),
       passwordRetyped: new FormControl('', [Validators.required]),
+      currentPassword: new FormControl('', [Validators.required]),
 
 
     });
@@ -41,9 +45,18 @@ export class ChangePasswordPage {
 
   ngOnInit() {
 
-    this.name = this.navParams.get('correo_cli');
 
-  } 
+
+    //obtiene el id_rol
+    this.rol = this.navParams.get('id_rol');
+    this.admin = this.navParams.get('id_administrador');
+
+    //cliente o empresarios
+    this.cliente = this.navParams.get('id_cliente');
+
+    //usuario
+    this.usuario = this.navParams.get('id_usuario');
+  }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ChangePasswordPage');
@@ -74,11 +87,19 @@ export class ChangePasswordPage {
 
       let data = {
 
+        currentPassword: this.currentPassword.value,
         password: this.password.value,
-        name: this.name,
+        //name: this.name,
+        admin: this.admin,
+        cliente: this.cliente,
+        usuario: this.usuario,
+        rol: this.rol,
+
 
 
       };
+
+      console.log(data);
 
       let loader = this.loading.create({
 
@@ -104,8 +125,22 @@ export class ChangePasswordPage {
 
               });
 
-              alert.present();
-              this.navCtrl.push(AccountPage);
+              if (this.rol == 1) {
+
+                alert.present();
+                this.navCtrl.push(AdminPage);
+
+              } else if (this.rol == 2) {
+
+                alert.present();
+                this.navCtrl.push(AccountPage);
+              }
+
+              else {
+
+                alert.present();
+                this.navCtrl.push(UsuarioPage);
+              }
             }
 
             else {

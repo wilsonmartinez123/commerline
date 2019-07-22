@@ -1,0 +1,63 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Editar datos usuario</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+
+    <form [formGroup]="authForm" (ngSubmit)="Update()">
+
+
+      <ion-item [ngClass]="{'error-border':!authForm.controls.username.valid && authForm.controls.username.touched}">
+        <ion-label floating>Nombre usuario</ion-label>
+        <ion-input formControlName="username" type="text" name="username" #username [(ngModel)]="name"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="authForm.controls.username.hasError('required') && authForm.controls.username.touched">
+        <p>Nombre de usuario es requerido</p>
+      </ion-item>
+      <ion-item *ngIf="authForm.controls.username.hasError('pattern') && authForm.controls.username.touched">
+        <p>Permitido solo letras</p>
+      </ion-item>
+
+
+      <ion-item [ngClass]="{'error-border':!authForm.controls.email.valid && authForm.controls.email.touched}">
+        <ion-label floating>Correo</ion-label>
+        <ion-input formControlName="email" type="email" name="email" #email [(ngModel)]="emails"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="authForm.controls.email.hasError('required') && authForm.controls.email.touched">
+        <p>Ingrese su correo electrónico</p>
+      </ion-item>
+      <ion-item *ngIf="authForm.controls.email.hasError('pattern') && authForm.controls.email.touched">
+        <p>Dirección de correo electrónico no válida</p>
+      </ion-item>
+
+
+      <ion-item [ngClass]="{'error-border':!authForm.controls.mobile.valid && authForm.controls.mobile.touched}">
+        <ion-label floating>Número de celular</ion-label>
+        <ion-input formControlName="mobile" type="number" name="mobile" #mobile [(ngModel)]="phone"></ion-input>
+      </ion-item>
+      <div *ngIf="authForm.controls.mobile.hasError('required') && authForm.controls.mobile.touched">
+        <p>campo Número celular es requerido!</p>
+      </div>
+      <div *ngIf="authForm.controls.mobile.hasError('minlength') && authForm.controls.mobile.touched">
+        <p>longitud 10 Digitos!</p>
+      </div>
+
+
+
+      <div padding>
+
+        <button ion-button round outline block color="primary" [disabled]="!authForm.valid" style="margin-top: 20px;"
+          type="submit">Actualizar</button>
+      </div>
+
+    </form>
+  </ion-list>
+
+</ion-content>

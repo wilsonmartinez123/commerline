@@ -30,13 +30,14 @@ export class HomePage {
 
   checked = [];
   showButton: boolean = false;
+  cliente: any;
 
   constructor(public navCtrl: NavController, private http: Http, public loading: LoadingController, public navParams: NavParams,
     public alertCtrl: AlertController, public userData: UserData) {
 
     //this.empresa = this.navParams.get('id_empresa');
 
-    this.empresa = localStorage.getItem('id_empresa');
+    this.empresa = JSON.parse(localStorage.getItem('id_empresa'));
 
     let loader = this.loading.create({
       content: 'Cargando productos…',
@@ -72,7 +73,17 @@ export class HomePage {
     console.log('ionViewDidLoad ViewProductsPage');
   }
 
+  ngOnInit() {
+
+    this.cliente = JSON.parse(localStorage.getItem('id_cliente'));
+
+
+  }
+
+
   Post() {
+
+    localStorage.setItem('id_cliente', this.cliente);
     this.navCtrl.push(AgregarProductoPage)
   }
 
@@ -187,7 +198,7 @@ export class HomePage {
                     });
 
                     alert.present()
-                    this.navCtrl.push(HomePage);
+                    this.navCtrl.setRoot(HomePage);
                   }
                   else {
 
@@ -275,7 +286,7 @@ export class HomePage {
                     });
 
                     alert.present()
-                    this.navCtrl.push(HomePage);
+                    this.navCtrl.setRoot(HomePage);
                   }
                   else {
 
@@ -306,4 +317,4 @@ export class HomePage {
 
 }
 
-//}
+

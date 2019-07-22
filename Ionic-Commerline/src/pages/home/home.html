@@ -25,12 +25,12 @@
 <ion-content padding>
 
 
-  <div *ngIf="items?.length == 0">
+  <div *ngIf="items?.length == ''">
     <h2>Aun no ha registrado productos, por favor registra primero su empresa y luego sus productos, Gracias.</h2>
   </div>
 
 
-  <div *ngIf="items?.length != 0">
+  <div *ngIf="items?.length != ''">
 
     <ion-item>
       <button class="add" ion-button item-right icon-right margin-bottom color="primary" (click)="Post()">
