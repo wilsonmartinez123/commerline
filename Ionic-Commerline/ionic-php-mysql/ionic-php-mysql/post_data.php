@@ -31,7 +31,7 @@ if (is_array($array_data)) {
 
     foreach ($array_data as $value) {
 
-        $image = $value["picture"];
+        $image = utf8_decode($value["picture"]);
         $namefile = $value["namefile"];
         //quitar la extension del nombre de la imagen.
         $namefile = pathinfo($namefile)['filename'];

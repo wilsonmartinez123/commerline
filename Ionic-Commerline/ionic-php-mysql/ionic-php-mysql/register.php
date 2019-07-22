@@ -105,8 +105,8 @@ if ($option == '2') {
 
         } else {
 
-            $sql = "INSERT INTO usuarios ( nombre_usu, clave_usu, telefono_usu, correo_usu)
-        VALUES ('$username', '$password', '$mobile', '$emailadd')";
+            $sql = "INSERT INTO usuarios (id_rol, nombre_usu, clave_usu, telefono_usu, correo_usu)
+        VALUES (3, '$username', '$password', '$mobile', '$emailadd')";
 
             if ($con->query($sql) === true) {
 

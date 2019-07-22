@@ -51,21 +51,6 @@ $departamento = stripslashes(utf8_decode($departamento));
 $municipio = stripslashes(utf8_decode($municipio));
 $id_cliente = stripslashes($id_cliente);
 
-//session_start();
-//$cliente = $_SESSION['id_cliente'];
-//echo $_SESSION['id_cliente'];
-//$cliente = $response2;
-
-if (isset($_SESSION['id_cliente'])) {
-    session_start();
-    //header("location:login.php");
-    //exit();
-    echo $_SESSION['id_cliente'];
-    $cliente = $_SESSION['id_cliente'];
-}
-
-
-
 // check if empresa is already existed
 // $sql = "SELECT nombre_emp, link_emp FROM empresa WHERE nombre_emp LIKE '$name' AND link_emp LIKE '$paginaWeb'";
 $sql = "SELECT id_cliente, nombre_emp FROM empresa WHERE id_cliente LIKE '$id_cliente' ";
@@ -97,5 +82,3 @@ if ($result = mysqli_query($con, $sql)) {
     $response = "El servidor no funciona correctamente!!!!";
     echo json_encode($response);
 }
-
-?>

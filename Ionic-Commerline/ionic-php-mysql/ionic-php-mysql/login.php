@@ -38,20 +38,12 @@ $password = md5($password);
 
 $sql = "SELECT * FROM clientes WHERE correo_cli = '$correo' and clave_cli = '$password'";
 
-/*
-$result = mysqli_query($con, $sql);
-$row = mysqli_fetch_array($result);
-
-$response = $row[1];
-echo json_encode($response);
- */
-
 $result = mysqli_query($con, $sql);
 $row = mysqli_fetch_array($result);
 
 if ($row) {
 
-    $response = $row[1];
+    $response = "empresario";
     echo json_encode($response);
 
 } else {
@@ -63,9 +55,9 @@ if ($row) {
 
     if ($row) {
 
-        $response = $row[1];
+        //$response = $row[1];
+        $response = "administrador";
         echo json_encode($response);
-
 
     } else {
 

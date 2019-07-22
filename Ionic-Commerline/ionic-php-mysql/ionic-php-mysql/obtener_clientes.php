@@ -22,27 +22,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 require "dbconnect.php";
 
-$query = "SELECT * FROM empresa ";
+
+$query = "SELECT * FROM clientes c LEFT JOIN empresa e ON c.id_cliente = e.id_cliente";
+
 $result = mysqli_query($con, $query);
 
 $response = array();
 while ($row = mysqli_fetch_array($result)) {
 
-    $row = array_map('utf8_encode', $row);
-    array_push($response, array('id_empresa' => $row[0],
+   
 
-        'id_cliente' => $row[1],
-        'nombre_emp' => $row[2],
-        'direccion_emp' => $row[3],
-        'horario_emp' => $row[4],
-        'logo_emp' => $row[5],
-        'telefono_emp' => $row[6],
-        'link_emp' => $row[7],
+        $row = array_map('utf8_encode', $row);
+        array_push($response, array('id_cliente' => $row[0],
 
-    ));
+            'id_rol' => $row[1],
+            'nombre_cli' => $row[2],
+            'identificacion_cli' => $row[3],
+            'matricula_mercantil_cli' => $row[4],
+            'clave_cli' => $row[5],
+            'correo_cli' => $row[6],
+            'telefono_cli' => $row[7],
+            'id_empresa' => $row['id_empresa'],
+
+        ));
 
 }
 
-echo json_encode(array('empresa' => $response));
+
+echo json_encode(array('clientes' => $response));
 
 mysqli_close($con);
