@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { UserData } from '../../providers/user-data';
-import { Http } from '@angular/http';
+import { Http, Headers } from '@angular/http';
 import { AdminClientesPage } from '../admin-clientes/admin-clientes';
 import { AdminEmpresasPage } from '../admin-empresas/admin-empresas';
+import { AdminEditPage } from '../admin-edit/admin-edit';
+import { ChangePasswordPage } from '../change-password/change-password';
 
 
 @IonicPage()
@@ -16,15 +18,15 @@ export class AdminPage {
   users: any;
 
   constructor(public navParams: NavParams, public userData: UserData, public nav: NavController, private http: Http) {
-    //obtener usuarios
+    //obtener empresarios
 
-    this.http.get('http://localhost/ionic-php-mysql/obtener_usuarios.php').map(res => res.json()).subscribe(
+    this.http.get('http://localhost/ionic-php-mysql/Admin/obtener_admin.php').map(res => res.json()).subscribe(
       data => {
 
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
-        this.users = data.usuarios;
+        this.users = data.admin;
 
       },
       error => {
@@ -46,6 +48,10 @@ export class AdminPage {
   getUsername() {
     this.userData.getUsername().then((username) => {
       this.username = username;
+
+      //variable global para detectar el inicio de sesion y deshabilitar la pagina de login
+      localStorage.setItem('login', username);
+
     });
   }
 
@@ -57,15 +63,22 @@ export class AdminPage {
   verClientes() {
     this.nav.push(AdminClientesPage);
   }
-  updateDate() {
 
+  updateDate(item) {
+
+    this.nav.push(AdminEditPage, item)
   }
-  changePassword() {
+
+  changePassword(item) {
+
+    this.nav.push(ChangePasswordPage, item)
   }
 
   logout() {
     this.userData.logout();
     this.nav.setRoot('LoginPage');
+     //si sale del sistema, la variable global se establece como null;
+     localStorage.clear();
   }
 
 }

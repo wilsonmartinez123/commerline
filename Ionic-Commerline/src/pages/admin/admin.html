@@ -11,34 +11,36 @@
 
 
   <div padding-top text-center *ngIf="username">
-    <img src="http://www.gravatar.com/avatar?d=mm&s=140" alt="avatar">
-    <h2>{{username}}</h2>
+    <!--<img src="http://www.gravatar.com/avatar?d=mm&s=140" alt="avatar">
+    <h2>{{username}}</h2> -->
 
 
     <div *ngFor="let item of users">
-      <h2 *ngIf="(item.correo_cli === username)">Bienvenido: {{item.nombre_cli}}
-      </h2>
+      <div *ngIf="(item.correo_admin === username || item.correo_admin.toUpperCase() === username)">
+        <h2> Bienvenido: {{item.nombre_admin}}
+        </h2>
+
+
+
+        <ion-list inset>
+
+          <button ion-item (click)="verEmpresas()">Ver Empresas</button>
+          <button ion-item (click)="verClientes()">Ver Clientes</button>
+          <button ion-item (click)="updateDate(item)">Actualizar Datos</button>
+          <button ion-item (click)="changePassword(item)">Cambiar contraseña</button>
+          <button ion-item (click)="logout()">Salir</button>
+
+
+        </ion-list>
+
+
+      </div>
+
     </div>
 
-
-    <ion-list inset>
-
-
-      <button ion-item (click)="verEmpresas()">Ver Empresas</button>
-      <button ion-item (click)="verClientes()">Ver Clientes</button>
-      <button ion-item (click)="updateDate()">Actualizar Datos</button>
-      <button ion-item (click)="changePassword()">Cambiar contraseña</button>
-      <button ion-item (click)="logout()">Salir</button>
-
-
-    </ion-list>
-
-
-
-
-
-
   </div>
+
+
 
 
 

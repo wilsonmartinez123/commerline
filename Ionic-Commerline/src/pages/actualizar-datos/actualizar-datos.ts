@@ -3,7 +3,6 @@ import { IonicPage, NavController, AlertController, LoadingController, NavParams
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { RequestOptions, Headers, Http } from '@angular/http';
 import { AccountPage } from '../account/account';
-//import { Http } from '@angular/http';
 
 
 @IonicPage()

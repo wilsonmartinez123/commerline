@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 
 export interface Config {
-  usuarios: string;
+  clientes: string;
 }
 
 @IonicPage()
@@ -59,9 +59,9 @@ export class AdminClientesPage {
 
     loader.present().then(() => {
       this._HTTP
-        .get<Config>('http://localhost/ionic-php-mysql/Admin/obtener_usuarios_admin.php')
+        .get<Config>('http://localhost/ionic-php-mysql/Admin/obtener_clientes_admin.php')
         .subscribe((data) => {
-          this.rows = data.usuarios;
+          this.rows = data.clientes;
           loader.dismiss();
         });
 

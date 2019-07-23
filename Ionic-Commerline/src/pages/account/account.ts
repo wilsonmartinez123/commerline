@@ -13,6 +13,7 @@ import { AgregarProductoPage } from '../agregar-producto/agregar-producto';
 //import { Items } from '../../providers';
 import { ActualizarDatosPage } from '../actualizar-datos/actualizar-datos';
 import { AgregarProductosOfertaPage } from '../agregar-productos-oferta/agregar-productos-oferta';
+import { HomePage } from '../home/home';
 
 
 @Component({
@@ -22,7 +23,6 @@ import { AgregarProductosOfertaPage } from '../agregar-productos-oferta/agregar-
 export class AccountPage {
   username: string;
   users: any;
-  hidden: boolean;
 
   //currentItems: Item[];
 
@@ -30,19 +30,17 @@ export class AccountPage {
     public modalCtrl: ModalController, private http: Http, public navParams: NavParams,
     //public items: Items
   ) {
-    // this.currentItems = this.items.query();
 
-    //obtener el valor hidden de agregar empresa
-    this.hidden = navParams.get('data');
 
-    //obtener usuarios
-    this.http.get('http://localhost/ionic-php-mysql/obtener_usuarios.php').map(res => res.json()).subscribe(
+
+    //obtener clientes
+    this.http.get('http://localhost/ionic-php-mysql/obtener_clientes.php').map(res => res.json()).subscribe(
       data => {
 
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
-        this.users = data.usuarios;
+        this.users = data.clientes;
         //this.categories = Array.of(this.categories);
 
       },
@@ -58,35 +56,13 @@ export class AccountPage {
   }
 
 
-  // Present an alert with the current username populated
-  // clicking OK will update the username and display it
-  // clicking Cancel will close the alert and do nothing
-  changeUsername() {
-    let alert = this.alertCtrl.create({
-      title: 'Change Username',
-      buttons: [
-        'Cancel'
-      ]
-    });
-    alert.addInput({
-      name: 'username',
-      value: this.username,
-      placeholder: 'username'
-    });
-    alert.addButton({
-      text: 'Ok',
-      handler: (data: any) => {
-        this.userData.setUsername(data.username);
-        this.getUsername();
-      }
-    });
-
-    alert.present();
-  }
-
   getUsername() {
     this.userData.getUsername().then((username) => {
       this.username = username;
+
+      //variable global para detectar el inicio de sesion y deshabilitar la pagina de login
+      localStorage.setItem('login', username);
+
     });
   }
 
@@ -104,6 +80,8 @@ export class AccountPage {
   logout() {
     this.userData.logout();
     this.nav.setRoot('LoginPage');
+
+    localStorage.clear();
   }
 
   support() {
@@ -156,14 +134,22 @@ export class AccountPage {
     alert.present();
   }
 
-  verProducto(id_empresa) {
+  verProducto(item) {
     //this.ParametroService.myParam = id_empresa;
-    localStorage.setItem('id_empresa', id_empresa);
-    this.nav.push('HomePage');
+    
+    this.nav.push(HomePage, { item: item });
+
+    let json = JSON.stringify(item.id_empresa);
+    localStorage.setItem('id_empresa', json);
+
+    //envia id del cliente para poder agregar producto
+    let cliente = JSON.stringify(item.id_cliente);
+    localStorage.setItem('id_cliente', cliente);
   }
 
   verEmpresa(item) {
     this.nav.push(VerEmpresaPage, item)
+    
   }
 
   agregarEmpresa(item) {
