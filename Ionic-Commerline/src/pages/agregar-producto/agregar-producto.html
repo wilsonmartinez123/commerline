@@ -33,7 +33,7 @@
             Click en el Botón Registrar. Gracias</h4>
           <br>
 
-          <p>Todos los campos con * son obligatorios, llene todos los campos para poder registrar</p>
+          <p>Todos los campos con * son obligatorios, llene todos los datos para poder registrar</p>
 
 
           <!-- asignar productos FormArray al formulario para generar un nuevo campo -->
@@ -47,10 +47,11 @@
                 <ion-item-divider color="light">Producto #{{ i + 1 }}</ion-item-divider><br />
 
 
+
                 <ion-item>
                   <ion-icon name="basket" item-start></ion-icon>
                   <ion-label stacked>Nombre del producto*</ion-label>
-                  <ion-input type="text" name="name" #name formControlName="name" (ionChange)="changeName()"></ion-input>
+                  <ion-input type="text" name="name" #name formControlName="name"></ion-input>
                 </ion-item>
                 <div *ngIf="retur.get('name').touched && retur.get('name').hasError('required')">
                   <p>Nombre de producto es requerido!</p>
@@ -60,7 +61,7 @@
                 <ion-item>
                   <ion-icon name="pricetag" item-start></ion-icon>
                   <ion-label stacked>Precio *</ion-label>
-                  <ion-input type="number" name="price" #price formControlName="price" (ionChange)="changePrice()"></ion-input>
+                  <ion-input type="number" name="price" #price formControlName="price"></ion-input>
                 </ion-item>
                 <div *ngIf="retur.get('price').touched && retur.get('price').hasError('required')">
                   <p>Precio de producto es requerido!, Ingrese el valor sin incluir el signo $, ni puntos ni comas.</p>
@@ -70,7 +71,7 @@
                 <ion-item>
                   <ion-icon name="list" item-start></ion-icon>
                   <ion-label>Categoría</ion-label>
-                  <ion-select name="categoria" #categoria formControlName="categoria" (ionChange)="changeCategory()">
+                  <ion-select name="categoria" #categoria formControlName="categoria">
                     <ion-option value="Celulares">Celulares</ion-option>
                     <ion-option value="Computadores">Computadores y Tablets</ion-option>
                     <ion-option value="Audio">Audio</ion-option>
@@ -95,8 +96,7 @@
                 <ion-item>
                   <ion-icon name="paper" item-start></ion-icon>
                   <ion-label stacked>Descripción del producto*</ion-label>
-                  <ion-textarea name="description" #description formControlName="description" rows="6" maxLength="500"
-                    (ionChange)="changeDescription()"></ion-textarea>
+                  <ion-textarea name="description" #description formControlName="description" rows="6" maxLength="500"></ion-textarea>
                 </ion-item>
                 <div *ngIf="retur.get('description').touched && retur.get('description').hasError('required')">
                   <p>Descripción del producto es requerido!</p>
@@ -104,9 +104,8 @@
 
                 <ion-item>
                   <ion-icon name="image" item-start></ion-icon>
-                  <ion-label>*Imagen</ion-label>
-                  <ion-input type="file" accept="image/*" name="picture" #picture formControlName="picture" (change)="selectFileToUpload($event,i)">
-                  </ion-input>
+                  <ion-label text-wrap>Imagen*</ion-label>
+                  <ion-input type="file" accept="image/*" (change)="selectFileToUpload($event, i)" formControlName="picture"></ion-input>
                 </ion-item>
 
 
@@ -114,23 +113,20 @@
                   <p>Imagen del producto es requerido!</p>
                 </div>
 
-                <div *ngIf="isSelected">
+
+
+                <div *ngIf="retur.image">
                   <ion-label>Preview</ion-label>
-                  <img class="imagen" [src]="retur.value.picture | safe" />
+                  <img class="imagen" [src]="retur.image | safe" />
                 </div>
                 <br />
+
+
 
                 <!-- Permite eliminar las productos ingresadas antes de enviar -->
                 <button float-right ion-button icon-left clear *ngIf="form.controls.productos.length > 1" (click)="removeInputField(i)">
                   <ion-icon name="close"></ion-icon>
                   Eliminar
-                </button>
-
-
-                <!-- Guardar producto imagen  -->
-
-                <button ion-button [disabled]="!form.valid && disabled" (click)="addProduct(i)">
-                  Agregar producto a la lista
                 </button>
 
 
@@ -143,16 +139,16 @@
 
           <br />
 
-          <div *ngIf="productValid">
-            <!-- PERMITE PODER REGISTRAR OTRO PRODUCTO, POR SI TIENE MAS DE UNA -->
-            <span ion-button float-left icon-left clear (click)="addNewInputField()">
-              <ion-icon name="add"></ion-icon>
-              AGREGAR PRODUCTO
-            </span>
+
+          <!-- PERMITE PODER REGISTRAR OTRO PRODUCTO, POR SI TIENE MAS DE UNA -->
+          <span ion-button float-left icon-left clear (click)="addNewInputField()">
+            <ion-icon name="add"></ion-icon>
+            AGREGAR PRODUCTO
+          </span>
 
 
-            <button class="registrar" ion-button round outline block [disabled]="!form.valid" (click)="submitForm(i)">Guardar</button>
-          </div>
+          <button class="registrar" ion-button round outline block [disabled]="!form.valid" (click)="submitForm()">Guardar</button>
+
 
 
         </ion-list>

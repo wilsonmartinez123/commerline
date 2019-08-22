@@ -6,6 +6,7 @@ import 'rxjs/add/operator/map';
 import { Component } from '@angular/core';
 import { AgregarProductoPage } from '../agregar-producto/agregar-producto';
 import { UserData } from '../../providers/user-data';
+import { AgregarProductosOfertaPage } from '../agregar-productos-oferta/agregar-productos-oferta';
 
 
 @IonicPage()
@@ -75,7 +76,7 @@ export class HomePage {
 
   ngOnInit() {
 
-    this.cliente = JSON.parse(localStorage.getItem('id_cliente'));
+    this.cliente = JSON.parse(localStorage.getItem('item'));
 
 
   }
@@ -83,8 +84,59 @@ export class HomePage {
 
   Post() {
 
-    localStorage.setItem('id_cliente', this.cliente);
-    this.navCtrl.push(AgregarProductoPage)
+    //localStorage.setItem('id_cliente', this.cliente);
+    //this.navCtrl.push(AgregarProductoPage)
+
+    let alert = this.alertCtrl.create({
+
+      title: 'El producto o los productos que va a ingresar estan en oferta?',
+      message: 'recuerda que registrar productos en oferta, tiene un costo',
+      buttons: [
+
+        {
+
+          text: 'SI',
+          //role: 'SI',
+
+          handler: () => {
+
+            //localStorage.setItem('id_cliente', this.cliente);
+            //this.navCtrl.push(AgregarProductosOfertaPage);
+
+            let cliente = JSON.stringify(this.cliente.id_cliente);
+            localStorage.setItem('id_cliente', cliente);
+
+            let empresa = JSON.stringify(this.cliente);
+            localStorage.setItem('id_empresa', empresa);
+
+            this.navCtrl.push(AgregarProductosOfertaPage, { item: this.cliente });
+          }
+
+        },
+
+        {
+
+          text: 'NO',
+          handler: () => {
+
+
+            let cliente = JSON.stringify(this.cliente.id_cliente);
+            localStorage.setItem('id_cliente', cliente);
+
+
+            let empresa = JSON.stringify(this.cliente);
+            localStorage.setItem('id_empresa', empresa);
+
+            this.navCtrl.push(AgregarProductoPage, { item: this.cliente });
+
+          }
+
+        }
+
+      ]
+
+    });
+    alert.present();
   }
 
   editPost(item) {

@@ -9,11 +9,11 @@ import { Http, Headers } from '@angular/http';
 import { AgregarSucursalPage } from '../agregar-sucursal/agregar-sucursal';
 import { VerEmpresaPage } from '../ver-empresa/ver-empresa';
 import { AgregarProductoPage } from '../agregar-producto/agregar-producto';
-//import { Item } from '../../assets/item';
-//import { Items } from '../../providers';
 import { ActualizarDatosPage } from '../actualizar-datos/actualizar-datos';
 import { AgregarProductosOfertaPage } from '../agregar-productos-oferta/agregar-productos-oferta';
 import { HomePage } from '../home/home';
+import { Storage } from '@ionic/storage';
+
 
 
 @Component({
@@ -27,7 +27,7 @@ export class AccountPage {
   //currentItems: Item[];
 
   constructor(public alertCtrl: AlertController, public nav: NavController, public userData: UserData,
-    public modalCtrl: ModalController, private http: Http, public navParams: NavParams,
+    public modalCtrl: ModalController, private http: Http, public navParams: NavParams, public storage: Storage
     //public items: Items
   ) {
 
@@ -60,8 +60,14 @@ export class AccountPage {
     this.userData.getUsername().then((username) => {
       this.username = username;
 
-      //variable global para detectar el inicio de sesion y deshabilitar la pagina de login
-      localStorage.setItem('login', username);
+      if (username == null) {
+        this.storage.remove('username');
+      }
+      else {
+
+        //variable global para detectar el inicio de sesion y deshabilitar la pagina de login
+        localStorage.setItem('login', username);
+      }
 
     });
   }
@@ -89,7 +95,7 @@ export class AccountPage {
   }
 
 
-  agregarProducto(id_cliente) {
+  agregarProducto(item) {
 
     let alert = this.alertCtrl.create({
 
@@ -104,8 +110,14 @@ export class AccountPage {
 
           handler: () => {
 
-            localStorage.setItem('id_cliente', id_cliente);
-            this.nav.push(AgregarProductosOfertaPage);
+            let json = JSON.stringify(item.id_cliente);
+            localStorage.setItem('id_cliente', json);
+
+            // envia id_empresa, una vez registra productos lista los que ya ha ingresado. 
+            let empresa = JSON.stringify(item);
+            localStorage.setItem('id_empresa', empresa);
+
+            this.nav.push(AgregarProductosOfertaPage, { item: item });
 
           }
 
@@ -116,11 +128,15 @@ export class AccountPage {
           text: 'NO',
           handler: () => {
 
+            let json = JSON.stringify(item.id_cliente);
+            localStorage.setItem('id_cliente', json);
+            //this.nav.push(AgregarProductoPage);
 
-            localStorage.setItem('id_cliente', id_cliente);
-            this.nav.push(AgregarProductoPage);
+            // envia id_empresa, una vez registra productos lista los que ya ha ingresado. 
+            let empresa = JSON.stringify(item);
+            localStorage.setItem('id_empresa', empresa);
 
-
+            this.nav.push(AgregarProductoPage, { item: item });
 
           }
 
@@ -136,20 +152,22 @@ export class AccountPage {
 
   verProducto(item) {
     //this.ParametroService.myParam = id_empresa;
-    
-    this.nav.push(HomePage, { item: item });
+
 
     let json = JSON.stringify(item.id_empresa);
     localStorage.setItem('id_empresa', json);
 
-    //envia id del cliente para poder agregar producto
-    let cliente = JSON.stringify(item.id_cliente);
-    localStorage.setItem('id_cliente', cliente);
+    //envia datos del cliente para poder agregar producto
+    let cliente = JSON.stringify(item);
+    localStorage.setItem('item', cliente);
+
+    this.nav.push(HomePage, { item: item });
+
   }
 
   verEmpresa(item) {
     this.nav.push(VerEmpresaPage, item)
-    
+
   }
 
   agregarEmpresa(item) {

@@ -23,10 +23,6 @@ export class AgregarProductosOfertaPage {
   public image: string;
 
 
-  //Used to switch DOM elements on/off depending on whether an image has been selected
-
-  public isSelected: boolean = false;
-
   //Will store the selected image's MimeType
 
   private _SUFFIX: string;
@@ -35,19 +31,27 @@ export class AgregarProductosOfertaPage {
   @ViewChild("name") name;
   @ViewChild("price") price;
   @ViewChild("description") description;
+  @ViewChild("fechaFinOferta") fechaFinOferta;
+
 
   productos: any;
   id_cliente: any;
-  id_clientes: any;
   posts: any;
   items: any;
+  minDate: any;
+  date: any;
+  diasOferta: any;
+  diasOferta2: any;
+  date2: any;
+  item: any;
+
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public http: Http, public toast: ToastController,
     public alertCtrl: AlertController, public loading: LoadingController, public fb: FormBuilder, private _IMAGES: ImageProvider,
   ) {
 
-    this.id_clientes = localStorage.getItem('id_cliente');
+    this.id_cliente = JSON.parse(localStorage.getItem('id_cliente'));
 
 
     this.http.get('http://localhost/ionic-php-mysql/obtener_empresas.php').map(res => res.json()).subscribe(
@@ -56,7 +60,7 @@ export class AgregarProductosOfertaPage {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
-        this.posts = data.empresa.filter(item => item.id_cliente === this.id_clientes);
+        this.posts = data.empresa.filter(item => item.id_cliente === this.id_cliente);
         this.initializeItems();
 
       },
@@ -71,16 +75,17 @@ export class AgregarProductosOfertaPage {
   }
 
   ngOnInit() {
-    //this.id_cliente = this.navParams.get('id_cliente');
 
-    this.id_cliente = localStorage.getItem('id_cliente');
-
-
+    this.item = JSON.parse(localStorage.getItem('id_empresa'));
 
 
     this.form = this.fb.group({
-      productos: this.initProductoFields(),
-    })
+      fechaInicioOferta: ["", Validators.required],
+      fechaFinOferta: ["", [Validators.required]],
+      diasOferta: [""],
+
+      productos: this.initProductoFields()
+    });
 
   }
 
@@ -108,26 +113,56 @@ export class AgregarProductosOfertaPage {
       name: ["", Validators.required],
       namefile: [""],
       typefile: [""],
+      image: [""],
       price: ["", Validators.required],
       description: ["", Validators.required],
       categoria: ["", Validators.required],
       IdEmpresario: [""],
-      diasOferta: ["", [Validators.required, Validators.maxLength(3)]],
-      precioOferta: ["", Validators.required],
-      fechaInicioOferta: ["", Validators.required],
-      fechaFinOferta: ["", Validators.required],
+      precioOferta: ["", [Validators.required]],
       picture: ["", Validators.required],
 
 
 
-    });
+    }
+      , { validator: this.customValidators }
+    );
 
   }
 
 
+  customValidators(group: FormGroup) {
+
+    var normalprice = group.controls['price'];
+    var offerprice = group.controls['precioOferta'];
+
+    if (offerprice.value * 1 < normalprice.value * 1) {
+
+      return null;
+    }
+
+    return { 'priceOutOfRange': true };
+
+  }
+
+
+  changedate() {
+    var fecha = this.date.split('-');
+    this.minDate = (fecha[0] + "-" + fecha[1] + "-" + fecha[2].slice(0, 2));
+    console.log(this.minDate);
+  }
+
+  changeFinDate() {
+    var fechaFin = this.date2.split('-');
+    this.diasOferta = (fechaFin[2].slice(0, 2));
+    var fechaInicio = this.date.split('-');
+    this.diasOferta2 = (fechaInicio[2].slice(0, 2));
+    this.form.controls['diasOferta'].setValue((this.diasOferta - this.diasOferta2) + 1);
+  }
+
 
   addNewInputField() {
     this.productos.push(this.buildGroup());
+
   }
 
   removeInputField(i: number): void {
@@ -135,55 +170,54 @@ export class AgregarProductosOfertaPage {
   }
 
 
+
   selectFileToUpload(event, index): void {
 
-    this.productos.controls[index].value.IdEmpresario = this.id_cliente;
-
-    if (event.target.files[0]) {
-
-
-      this.productos.controls[index].value.namefile = event.target.files[0].name;
-      this.productos.controls[index].value.typefile = event.target.files[0].type;
-
-
-      this._IMAGES
-        .handleImageSelection(event)
-        .subscribe((res) => {
-
-          // Retrieve the file type from the base64 data URI string
-          this._SUFFIX = res.split(':')[1].split('/')[1].split(";")[0];
+    this.productos.controls[index].controls['IdEmpresario'].value = this.id_cliente;
+    this.productos.controls[index].controls['namefile'].value = event.target.files[0].name;
+    this.productos.controls[index].controls['typefile'].value = event.target.files[0].type;
 
 
 
-          // Do we have correct file type?
-          if (this._IMAGES.isCorrectFileType(this._SUFFIX)) {
+    this._IMAGES
+      .handleImageSelection(event)
+      .subscribe((res) => {
 
-            // Hide the file input field, display the image in the component template
-            // and display an upload button
-            this.isSelected = true
-            this.image = res;
-            this.productos.controls[index].value.picture = res;
+        // Retrieve the file type from the base64 data URI string
+        this._SUFFIX = res.split(':')[1].split('/')[1].split(";")[0];
 
 
-          }
+
+        // Verifica si el tipo de archivo es el correcto?
+        if (this._IMAGES.isCorrectFileType(this._SUFFIX)) {
+
+          //Muestra la Imagen
+
+          this.productos.controls[index].image = res;
+          this.productos.controls[index].controls['picture'].value = res;
 
 
-          // If we don't alert the user
-          else {
-            this.displayAlert('Debe seleccionar un archivo de imagen con uno de los siguientes tipos: jpg, gif o png');
-          }
+        }
 
 
-        },
-          (error) => {
-            console.dir(error);
-            this.displayAlert(error.message);
-          });
-    }
-    else {
+        // If we don't alert the user
+        else {
+          this.displayAlert('Debe seleccionar un archivo de imagen con uno de los siguientes tipos: jpg, gif o png');
+        }
 
-      this.isSelected = false;
-    }
+        if (this.productos.controls[index].value['picture'].includes('fakepath')) {
+          this.productos.controls[index].value['picture'] = res;
+          this.productos.controls[index].value['IdEmpresario'] = this.id_cliente;
+          this.productos.controls[index].value['namefile'] = event.target.files[0].name;
+          this.productos.controls[index].value['typefile'] = event.target.files[0].type;
+        }
+
+      },
+        (error) => {
+          console.dir(error);
+          this.displayAlert(error.message);
+        });
+
 
 
   }
@@ -230,7 +264,10 @@ export class AgregarProductosOfertaPage {
 
             alert.present();
 
-            this.navCtrl.push(HomePage);
+            let empresa = JSON.stringify(this.item.id_empresa);
+            localStorage.setItem('id_empresa', empresa);
+
+            this.navCtrl.push(HomePage, { item: this.item });
           }
 
           else {
