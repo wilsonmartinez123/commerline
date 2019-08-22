@@ -1,128 +1,138 @@
 <?php
 
-    Header ('Access-Control-Allow-Origin *');
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Max-Age: 86400');    // cache for 1 day
+Header('Access-Control-Allow-Origin *');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Max-Age: 86400'); // cache for 1 day
+header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: image/jpeg');
 
+// Access-Control headers are received during OPTIONS requests
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
-    // Access-Control headers are received during OPTIONS requests
-    if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+    }
 
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");         
-
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
         header("Access-Control-Allow-Headers:        {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+    }
 
     exit(0);
-    }
+}
 
- 
+require "dbconnect.php";
 
-  require "db.php";
+$json = file_get_contents("php://input");
+$data = json_decode($json, true);
 
-    $data = file_get_contents("php://input");
+$array_data = $data["productos"];
+//if(is_array($array_data) || is_object($array_data)){
 
-    if (isset($data)) {
+//funcion para redimensionar imagenes
+function save_image_from_64($path, $name, $dimension, $original)
+{
+    list($width, $height) = explode('x', $dimension); //Getting new height and width
+    $img = str_replace('data:image/jpeg;base64,', '', $original); //Getting the base64 imagen
+    $image = imagecreatefromstring(base64_decode($img));
+    $new_image = imagecreatetruecolor($width, $height);
+    imagecopyresampled($new_image, $image, 0, 0, 0, 0, $width, $height, imagesx($image), imagesy($image));
+    imagejpeg($new_image, $path . $name . '.jpg', 100); // guardar la imagen
+}
 
-        $request = json_decode($data);
-        $name = $request->name;
-        $price = $request->price;
-        $description = $request->description; 
-        $image = $request->image;               
-       // $image     =  strip_tags($request->image);
+if (is_array($array_data)) {
 
-        
+    foreach ($array_data as $value) {
 
-    }
-   // file_put_contents('uploads/img_'.date('Y-m-d-H-s').'.jpg', base64_decode(explode(',',$image)[1]));
-    
-    $name = stripslashes($name);
-    $image = stripslashes($image);
-    $price = stripslashes($price);
-    $description = stripslashes($description);
+        $image = utf8_decode($value["picture"]);
+        // $image = base64_decode($imagenes);
 
-    
-    
-    file_put_contents('uploads/img_'.date('Y-m-d-H-s').'.jpg', base64_decode(explode(',',$image)[1]));
-    $image = ('uploads/img_'.date('Y-m-d-H-s').'.jpg');
-   
-    //especifica la fecha en que se registra el producto
-    $created=date('Y-m-d H:i:s');
- 
+        $namefile = $value["namefile"];
+        //quitar la extension del nombre de la imagen.
+        $namefile = pathinfo($namefile)['filename'];
 
-/////// Check to see that the database does not contain repeated information
+        $name = utf8_decode($value["name"]);
+        $description = utf8_decode($value["description"]);
 
-/*$sql = "SELECT name from productos WHERE name like '$name'";   
+        //seleccionar el ID de la categeria escogida
+        $sqlte = "SELECT * FROM categorias WHERE nombre_categoria = '" . $value["categoria"] . "' ";
+        $resultado = mysqli_query($con, $sqlte);
+        $fila = mysqli_fetch_array($resultado);
 
-    if ($result=mysqli_query($con, $sql))
-    { 
+        $IdCategoria = $fila['id_categoria'];
 
-        if ($row = $result->fetch_assoc()) {  
-            
-            //$response["error"] = TRUE;           
-            $response = "Name of product already exists in our database";         
-            echo json_encode($response);       
-        }  
+        //SELECCIONA ID empresa dependiendo del empresario que hace login
+        $created = date('Y-m-d H:i:s');
 
-        else { */
+        $sqls = "SELECT * FROM clientes INNER JOIN empresa  ON clientes.id_cliente = empresa.id_cliente WHERE clientes.id_cliente = '" . $value["IdEmpresario"] . "'";
+        $result = mysqli_query($con, $sqls);
+        $row = mysqli_fetch_array($result);
 
-      $sql = "SELECT id FROM productos WHERE name = '$name'";
+        $IDempresa = $row['id_empresa'];
+        $empresario = $row['nombre_cli'];
+        $identificacion = $row['identificacion_cli'];
 
-      $result = mysqli_query($con,$sql);
-      $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-      $active = $row['active'];
-      $count = mysqli_num_rows($result);
+        $filename = 'uploads/' . $empresario . '-' . $identificacion . '/';
 
-      // If result matched country and $country, table row must be 1 row                   
+        //si el campo diasOferta no esta vacio
+        //if (!empty($value["diasOferta"])) {
+        if (!empty($data["diasOferta"])) {
 
-        if($count >0) {
+            //$inicioOferta = $value["fechaInicioOferta"];
+            //$finOferta = $value["fechaFinOferta"];
+            $inicioOferta = $data["fechaInicioOferta"];
+            $finOferta = $data["fechaFinOferta"];
+            $diasOferta = $data["diasOferta"];
 
-        $response=  "Name of product already exists in our database"; 
+            if (!file_exists($filename)) {
+                mkdir('uploads/' . $empresario . '-' . $identificacion . '/', 0777, true);
 
-        /*}else {
-            
-            $sql = "SELECT id FROM countries WHERE  capital = '$capital'";
+                save_image_from_64('uploads/' . $empresario . '-' . $identificacion . '/', $name . '-' . $namefile, "400x400", $image);
+                $images = ('uploads/' . $empresario . '-' . $identificacion . '/' . $name . '-' . $namefile . '.jpg');
 
-        $result = mysqli_query($db,$sql);
+                $sql = "INSERT INTO productos (id_empresa, nombre_pro, imagen_pro, precioNuevo_pro, descripcion_pro, fecha_registro_pro, id_categoria, precioAnterior_pro, diasOferta_pro, inicioOferta_pro, finOferta_pro ) VALUES ('$IDempresa','$name', '$images'    ,  '" . $value["price"] . "',  '$description', '$created',  '$IdCategoria' ,  '" . $value["precioOferta"] . "',  '$diasOferta', '$inicioOferta', '$finOferta')";
+                $query = $con->query($sql);
 
-        $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+            } else {
 
-        $active = $row[‘active’];
+                save_image_from_64('uploads/' . $empresario . '-' . $identificacion . '/', $name . '-' . $namefile, "400x400", $image);
+                $images = ('uploads/' . $empresario . '-' . $identificacion . '/' . $name . '-' . $namefile . '.jpg');
 
-        $count = mysqli_num_rows($result);
-
-        // If result matched capital and $capital, table row must be 1 row           
-
-        if($count >0) {
-
-        $response= “capital already exists, there are no two countries with the same capital”;
-       */
-
-        }        
-               
-
-        else
-        {
-             
-            $sql = "INSERT INTO productos (name, image_name, price, description, fecha_pro) VALUES ('$name', '$image',  '$price', '$description', '$created')";
-            
-            if ($con->query($sql) === TRUE) {
-                $response= "registro exitoso";
-            } else 
-            {
-                $response= "Error: " . $sql . "<br>" . $db->error;
+                $sql = "INSERT INTO productos (id_empresa, nombre_pro, imagen_pro, precioNuevo_pro, descripcion_pro, fecha_registro_pro, id_categoria , precioAnterior_pro, diasOferta_pro, inicioOferta_pro, finOferta_pro) VALUES ('$IDempresa','$name', '$images'    ,  '" . $value["price"] . "',  '$description', '$created',  '$IdCategoria',  '" . $value["precioOferta"] . "',  '$diasOferta', '$inicioOferta', '$finOferta')";
+                $query = $con->query($sql);
             }
+
+        } else {
+
+            if (!file_exists($filename)) {
+                mkdir('uploads/' . $empresario . '-' . $identificacion . '/', 0777, true);
+
+                save_image_from_64('uploads/' . $empresario . '-' . $identificacion . '/', $name . '-' . $namefile, "400x400", $image);
+                $images = ('uploads/' . $empresario . '-' . $identificacion . '/' . $name . '-' . $namefile . '.jpg');
+
+                $sql = "INSERT INTO productos (id_empresa, nombre_pro, imagen_pro, precioNuevo_pro, descripcion_pro, fecha_registro_pro, id_categoria) VALUES ('$IDempresa','$name', '$images'    ,  '" . $value["price"] . "',  '$description', '$created',  '$IdCategoria')";
+                $query = $con->query($sql);
+
+            } else {
+
+                save_image_from_64('uploads/' . $empresario . '-' . $identificacion . '/', $name . '-' . $namefile, "400x400", $image);
+                $images = ('uploads/' . $empresario . '-' . $identificacion . '/' . $name . '-' . $namefile . '.jpg');
+                //file_put_contents('uploads/' . $empresario . '-' . $identificacion . '/' . $name . '-' . $namefile . '.jpeg', base64_decode(explode(',', $image)[1]));
+                //$images = ('uploads/' . $empresario . '-' . $identificacion . '/' . $name . '-' . $namefile . '.jpeg');
+
+                $sql = "INSERT INTO productos (id_empresa, nombre_pro, imagen_pro, precioNuevo_pro, descripcion_pro, fecha_registro_pro, id_categoria) VALUES ('$IDempresa','$name', '$images'    ,  '" . $value["price"] . "',  '$description', '$created',  '$IdCategoria')";
+                $query = $con->query($sql);
+            }
+
         }
-        echo json_encode( $response);
-         
-       // $db->close();
+    }
 
-   /* } else {
-        $response = "El servidor no funciona correctamente!!!!";       
-        echo json_encode($response);  
-    }*/
+}
 
-?>
+if ($query === true) {
+    $response = "registro exitoso";
+} else {
+    $response = "Error: " . $sql . "<br>" . $db->error;
+}
+echo json_encode($response);
 
- 
+$con->close();
