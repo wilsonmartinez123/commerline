@@ -13,22 +13,13 @@ export class UserData {
   constructor(
     public events: Events,
     public storage: Storage
-  ) {}
+  ) { }
 
   hasFavorite(sessionName: string): boolean {
     return (this._favorites.indexOf(sessionName) > -1);
   };
 
-  addFavorite(sessionName: string): void {
-    this._favorites.push(sessionName);
-  };
 
-  removeFavorite(sessionName: string): void {
-    let index = this._favorites.indexOf(sessionName);
-    if (index > -1) {
-      this._favorites.splice(index, 1);
-    }
-  };
 
   login(username: string): void {
     this.storage.set(this.HAS_LOGGED_IN, true);
@@ -40,6 +31,20 @@ export class UserData {
     this.storage.set(this.HAS_LOGGED_IN, true);
     this.setUsername(username);
     this.events.publish('user:signup');
+  };
+
+  //cuando Administrador se loguea. 
+  loginAdmin(username: string): void {
+    this.storage.set(this.HAS_LOGGED_IN, true);
+    this.setUsername(username);
+    this.events.publish('user:loginAdmin');
+  };
+
+  //cuando usuario se loguea. 
+  loginUser(username: string): void {
+    this.storage.set(this.HAS_LOGGED_IN, true);
+    this.setUsername(username);
+    this.events.publish('user:loginUser');
   };
 
   logout(): void {

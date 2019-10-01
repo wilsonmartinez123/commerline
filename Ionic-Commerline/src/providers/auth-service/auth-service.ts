@@ -1,7 +1,5 @@
-//import { HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
-import 'rxjs/add/operator/map';
 
 /*
   Generated class for the AuthServiceProvider provider.
@@ -10,29 +8,61 @@ import 'rxjs/add/operator/map';
   and Angular DI.
 
 */
-let apiUrl = 'http://localhost/commerlinephp/insert.php';
+let apiUrl = 'http://localhost/ionic-php-mysql';
 
 @Injectable()
 export class AuthServiceProvider {
 
-  //api:string = 'http://localhost/commerlinephp/'
-
-  constructor(public http: Http) {
+  constructor(public http: HttpClient) {
     console.log('Hello AuthServiceProvider Provider');
   }
 
-  postData(credentials, type) {
-    return new Promise((resolve, reject) => {
-      let headers = new Headers();
 
-      this.http.post(apiUrl + type, JSON.stringify(credentials), {headers: headers})
-        .subscribe(res => {
-          resolve(res.json());
-        }, (err) => {
-          reject(err);
+
+  getCustomers() {
+    return new Promise(resolve => {
+      this.http.get(apiUrl + '/obtener_clientes.php').subscribe(data => {
+        resolve(data);
+      },
+        err => {
+          console.log(err);
         });
     });
+  }
 
+  getBusiness() {
+    return new Promise(resolve => {
+      this.http.get(apiUrl + '/obtener_empresas.php').subscribe(data => {
+        resolve(data);
+      },
+        err => {
+          console.log(err);
+        });
+    });
+  }
+
+
+
+  getProducts() {
+    return new Promise(resolve => {
+      this.http.get(apiUrl + '/obtener_productos.php').subscribe(data => {
+        resolve(data);
+      },
+        err => {
+          console.log(err);
+        });
+    });
+  }
+
+  getAllCategories() {
+    return new Promise(resolve => {
+      this.http.get(apiUrl + '/Empresario/obtener_categorias_subcategorias.php').subscribe(data => {
+        resolve(data);
+      },
+        err => {
+          console.log(err);
+        });
+    });
   }
 
 }
