@@ -27,6 +27,7 @@ if (isset($data)) {
 
     $request = json_decode($data);
     $empresa = $request->empresa;
+    $logo = $request->logo;
 
     $newName = $request->newName;
     $newDirection = $request->newDirection;
@@ -34,23 +35,59 @@ if (isset($data)) {
     $newPhone = $request->newPhone;
 
 }
-
+$logo = stripslashes($logo);
 $newName = stripslashes(utf8_decode($newName));
 $newDirection = stripslashes(utf8_decode($newDirection));
 $newHorario = stripslashes(utf8_decode($newHorario));
 $newPhone = stripslashes($newPhone);
 
-$sql = "UPDATE empresa SET nombre_emp = '$newName', direccion_emp ='$newDirection', horario_emp ='$newHorario', telefono_emp ='$newPhone'  WHERE id_empresa ='$empresa';";
+//si el campo imagen no esta vacio
+if (!empty($request->newImage)) {
 
-if ($con->query($sql) === true) {
+    $newImage = $request->newImage;
 
-    $response = "actualización de empresa exitosa";
+    $file = "../" . $logo;
+    if (file_exists($file)) {
+
+        //reeemplaza la imagen anterior con la nueva en el servidor
+
+        rename($file, file_put_contents('../uploads/imagen-logo-empresa/img_' . date('Y-m-d-H-s') . '.jpg', base64_decode(explode(',', $newImage)[1])));
+        $image = ('uploads/imagen-logo-empresa/img_' . date('Y-m-d-H-s') . '.jpg');
+
+    } else {
+
+        file_put_contents('../uploads/imagen-logo-empresa/img_' . date('Y-m-d-H-s') . '.jpg', base64_decode(explode(',', $newImage)[1]));
+        $image = ('uploads/imagen-logo-empresa/img_' . date('Y-m-d-H-s') . '.jpg');
+    }
+
+    $sql = "UPDATE empresa SET nombre_emp = '$newName', direccion_emp ='$newDirection', horario_emp ='$newHorario', telefono_emp ='$newPhone', logo_emp = '$image'  WHERE id_empresa ='$empresa';";
+
+    if ($con->query($sql) === true) {
+
+        $response = "actualización de empresa exitosa";
+
+    } else {
+
+        $response = "Error: " . $sql . "<br>" . $con->error;
+    }
+
+    echo json_encode($response);
 
 } else {
 
-    $response = "Error: " . $sql . "<br>" . $con->error;
-}
+    $sql = "UPDATE empresa SET nombre_emp = '$newName', direccion_emp ='$newDirection', horario_emp ='$newHorario', telefono_emp ='$newPhone'  WHERE id_empresa ='$empresa';";
 
-echo json_encode($response);
+    if ($con->query($sql) === true) {
+
+        $response = "actualización de empresa exitosa";
+
+    } else {
+
+        $response = "Error: " . $sql . "<br>" . $con->error;
+    }
+
+    echo json_encode($response);
+
+}
 
 $con->close();
