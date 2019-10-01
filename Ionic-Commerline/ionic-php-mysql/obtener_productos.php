@@ -20,9 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
 
+
 require "dbconnect.php";
 
-$query = "SELECT * FROM productos ";
+$query = "SELECT * FROM productos p left join categorias c on p.id_categoria = c.id_categoria left join subcategorias s on p.id_subcategoria = s.id_subcategoria
+left join empresa e on p.id_empresa = e.id_empresa";
+
 $result = mysqli_query($con, $query);
 
 $response = array();
@@ -32,13 +35,18 @@ while ($row = mysqli_fetch_array($result)) {
     array_push($response, array('id' => $row[0],
 
         'id_empresa' => $row[1],
-        'nombre_pro' => $row[2],
-        'desripcion_pro' => $row[3],
-        'imagen_pro' => $row[4],
-        'precioAnterior_pro' => $row[5],
-        'precioNuevo_pro' => $row[6],
-        'categoria_pro' => $row[7],
-        'fecha_registro_pro' => $row[8],
+        'nombre_pro' => $row[4],
+        'desripcion_pro' => $row[5],
+        'imagen_pro' => $row[6],
+        'precioAnterior_pro' => $row[7],
+        'precioNuevo_pro' => $row[8],
+        'diasOferta_pro' => $row[9],
+        'inicioOferta_pro' => $row[10],
+        'finOferta_pro' => $row[11],
+        'fecha_registro_pro' => $row[12],
+        'nombre_categoria' => $row['nombre_categoria'],
+        'nombre_subcategoria' => $row['nombre_subcategoria'],
+        'municipio_empresa' => $row['municipio_emp'],
 
     ));
 
@@ -47,5 +55,3 @@ while ($row = mysqli_fetch_array($result)) {
 echo json_encode(array('productos' => $response));
 
 mysqli_close($con);
-
-?>
