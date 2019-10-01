@@ -71,26 +71,42 @@
                 <ion-item>
                   <ion-icon name="list" item-start></ion-icon>
                   <ion-label>Categoría</ion-label>
-                  <ion-select name="categoria" #categoria formControlName="categoria">
-                    <ion-option value="Celulares">Celulares</ion-option>
-                    <ion-option value="Computadores">Computadores y Tablets</ion-option>
-                    <ion-option value="Audio">Audio</ion-option>
-                    <ion-option value="Videojuegos">Videojuegos</ion-option>
-                    <ion-option value="Accesorios">Accesorios</ion-option>
-                    <ion-option value="Camaras">Cámaras</ion-option>
-                    <ion-option value="Deportes">Deportes</ion-option>
-                    <ion-option value="Hogar">Hogar</ion-option>
-                    <ion-option value="Televisores">Televisores</ion-option>
-                    <ion-option value="Mercado">Mercado</ion-option>
-                    <ion-option value="Moda">Moda</ion-option>
-                    <ion-option value="ElectroHogar">ElectroHogar</ion-option>
-                    <ion-option value="Jugueteria">Jugueteía</ion-option>
-                    <ion-option value="SaludBelleza">Salud y Belleza</ion-option>
+                  <ion-select [(ngModel)]="retur.category" name="categoria" #categoria formControlName="categoria"
+                    (ionChange)="subcategories($event,i)">
+                    <ion-option *ngFor="let category of categories; let i = index" value="{{category.categoria}}">{{category.categoria}}</ion-option>
+                    <ion-option value="Otra">Otra</ion-option>
                   </ion-select>
                 </ion-item>
                 <div *ngIf="retur.get('categoria').touched && retur.get('categoria').hasError('required')">
                   <p>Categoria del producto es requerido!</p>
                 </div>
+
+                <div *ngIf="retur.category == 'Otra'">
+                  <ion-item>
+                    <ion-label stacked>Cual: *</ion-label>
+                    <ion-input type="text" name="otraCategoria" #otraCategoria formControlName="otraCategoria"></ion-input>
+                  </ion-item>
+
+                  <div *ngIf="retur.get('otraCategoria').touched && retur.hasError('requiredOtraOpcion')">
+                    <p>Otra Categoria es requerido!.</p>
+                  </div>
+
+                </div>
+
+                <!--Subcategoria-->
+
+                <ion-item *ngFor="let x of retur.selectedSubcategory">
+                  <ion-icon name="list" item-start></ion-icon>
+                  <ion-label>Subcategoria</ion-label>
+                  <ion-select name="subcategoria" #subcategoria formControlName="subcategoria">
+                    <ion-option *ngFor="let subcategory of x.subcategoria" value="{{subcategory.subcategoria}}">{{subcategory.subcategoria}}</ion-option>
+                    <ion-option value="Otra">Otra</ion-option>
+                  </ion-select>
+                </ion-item>
+                <div *ngIf="retur.get('subcategoria').touched && retur.get('subcategoria').hasError('required')">
+                  <p>Subcategoria del producto es requerido!</p>
+                </div>
+
 
 
                 <ion-item>

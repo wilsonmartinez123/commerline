@@ -6,6 +6,9 @@ import 'rxjs/add/operator/map';
 import { HomePage } from '../home/home';
 import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { ImageProvider } from '../../providers/image/image';
+import * as moment from 'moment';
+import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
+
 
 
 
@@ -40,38 +43,34 @@ export class AgregarProductosOfertaPage {
   items: any;
   minDate: any;
   date: any;
-  diasOferta: any;
-  diasOferta2: any;
+  //diasOferta: any;
+  //diasOferta2: any;
   date2: any;
   item: any;
+  secondsDiff: any;
 
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public http: Http, public toast: ToastController,
     public alertCtrl: AlertController, public loading: LoadingController, public fb: FormBuilder, private _IMAGES: ImageProvider,
+    public ServiceProvider: AuthServiceProvider
+
   ) {
 
     this.id_cliente = JSON.parse(localStorage.getItem('id_cliente'));
 
+    this.getBusiness();
 
-    this.http.get('http://localhost/ionic-php-mysql/obtener_empresas.php').map(res => res.json()).subscribe(
-      data => {
 
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
+  }
 
-        this.posts = data.empresa.filter(item => item.id_cliente === this.id_cliente);
+  getBusiness() {
+    this.ServiceProvider.getBusiness()
+      .then(data => {
+        this.posts = data['empresa'].filter(item => item.id_cliente === this.id_cliente);
         this.initializeItems();
 
-      },
-      error => {
-        console.log("Oops!", error);
-      }
-
-    );
-
-
-
+      });
   }
 
   ngOnInit() {
@@ -152,11 +151,17 @@ export class AgregarProductosOfertaPage {
   }
 
   changeFinDate() {
-    var fechaFin = this.date2.split('-');
+    /*var fechaFin = this.date2.split('-');
     this.diasOferta = (fechaFin[2].slice(0, 2));
     var fechaInicio = this.date.split('-');
     this.diasOferta2 = (fechaInicio[2].slice(0, 2));
     this.form.controls['diasOferta'].setValue((this.diasOferta - this.diasOferta2) + 1);
+    */
+
+    var startDate = moment(this.date)
+    var endDate = moment(this.date2)
+    this.secondsDiff = endDate.diff(startDate, 'days') + 1;
+    this.form.controls['diasOferta'].setValue(this.secondsDiff);
   }
 
 

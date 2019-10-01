@@ -82,11 +82,11 @@
           <ion-option value="max">Precio: Mayor a menor</ion-option>
           <ion-option value="min">Precio: Menor a mayor</ion-option>
           <ion-option value="az">Producto: A-Z</ion-option>
-          <ion-option value="za">Porducto: Z-A</ion-option>
+          <ion-option value="za">Producto: Z-A</ion-option>
         </ion-select>
       </ion-item>
 
-      <ion-item-divider>Categoria: {{category}}</ion-item-divider>
+      <ion-item-divider>Subcategoria: {{subcategory}}</ion-item-divider>
       <div *ngIf=" (  !pricefilter )  ">
 
         <ion-grid>
@@ -107,7 +107,7 @@
                 </ion-thumbnail>
 
 
-                <h2>precio: {{product.precioNuevo_pro}}</h2>
+                <h2>precio: {{product.precioNuevo_pro | number | replace}}</h2>
                 <div *ngIf="product.precioAnterior_pro">
                   <h2>Antes:
                     <del>{{product.precioAnterior_pro}}</del>

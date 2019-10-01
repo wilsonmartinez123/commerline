@@ -69,18 +69,31 @@
         </ion-thumbnail>
 
         <ion-label>
+
+          <div *ngIf="item.diasOferta_pro">
+            <ion-badge class="color">Oferta</ion-badge>
+            <h2 ion-text color="primary"> Fecha inicio de oferta: {{item.inicioOferta_pro}}</h2>
+            <h2 ion-text color="primary">Fin de oferta: {{item.finOferta_pro}}</h2>
+          </div>
+
           <h2>{{ item.nombre_pro }} </h2>
           <h2>precio: $ {{item.precioNuevo_pro | number | replace}}</h2>
+          <h2 *ngIf="item.diasOferta_pro">precio oferta: $ {{item.precioAnterior_pro | number | replace}}</h2>
           <p>descripción: {{item.desripcion_pro}}</p>
         </ion-label>
 
-
-        <button ion-button icon-end color="primary" item-right (click)="editPost(item)">Editar
+        <button *ngIf="item.diasOferta_pro" ion-button icon-end color="light" item-right (click)="editProductOfert(item)">Editar
           <ion-icon name="create"></ion-icon>
         </button>
+
+        <button *ngIf="item.diasOferta_pro == ''" ion-button icon-end color="primary" item-right (click)="editPost(item)">Editar
+          <ion-icon name="create"></ion-icon>
+        </button>
+
         <button ion-button icon-end color="secondary" item-right (click)="deletePost(item)">Eliminar
           <ion-icon name="close"></ion-icon>
         </button>
+
 
       </ion-item>
 

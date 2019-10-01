@@ -15,12 +15,12 @@
 	</div>
 
 	<!---->
-	<ion-item *ngIf="isLoggedIn">
+	<ion-item *ngIf="isLoggedIn != null">
 		<h2>Tienes que Salir de tu cuenta actual, para poder iniciar sesion</h2><br />
 		<button ion-button round block (click)="logout()">Salir</button>
 	</ion-item>
 
-	<form #loginForm="ngForm" novalidate *ngIf="!isLoggedIn">
+	<form #loginForm="ngForm" novalidate *ngIf="isLoggedIn == null">
 
 
 		<ion-list>

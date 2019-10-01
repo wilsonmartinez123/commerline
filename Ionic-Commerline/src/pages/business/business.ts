@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { Http, Headers } from '@angular/http';
+import { Http } from '@angular/http';
 import { BusinessProductsPage } from '../business-products/business-products';
+import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 
 
@@ -15,25 +16,19 @@ export class BusinessPage {
   business: any;
 
 
-  constructor(public navCtrl: NavController, public http: Http, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public http: Http, public navParams: NavParams, public ServiceProvider: AuthServiceProvider) {
 
+    this.getBusiness();
 
-
-    this.http.get('http://localhost/ionic-php-mysql/obtener_empresas.php').map(res => res.json()).subscribe(
-      data => {
-
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
-        this.business = data.empresa;
-
-      },
-      error => {
-        console.log("Oops!", error);
-      }
-
-    );
   }
+
+  getBusiness() {
+    this.ServiceProvider.getBusiness()
+      .then(data => {
+        this.business = data['empresa'];
+      });
+  }
+
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad BusinessPage');

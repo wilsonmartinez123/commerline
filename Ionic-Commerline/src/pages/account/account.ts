@@ -5,7 +5,6 @@ import { AlertController, NavController, ModalController, NavParams } from 'ioni
 import { UserData } from '../../providers/user-data';
 import { ChangePasswordPage } from '../change-password/change-password';
 import { AgregarEmpresaPage } from '../agregar-empresa/agregar-empresa';
-import { Http, Headers } from '@angular/http';
 import { AgregarSucursalPage } from '../agregar-sucursal/agregar-sucursal';
 import { VerEmpresaPage } from '../ver-empresa/ver-empresa';
 import { AgregarProductoPage } from '../agregar-producto/agregar-producto';
@@ -13,42 +12,43 @@ import { ActualizarDatosPage } from '../actualizar-datos/actualizar-datos';
 import { AgregarProductosOfertaPage } from '../agregar-productos-oferta/agregar-productos-oferta';
 import { HomePage } from '../home/home';
 import { Storage } from '@ionic/storage';
+import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
-
+export interface Config {
+  empresa: string;
+}
 
 @Component({
   selector: 'page-account',
   templateUrl: 'account.html'
 })
 export class AccountPage {
+
+
+
   username: string;
   users: any;
 
   //currentItems: Item[];
 
   constructor(public alertCtrl: AlertController, public nav: NavController, public userData: UserData,
-    public modalCtrl: ModalController, private http: Http, public navParams: NavParams, public storage: Storage
+    public ServiceProvider: AuthServiceProvider, public modalCtrl: ModalController, public navParams: NavParams, public storage: Storage
     //public items: Items
   ) {
 
-
-
     //obtener clientes
-    this.http.get('http://localhost/ionic-php-mysql/obtener_clientes.php').map(res => res.json()).subscribe(
-      data => {
+    this.getCustomers();
 
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
 
-        this.users = data.clientes;
-        //this.categories = Array.of(this.categories);
 
-      },
-      error => {
-        console.log("Oops!", error);
-      }
+  }
 
-    );
+  getCustomers() {
+    this.ServiceProvider.getCustomers()
+      .then(data => {
+        this.users = data['clientes'];
+        console.log(this.users);
+      });
   }
 
   ngAfterViewInit() {

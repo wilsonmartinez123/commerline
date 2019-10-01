@@ -20,9 +20,26 @@
 
 
     <ion-item-divider>Categorias</ion-item-divider>
-    <button ion-item *ngFor="let category of categories | unique   " (click)="viewCategory(category)">
-      {{ category.nombre_categoria }}
-    </button>
+
+    <ion-item *ngFor="let category of categories; let i=index" (click)="categoria('idx'+i)" [ngClass]="{active: isLevel1Shown('idx'+i)}">
+
+      <h2>
+        {{ category.categoria }}
+
+        <ion-icon color="success" item-right [name]="isLevel1Shown('idx'+i) ? 'arrow-dropdown' : 'arrow-dropright'"></ion-icon>
+      </h2>
+
+
+
+      <ion-list *ngIf="isLevel1Shown('idx'+i)">
+        <br />
+
+        <button ion-item *ngFor="let subs of category.subcategoria" (click)="viewCategory(subs)" text-wrap>
+          {{subs.subcategoria}}
+        </button>
+
+      </ion-list>
+    </ion-item>
   </ion-list>
 
 </ion-content>

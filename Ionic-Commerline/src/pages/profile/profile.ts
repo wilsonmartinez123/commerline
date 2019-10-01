@@ -42,7 +42,7 @@ export class ProfilePage {
   confDate: string;
 
 
-  category: {};
+  subcategory: {};
   products: any;
   p: number = 1;
 
@@ -65,7 +65,7 @@ export class ProfilePage {
     localStorage.removeItem('product');
     //localStorage.clear();
 
-    this.category = this.navParams.get('nombre_categoria');
+    this.subcategory = this.navParams.get('subcategoria');
 
     let loading = this.loadingCtrl.create({
       content: 'Cargando productos...',
@@ -76,7 +76,7 @@ export class ProfilePage {
         .subscribe(
           data => {
 
-            this.posts = data.productos.filter(item => item.nombre_categoria === this.category);
+            this.posts = data.productos.filter(item => item.nombre_subcategoria === this.subcategory);
 
 
             //this.posts = data.productos;

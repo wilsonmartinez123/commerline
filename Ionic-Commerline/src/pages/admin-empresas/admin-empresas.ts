@@ -4,6 +4,7 @@ import { VerEmpresaEditPage } from '../ver-empresa-edit/ver-empresa-edit';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { AdminPage } from '../admin/admin';
 import { AdminProductosPage } from '../admin-productos/admin-productos';
+import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 
 export interface Config {
@@ -36,7 +37,7 @@ export class AdminEmpresasPage {
   cliente: any;
 
   constructor(public loading: LoadingController, public navCtrl: NavController, public navParams: NavParams, private http: Http,
-    public alertCtrl: AlertController) {
+    public alertCtrl: AlertController, public ServiceProvider: AuthServiceProvider) {
 
 
 
@@ -49,14 +50,10 @@ export class AdminEmpresasPage {
     });
 
     loader.present().then(() => {
-      this.http
-        .get('http://localhost/ionic-php-mysql/obtener_empresas.php').map(res => res.json())
-        .subscribe((data) => {
 
-          let headers = new Headers();
-          headers.append('Content-Type', 'application/json');
-
-          this.rows = data.empresa;
+      this.ServiceProvider.getBusiness()
+        .then(data => {
+          this.rows = data['empresa'];
 
           loader.dismiss();
         });
@@ -64,6 +61,8 @@ export class AdminEmpresasPage {
     });
 
   }
+
+
 
   view(id_empresa) {
     localStorage.setItem('id_empresa', id_empresa);

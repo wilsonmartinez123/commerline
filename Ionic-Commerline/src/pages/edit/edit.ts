@@ -5,6 +5,7 @@ import { LoadingController } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import { HomePage } from '../home/home'
 import { ImageProvider } from '../../providers/image/image';
+import { AdminProductosPage } from '../admin-productos/admin-productos';
 /**
  * Generated class for the EditPage page.
  *
@@ -48,6 +49,8 @@ export class EditPage {
   @ViewChild("newDescription") newDescription;
   namefile: any;
   empresa: any;
+  admin: any;
+  id: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public alertCtrl: AlertController, private http: Http, public loading: LoadingController, private _IMAGES: ImageProvider
@@ -56,6 +59,7 @@ export class EditPage {
 
   ngOnInit() {
 
+    this.id = this.navParams.get('id');
     this.name = this.navParams.get('nombre_pro');
     this.image = this.navParams.get('imagen_pro');
     this.price = this.navParams.get('precioNuevo_pro');
@@ -67,6 +71,10 @@ export class EditPage {
     this.oldDescriptionValue = this.navParams.get('desripcion_pro');
     this.oldDate = this.navParams.get('fecha_registro_pro');
     this.empresa = this.navParams.get('id_empresa');
+
+    //detecta si el administrador edita producto
+    this.admin = JSON.parse(localStorage.getItem('itemAdmin'));
+
 
   }
 
@@ -161,6 +169,7 @@ export class EditPage {
             description: this.oldDescriptionValue,
             date: this.oldDate,
             empresa: this.empresa,
+            id: this.id,
 
             newName: this.newName.value,
             newPrice: this.newPrice.value,
@@ -189,7 +198,15 @@ export class EditPage {
                   });
 
                   alert.present();
-                  this.navCtrl.push(HomePage);
+
+                  if (this.admin) {
+
+                    this.navCtrl.push(AdminProductosPage);
+
+                  }
+                  else {
+                    this.navCtrl.push(HomePage);
+                  }
                 }
                 else {
                   let alert = this.alertCtrl.create({

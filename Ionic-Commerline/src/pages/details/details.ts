@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events, LoadingController, AlertController } from 'ionic-angular';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 
 
@@ -28,30 +29,18 @@ export class DetailsPage {
   idProduct: any;
 
 
-  constructor(public navCtrl: NavController, public http: Http, public navParams: NavParams, public events: Events, public loading: LoadingController, public alertCtrl: AlertController) {
+  constructor(public navCtrl: NavController, public http: Http, public navParams: NavParams, public events: Events, public loading: LoadingController, public alertCtrl: AlertController, 
+    public ServiceProvider: AuthServiceProvider) {
 
 
     //obtiene la variable global cuando usuario se loguee
     this.ratingStar = localStorage.getItem('username');
-    
+
 
     this.idProduct = JSON.parse(localStorage.getItem('id'));
 
     //obtener informacion de la empresa, para mostrarlo junto con detalles del producto. 
-    this.http.get('http://localhost/ionic-php-mysql/obtener_empresas.php').map(res => res.json()).subscribe(
-      data => {
-
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
-        this.business = data.empresa;
-
-      },
-      error => {
-        console.log("Oops!", error);
-      }
-
-    );
+    this.getBusiness();
 
     //obtener calificacion
 
@@ -83,6 +72,13 @@ export class DetailsPage {
     });
 
 
+  }
+
+  getBusiness() {
+    this.ServiceProvider.getBusiness()
+      .then(data => {
+        this.business = data['empresa'];
+      });
   }
 
   show() {

@@ -16,6 +16,7 @@ export class CategoriesPage {
 
 
   categories: any;
+  showLevel1= null;
 
 
   constructor(public navCtrl: NavController, public http: Http, public navParams: NavParams) {
@@ -50,10 +51,22 @@ export class CategoriesPage {
     console.log('ionViewDidLoad CategoriesPage');
   }
 
-  public viewCategory(category) {
-    this.navCtrl.push(ProfilePage, category);
+  public viewCategory(subs) {
+    this.navCtrl.push(ProfilePage, subs);
 
   }
+  
+  isLevel1Shown(idx) {
+    return this.showLevel1 === idx;
+  };
+
+  categoria(idx) {
+    if (this.isLevel1Shown(idx)) {
+      this.showLevel1 = null;
+    } else {
+      this.showLevel1 = idx;
+    }
+  };
 
 
 

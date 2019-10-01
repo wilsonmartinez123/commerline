@@ -7,6 +7,7 @@ import { HomePage } from '../home/home';
 //import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { ImageProvider } from '../../providers/image/image';
+import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 
 @Component({
@@ -43,33 +44,42 @@ export class AgregarProductoPage {
     file: string;
     datos: string;
     item: any;
+    categories: any;
+    selectedSubcategory: any;
+    category: any;
+    subcategory: any;
 
 
 
     constructor(public navCtrl: NavController, public navParams: NavParams, public http: Http, public toast: ToastController,
-        public alertCtrl: AlertController, public loading: LoadingController, public fb: FormBuilder, private _IMAGES: ImageProvider, public toastCtrl: ToastController
+        public alertCtrl: AlertController, public loading: LoadingController, public fb: FormBuilder, private _IMAGES: ImageProvider, public toastCtrl: ToastController,
+        public ServiceProvider: AuthServiceProvider
     ) {
 
         this.id_cliente = JSON.parse(localStorage.getItem('id_cliente'));
 
-        this.http.get('http://localhost/ionic-php-mysql/obtener_empresas.php').map(res => res.json()).subscribe(
-            data => {
+        this.getBusiness();
+        this.getAllCategories();
 
-                let headers = new Headers();
-                headers.append('Content-Type', 'application/json');
 
-                this.posts = data.empresa.filter(item => item.id_cliente === this.id_cliente);
+
+    }
+
+    getBusiness() {
+        this.ServiceProvider.getBusiness()
+            .then(data => {
+                this.posts = data['empresa'].filter(item => item.id_cliente === this.id_cliente);
                 this.initializeItems();
 
-            },
-            error => {
-                console.log("Oops!", error);
-            }
+            });
+    }
 
-        );
+    getAllCategories() {
+        this.ServiceProvider.getAllCategories()
+            .then(data => {
+                this.categories = data['categorias'];
 
-
-
+            });
     }
 
     ngOnInit() {
@@ -83,7 +93,10 @@ export class AgregarProductoPage {
             productos: this.initProductoFields(),
 
 
-        })
+        });
+
+
+
 
         //detecta cuando hay algun cambio en el formulario
         this.form.get('productos').valueChanges.subscribe(changes => {
@@ -113,10 +126,14 @@ export class AgregarProductoPage {
 
 
 
+
+
+
     buildGroup(): FormGroup {
         return this.fb.group({
 
 
+            selectedSubcategory: [""],
             IdEmpresario: [""],
             name: ["", Validators.required],
             namefile: [""],
@@ -124,19 +141,48 @@ export class AgregarProductoPage {
             image: [""],
             price: ["", Validators.required],
             categoria: ["", Validators.required],
+            otraCategoria: [""],
+            subcategoria: ["", Validators.required],
+            otraSubcategoria: [""],
             description: ["", Validators.required],
             picture: ["", Validators.required],
 
 
 
 
-        });
+        }, { validator: this.customValidators }
+        );
+
+
+
+
+    }
+
+
+
+
+
+    customValidators(group: FormGroup) {
+
+        var otra = group.controls['otraCategoria'];
+
+        if (otra.value != '') {
+
+
+            return null;
+        }
+
+
+
+        return { 'requiredOtraOpcion': true };
 
     }
 
 
 
     addNewInputField() {
+
+
         this.productos.push(this.buildGroup());
 
 
@@ -204,6 +250,18 @@ export class AgregarProductoPage {
 
     }
 
+
+
+    //seleccionar subcategoria de acuerdo a la categoria seleccionado
+
+    
+        subcategories(categoria, index:number) {
+            
+            //var value = this.productos.controls[index].categoria = categoria;
+
+            this.productos.controls[index].selectedSubcategory = this.categories.filter(item => item.categoria === categoria)
+    
+        }
 
 
     submitForm(): void {

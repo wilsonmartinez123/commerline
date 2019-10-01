@@ -1,8 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Slides } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Slides, Content } from 'ionic-angular';
 import { Http, Headers } from '@angular/http';
 import { DetailsPage } from '../details/details';
 import { SupportPage } from '../support/support';
+import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
+
 
 
 
@@ -16,39 +18,31 @@ import { SupportPage } from '../support/support';
 export class OffersPage {
 
   @ViewChild(Slides) slides: Slides;
+  @ViewChild(Content) content: Content;
+
+
 
   items: any;
   filter: any;
   showList: boolean = false;
   ubication: boolean = false;
-  showList2: boolean = false;
   showListUbication: boolean = false;
+  hiddenList: boolean = false;
+
   searchTerm: any;
   ubicacion: any;
   filterUbication: any;
   ofertas: any;
+  time: string;
+  filterLocalities: any;
 
 
 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public http: Http) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public http: Http,
+    public ServiceProvider: AuthServiceProvider) {
 
-    this.http.get('http://localhost/ionic-php-mysql/obtener_productos.php').map(res => res.json()).subscribe(
-      data => {
-
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
-        this.items = data.productos;
-        this.ofertas = this.items.filter(item => item.diasOferta_pro !== '');
-        this.initializeItems()
-
-      },
-      error => {
-        console.log("Oops!", error);
-      }
-
-    );
+    this.getProducts();
 
 
     this.http.get('http://localhost/ionic-php-mysql/colombia.json').map(res => res.json()).subscribe(
@@ -67,6 +61,19 @@ export class OffersPage {
 
     );
 
+
+  }
+
+  getProducts() {
+    this.ServiceProvider.getProducts()
+      .then(data => {
+        this.items = data['productos'];
+        this.ofertas = this.items.filter(item => item.diasOferta_pro !== '');
+        this.initializeItems()
+      });
+  }
+
+  ngOnInit() {
 
   }
 
@@ -111,6 +118,20 @@ export class OffersPage {
 
     }
 
+  }
+
+  filterLocality(municipio) {
+
+    //this.hiddenList = true;
+
+    this.filterLocalities = this.items.filter(item => item.municipio_empresa === municipio)
+
+
+  }
+  scrollTo(municipio) {
+    this.filterLocalities = this.items.filter(item => item.municipio_empresa === municipio)
+    let y = document.getElementById(municipio).offsetTop;
+    this.content.scrollTo(0, y);
   }
 
   onInput(ev: any) {

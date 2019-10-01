@@ -1,6 +1,22 @@
 
-page-account img {
+page-account {
+
+.img {
   max-width: 140px;
   border-radius: 50%;
+}
+
+
+ion-grid{
+
+//  max-width: 80%;
+  background-color: lightgrey;
+  border: 1px solid;
+  border-radius: 15px;
+}
+
+
+
+
  
 }

@@ -11,6 +11,7 @@ import { AccountPage } from '../account/account';
 import { AdminPage } from '../admin/admin';
 import { UsuarioPage } from '../usuario/usuario';
 
+
 @Component({
   selector: 'page-user',
   templateUrl: 'login.html'
@@ -29,13 +30,24 @@ export class LoginPage {
   showPass: boolean = false;
   type: string = 'password';
   isLoggedIn: any;
+  login: boolean = false;
 
 
 
   constructor(public navCtrl: NavController, public alertCtrl: AlertController,
     private http: Http, public loading: LoadingController, public userData: UserData, public menuCtrl: MenuController, public toastCtrl: ToastController) {
+ 
+  }
+
+
+  ngOnInit() {
 
     this.isLoggedIn = localStorage.getItem('login');
+    if(this.isLoggedIn !== null){
+      this.login = true;
+    }
+
+    console.log(this.isLoggedIn);
   }
 
   signUp() {
@@ -172,6 +184,8 @@ export class LoginPage {
                 });
 
                 alert.present();
+
+                this.password.setValue('');
               }
 
             });

@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
 import { AgregarProductoPage } from '../agregar-producto/agregar-producto';
 import { UserData } from '../../providers/user-data';
 import { AgregarProductosOfertaPage } from '../agregar-productos-oferta/agregar-productos-oferta';
+import { EditProductOfertPage } from '../edit-product-ofert/edit-product-ofert';
 
 
 @IonicPage()
@@ -141,6 +142,11 @@ export class HomePage {
 
   editPost(item) {
     this.navCtrl.push(EditPage, item)
+
+  }
+
+  editProductOfert(item) {
+    this.navCtrl.push(EditProductOfertPage, item)
 
   }
 

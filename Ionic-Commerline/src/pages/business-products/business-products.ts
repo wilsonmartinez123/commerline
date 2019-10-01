@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
-import { Http } from '@angular/http';
 import { DetailsPage } from '../details/details';
+import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 
 
@@ -18,32 +18,29 @@ export class BusinessProductsPage {
   items: any;
   selectedCategories: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public loading: LoadingController, private http: Http) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public loading: LoadingController,
+    public ServiceProvider: AuthServiceProvider) {
 
     this.empresa = this.navParams.get('id_empresa');
     this.nombre_empresa = this.navParams.get('nombre_emp');
 
+
+    this.getProducts();
+  }
+
+  getProducts() {
 
     let loader = this.loading.create({
       content: 'Cargando productos…',
     });
 
     loader.present().then(() => {
-      this.http.get('http://localhost/ionic-php-mysql/obtener_productos.php').map(res => res.json()).subscribe(
-        data => {
-
-          let headers = new Headers();
-          headers.append('Content-Type', 'application/json');
-
-          this.posts = data.productos.filter(item => item.id_empresa === this.empresa);
+      this.ServiceProvider.getProducts()
+        .then(data => {
+          this.posts = data['productos'].filter(item => item.id_empresa === this.empresa);
           loader.dismiss();
           this.initializeItems()
-        },
-        error => {
-          console.log("Oops!", error);
-        }
-
-      );
+        });
     });
   }
 
@@ -52,8 +49,11 @@ export class BusinessProductsPage {
   }
 
   public postDetail(product) {
+
     this.navCtrl.push(DetailsPage, { product: product });
 
+    let json = JSON.stringify(product);
+    localStorage.setItem('product', json);
   }
 
   CategorySelected(value: string) {

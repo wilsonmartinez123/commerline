@@ -6,6 +6,8 @@ import { AdminClientesPage } from '../admin-clientes/admin-clientes';
 import { AdminEmpresasPage } from '../admin-empresas/admin-empresas';
 import { AdminEditPage } from '../admin-edit/admin-edit';
 import { ChangePasswordPage } from '../change-password/change-password';
+import { Storage } from '@ionic/storage';
+
 
 
 @IonicPage()
@@ -17,7 +19,8 @@ export class AdminPage {
   username: string;
   users: any;
 
-  constructor(public navParams: NavParams, public userData: UserData, public nav: NavController, private http: Http) {
+  constructor(public navParams: NavParams, public userData: UserData, public nav: NavController, private http: Http,
+    public storage: Storage) {
     //obtener empresarios
 
     this.http.get('http://localhost/ionic-php-mysql/Admin/obtener_admin.php').map(res => res.json()).subscribe(
@@ -39,6 +42,7 @@ export class AdminPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad AdminPage');
+
   }
 
   ngAfterViewInit() {
@@ -49,9 +53,15 @@ export class AdminPage {
     this.userData.getUsername().then((username) => {
       this.username = username;
 
-      //variable global para detectar el inicio de sesion y deshabilitar la pagina de login
-      localStorage.setItem('login', username);
+      if (username == null) {
+        this.storage.remove('username');
+      }
 
+      else {
+
+        //variable global para detectar el inicio de sesion y deshabilitar la pagina de login
+        localStorage.setItem('login', username);
+      }
     });
   }
 
@@ -77,8 +87,8 @@ export class AdminPage {
   logout() {
     this.userData.logout();
     this.nav.setRoot('LoginPage');
-     //si sale del sistema, la variable global se establece como null;
-     localStorage.clear();
+    //si sale del sistema, la variable global se establece como null;
+    localStorage.clear();
   }
 
 }

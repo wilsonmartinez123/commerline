@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController, AlertController } from 'ionic-angular';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { EditPage } from '../edit/edit';
+import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 
 export interface Config {
@@ -33,46 +34,44 @@ export class AdminProductosPage {
   empresa: string;
 
   constructor(public loading: LoadingController, public navCtrl: NavController, public navParams: NavParams, private http: Http,
-    public alertCtrl: AlertController) {
+    public alertCtrl: AlertController, public ServiceProvider: AuthServiceProvider) {
 
 
 
   }
 
+  
   ionViewDidLoad(): void {
 
     this.empresa = localStorage.getItem('id_empresa');
+    console.log('id_empresa: ', this.empresa);
 
     let loader = this.loading.create({
       content: 'Cargando productos…',
     });
 
     loader.present().then(() => {
-      this.http.get('http://localhost/ionic-php-mysql/obtener_productos.php').map(res => res.json()).subscribe(
-        data => {
+      this.ServiceProvider.getProducts()
+        .then(data => {
 
-          let headers = new Headers();
-          headers.append('Content-Type', 'application/json');
-
-
-          this.rows = data.productos.filter(item => item.id_empresa === this.empresa);
+          this.rows = data['productos'].filter(item => item.id_empresa === this.empresa);
           loader.dismiss();
 
-        },
-        error => {
-          console.log("Oops!", error);
-        }
-
-      );
+        });
     });
 
 
   }
 
-  edit(item) {
 
-    this.navCtrl.push(EditPage, item)
 
+  edit(itemAdmin) {
+
+    this.navCtrl.push(EditPage, itemAdmin)
+
+    //envia identificador del cliente para editar el producto. 
+    let admin = JSON.stringify(itemAdmin);
+    localStorage.setItem('itemAdmin', admin);
   }
 
 

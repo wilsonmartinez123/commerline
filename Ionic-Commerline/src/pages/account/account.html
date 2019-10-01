@@ -23,18 +23,48 @@
 
         <h4>Para poder registrar productos primero registre su Empresa, Gracias.</h4>
 
+
+
         <ion-list inset>
 
 
-          <button ion-item (click)="agregarEmpresa(item)">Agregar Empresa </button>
-          <!--<button ion-item (click)="agregarSucursal(item)">Agregar Sucursal </button>-->
-          <button ion-item (click)="agregarProducto(item)">Agregar Producto</button>
-          <button ion-item (click)="verProducto(item)">Ver mis productos</button>
-          <button ion-item (click)="verEmpresa(item)">Ver Empresa</button>
-          <button ion-item (click)="updateData(item)">Actualizar mis datos</button>
-          <button ion-item (click)="changePassword(item)">Cambiar contraseña </button>
-          <button ion-item (click)="support()">Contactanos</button>
-          <button ion-item (click)="logout()">Salir</button>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label>Empresa</ion-label>
+                <button ion-button col-8 col-sm (click)="agregarEmpresa(item)">Agregar Empresa </button>
+                <button ion-button col-8 col-sm (click)="verEmpresa(item)">Ver Empresa</button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <br />
+
+
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label>Productos</ion-label>
+                <button ion-button col-8 col-sm (click)="agregarProducto(item)">Agregar Producto</button>
+                <button ion-button col-8 col-sm (click)="verProducto(item)">Ver mis productos</button>
+                <!--col-lg-6 col-md-12 col-sm-12 col-xs-12-->
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <br />
+
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label>Mis datos</ion-label>
+                <button ion-button col-8 col-sm (click)="updateData(item)">Actualizar mis datos</button>
+                <button ion-button col-8 col-sm (click)="changePassword(item)">Cambiar contraseña </button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+
+          <button ion-item col-12 col-sm (click)="support()">Contactanos</button>
+          <button ion-item col-12 col-sm (click)="logout()">Salir</button>
 
 
         </ion-list>
