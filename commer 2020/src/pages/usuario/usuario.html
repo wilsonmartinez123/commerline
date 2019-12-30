@@ -1,0 +1,42 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>usuario</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+
+  <div padding-top text-center *ngIf="username">
+
+
+
+    <div *ngFor="let item of users">
+      <div *ngIf="(item.correo_usu === username || item.correo_usu.toUpperCase() === username)">
+        <h2> Bienvenido: {{item.nombre_usu}}
+        </h2>
+
+
+
+        <ion-list inset>
+
+          <button ion-item (click)="wishList()">Crear lista de Deseos</button>
+          <button ion-item (click)="updateDate(item)">Actualizar Datos</button>
+          <button ion-item (click)="changePassword(item)">Cambiar contraseña</button>
+          <button ion-item (click)="logout()">Salir</button>
+
+
+        </ion-list>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+</ion-content>

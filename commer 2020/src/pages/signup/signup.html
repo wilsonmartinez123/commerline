@@ -1,0 +1,152 @@
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Registro</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+
+    <div class="logo">
+        <img src="assets/img/commer.jpeg" alt="Commerline Logo">
+    </div>
+
+    <form [formGroup]="authForm" (ngSubmit)="Register()">
+
+        <ion-list no-line>
+
+            <ion-item [ngClass]="{'error-border':!authForm.controls.option.valid && authForm.controls.option.touched}">
+                <ion-label>Registrar como</ion-label>
+
+                <ion-select formControlName="option" name="option" #option [(ngModel)]="membership" (ionChange)="onChange(membership)">
+
+                    <ion-option value="1">Usuario</ion-option>
+                    <ion-option value="2">Empresario</ion-option>
+                </ion-select>
+            </ion-item>
+
+            <div *ngIf="authForm.controls.option.hasError('required') && authForm.controls.option.touched">
+                <p>escoge una opción!</p>
+            </div>
+
+
+
+            <ion-item [ngClass]="{'error-border':!authForm.controls.username.valid && authForm.controls.username.touched}">
+                <ion-label stacked>Nombre de usuario</ion-label>
+                <ion-input formControlName="username" type="text" name="fullname" #username></ion-input>
+            </ion-item>
+
+            <div *ngIf="authForm.controls.username.hasError('required') && authForm.controls.username.touched">
+                <p>Nombre de usuario es requerido</p>
+            </div>
+            <div *ngIf="authForm.controls.username.hasError('pattern') && authForm.controls.username.touched">
+                <p>Permitido solo letras</p>
+            </div>
+            <div *ngIf="authForm.controls.username.hasError('minlength') && authForm.controls.username.touched">
+                <p>Longitud mínima del nombre de usuario es 4!</p>
+            </div>
+            <div *ngIf="authForm.controls.username.hasError('maxlength') && authForm.controls.username.touched">
+                <p>Longiud máxima del nombre de usuario es 20!</p>
+            </div>
+
+
+            <div [hidden]="!value">
+                <ion-item [ngClass]="{'error-border':!authForm.controls.identificacion.valid && authForm.controls.identificacion.touched}">
+                    <ion-label stacked>Identificación</ion-label>
+                    <ion-input formControlName="identificacion" type="number" name="identificacion" #identificacion></ion-input>
+                </ion-item>
+                <div *ngIf="authForm.controls.identificacion.hasError('required') && authForm.controls.identificacion.touched">
+                    <p>Identificación es requerido!</p>
+                </div>
+
+                <ion-item [ngClass]="{'error-border':!authForm.controls.matricula.valid && authForm.controls.matricula.touched}">
+                    <ion-label stacked>Matrícula mercantil</ion-label>
+                    <ion-input formControlName="matricula" type="number" name="matricula" #matricula></ion-input>
+                </ion-item>
+                <div *ngIf="authForm.controls.matricula.hasError('required') && authForm.controls.matricula.touched">
+                    <p>matricula mercantil es requerido!</p>
+                </div>
+            </div>
+
+            <ion-item [ngClass]="{'error-border':!authForm.controls.email.valid && authForm.controls.email.touched}">
+                <ion-label stacked>Correo</ion-label>
+                <ion-input formControlName="email" type="email" name="email" #email></ion-input>
+            </ion-item>
+            <div *ngIf="authForm.controls.email.hasError('required') && authForm.controls.email.touched">
+                <p>Ingrese su correo electrónico</p>
+            </div>
+            <div *ngIf="authForm.controls.email.hasError('pattern') && authForm.controls.email.touched">
+                <p>Dirección de correo electrónico no válida</p>
+            </div>
+
+
+            <ion-item [ngClass]="{'error-border':!authForm.controls.mobile.valid && authForm.controls.mobile.touched}">
+                <ion-label stacked>Número de celular</ion-label>
+                <ion-input formControlName="mobile" type="number" name="mobile" #mobile></ion-input>
+            </ion-item>
+            <div *ngIf="authForm.controls.mobile.hasError('required') && authForm.controls.mobile.touched">
+                <p>campo Número celular es requerido!</p>
+            </div>
+            <div *ngIf="authForm.controls.mobile.hasError('minlength') && authForm.controls.mobile.touched">
+                <p>longitud 10 Digitos!</p>
+            </div>
+
+
+
+
+            <ion-item [ngClass]="{'error-border':!authForm.controls.password.valid && authForm.controls.password.touched}">
+                <ion-label stacked>Contraseña</ion-label>
+                <ion-input formControlName="password" type="password" name="password" #password></ion-input>
+            </ion-item>
+            <div *ngIf="authForm.controls.password.hasError('required') && authForm.controls.password.touched">
+                <p>campo contraseña es requerido!</p>
+            </div>
+            <div *ngIf="authForm.controls.password.hasError('minlength') && authForm.controls.password.touched">
+                <p>longitud minima de contraseña es 6!</p>
+            </div>
+            <div *ngIf="authForm.controls.password.hasError('maxlength') && authForm.controls.password.touched">
+                <p>longitud maxima de contraseña es 12!</p>
+            </div>
+
+
+
+            <ion-item [ngClass]="{'error-border':!authForm.controls.passwordRetyped.valid && authForm.controls.passwordRetyped.touched}">
+                <ion-label stacked>Repita contraseña</ion-label>
+                <ion-input formControlName="passwordRetyped" type="password" name="passwordRetyped" #passwordRetyped></ion-input>
+            </ion-item>
+            <div *ngIf="authForm.controls.passwordRetyped.hasError('required') && authForm.controls.passwordRetyped.touched">
+                <p>repita contraseña es requerido!</p>
+            </div>
+
+            <ion-item [ngClass]="{'error-border':!authForm.controls.terms.valid && authForm.controls.terms.touched}">
+
+                <ion-label>Acepto
+                    <a href="#">Terminos & Condiciones</a>
+                </ion-label>
+                <ion-checkbox formControlName="terms" name="terms" #terms checked="false"></ion-checkbox>
+                <!-- <ion-input formControlName="terms" type="checkbox" name="terms" #terms></ion-input>-->
+
+            </ion-item>
+
+            <div *ngIf="authForm.controls.terms.hasError('required') && authForm.controls.terms.touched">
+                <p>Debe aceptar terminos y condiciones!</p>
+            </div>
+
+
+
+            <div padding>
+
+                <button class="register" ion-button round outline block color="primary" [disabled]="!authForm.valid"
+                    style="margin-top: 20px;" type="submit">Registrar</button>
+            </div>
+
+
+
+        </ion-list>
+
+    </form>
+
+</ion-content>

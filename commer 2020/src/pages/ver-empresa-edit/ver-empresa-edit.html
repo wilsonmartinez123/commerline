@@ -1,0 +1,149 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Editar Empresa</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+
+    <ion-list no-line>
+
+
+      <ion-item [ngClass]="{'error-border':!form.controls.name.valid && form.controls.name.touched}">
+        <ion-icon name="briefcase" item-start></ion-icon>
+        <ion-label stacked>Nombre de la Empresa*</ion-label>
+        <ion-input type="text" name="name" #name formControlName="name" [(ngModel)]="nombre"></ion-input>
+      </ion-item>
+
+
+      <div *ngIf="form.controls.name.hasError('required') && form.controls.name.touched">
+        <p>Nombre de Empresa es requerido!</p>
+      </div>
+
+
+      <ion-item>
+        <ion-icon name="link" item-start></ion-icon>
+        <ion-label stacked>Ingrese su página web</ion-label>
+        <ion-input type="text" name="paginaWeb" #paginaWeb></ion-input>
+      </ion-item>
+
+
+      <ion-item [ngClass]="{'error-border':!form.controls.direction.valid && form.controls.direction.touched}">
+        <ion-icon name="navigate" item-start></ion-icon>
+        <ion-label stacked>Dirección de la Empresa*</ion-label>
+        <ion-input formControlName="direction" type="text" name="direction" #direction [(ngModel)]="direccionEmpresa"></ion-input>
+      </ion-item>
+
+      <div *ngIf="form.controls.direction.hasError('required') && form.controls.direction.touched">
+        <p>Dirección de Empresa es requerido!</p>
+      </div>
+
+
+      <!--
+      <ion-item>
+        <ion-icon name="list" item-start></ion-icon>
+        <ion-label>Departamento</ion-label>
+        <ion-select name="departamento" #departamento formControlName="country" (ionChange)="CountryChange($event)">
+          <ion-option *ngFor="let department of ubicacion; let i = index" value="{{department.departamento}}">{{department.departamento}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <div *ngIf="form.controls.country.hasError('required') && form.controls.country.touched">
+        <p>Departamento es requerido!</p>
+      </div>
+
+
+      <ion-item *ngFor="let x of selectedMunicipality">
+        <ion-icon name="list" item-start></ion-icon>
+        <ion-label>Municipio</ion-label>
+        <ion-select name="municipio" #municipio formControlName="state">
+          <ion-option *ngFor="let municipio of x.ciudades" value="{{municipio}}">{{municipio}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <div *ngIf="form.controls.state.hasError('required') && form.controls.state.touched">
+        <p>Municipio es requerido!</p>
+      </div>
+    -->
+
+
+      <ion-item [ngClass]="{'error-border':!form.controls.Horario.valid && form.controls.Horario.touched}">
+        <ion-icon name="clock" item-start></ion-icon>
+        <ion-label stacked>Horario de Atención*</ion-label>
+        <ion-input formControlName="Horario" type="text" name="Horario" #Horario [(ngModel)]="horarioAtencion"></ion-input>
+      </ion-item>
+
+      <div *ngIf="form.controls.Horario.hasError('required') && form.controls.Horario.touched">
+        <p>Horario de Empresa es requerido!</p>
+      </div>
+
+
+
+
+      <ion-item [ngClass]="{'error-border':!form.controls.mobile.valid && form.controls.mobile.touched}">
+        <ion-icon name="call" item-start></ion-icon>
+        <ion-label stacked>Número de Contacto</ion-label>
+        <ion-input formControlName="mobile" type="number" name="mobile" #mobile [(ngModel)]="telefono"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="form.controls.mobile.hasError('required') && form.controls.mobile.touched">
+        <p>campo Número celular es requerido!</p>
+      </ion-item>
+      <ion-item *ngIf="form.controls.mobile.hasError('minlength') && form.controls.mobile.touched">
+        <p>longitud 8 Digitos, para Número Teléfono!</p>
+      </ion-item>
+      <ion-item *ngIf="form.controls.mobile.hasError('maxlength') && form.controls.mobile.touched">
+        <p>longitud 10 Digitos, para Número Celular!</p>
+      </ion-item>
+      <br>
+
+
+      <div *ngIf="logo && !isSelected">
+        <h5>Imagen Logo empresa</h5>
+
+        <div *ngIf="logo.includes('http')">
+          <img class="resize" src="{{logo}}">
+        </div>
+
+        <div *ngIf="logo.includes('uploads/')">
+          <img class="resize" src="http://www.commerapp.com/ionic-php-mysql/{{logo}}">
+        </div>
+
+        <!--<img class="resize" src="http://localhost/ionic-php-mysql/{{logo}}">-->
+      </div>
+
+
+
+
+
+      <ion-item>
+        <ion-icon name="image" item-start></ion-icon>
+        <ion-label text-wrap>Cambiar imagen o logo de la empresa*</ion-label>
+        <ion-input type="file" accept="image/*" (change)="selectFileToUpload($event)"></ion-input>
+      </ion-item>
+
+
+      <ion-item *ngIf="isSelected">
+        <img [src]="image" width="250" height="250" />
+      </ion-item>
+
+
+      <div>
+        <button class="registrar" ion-button round outline block color="primary" [disabled]="!form.valid" style="margin-top: 20px;"
+          type="submit">Actualizar
+          Empresa</button>
+
+      </div>
+
+
+
+    </ion-list>
+
+  </form>
+
+</ion-content>

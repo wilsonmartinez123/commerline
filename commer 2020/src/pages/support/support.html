@@ -1,0 +1,57 @@
+<ion-header>
+
+	<ion-navbar>
+		<button ion-button menuToggle>
+			<ion-icon name="menu"></ion-icon>
+		</button>
+		<ion-title>Contactenos</ion-title>
+	</ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+	<div class="logo">
+		<img src="assets/img/commer.jpeg" alt="Ionic Logo">
+	</div>
+
+	<form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)">
+
+	
+
+		<ion-list no-lines>
+			<ion-item>
+				<ion-label stacked color="primary">Nombre</ion-label>
+				<ion-input [(ngModel)]="usernames" name="username" type="text" #username="ngModel" required>
+				</ion-input>
+			</ion-item>
+			<p ion-text [hidden]="username.valid || submitted == false" color="danger" padding-left>
+				Nombre es requerido
+			</p>
+
+			<ion-item>
+				<ion-label stacked color="primary">Correo</ion-label>
+				<ion-input [(ngModel)]="emails" name="email" type="email" #email="ngModel" required pattern="[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})">
+				</ion-input>
+			</ion-item>
+			<p ion-text [hidden]="email.valid || submitted == false" color="danger" padding-left>
+				Email es requerido
+			</p>
+
+			<ion-item>
+				<ion-label stacked color="primary">Ingresa tu mensaje</ion-label>
+				<ion-textarea [(ngModel)]="supportMessage" name="supportQuestion" #supportQuestion="ngModel" rows="6" required></ion-textarea>
+			</ion-item>
+
+
+			<p ion-text [hidden]="supportQuestion.valid || submitted === false" color="danger" padding-left>
+				Mensaje es requerido
+			</p>
+
+		</ion-list>
+
+		<div padding>
+			<button ion-button block type="submit">Enviar</button>
+		</div>
+	</form>
+</ion-content>
