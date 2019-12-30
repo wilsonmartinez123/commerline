@@ -1,0 +1,45 @@
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>categorias </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list>
+
+    <button ion-button icon-end color="primary" item-right (click)="contact()">Paute con nosotros
+      <ion-icon name="megaphone"></ion-icon>
+    </button>
+
+
+    <ion-item-divider>Categorias</ion-item-divider>
+
+    <ion-item *ngFor="let category of categories; let i=index" (click)="categoria('idx'+i)" [ngClass]="{active: isLevel1Shown('idx'+i)}">
+
+      <h2>
+        {{ category.categoria }}
+
+        <ion-icon color="success" item-right [name]="isLevel1Shown('idx'+i) ? 'arrow-dropdown' : 'arrow-dropright'"></ion-icon>
+      </h2>
+
+
+
+      <ion-list *ngIf="isLevel1Shown('idx'+i)">
+        <br />
+
+        <button ion-item *ngFor="let subs of category.subcategoria" (click)="viewCategory(subs)" text-wrap>
+          {{subs.subcategoria}}
+        </button>
+
+      </ion-list>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

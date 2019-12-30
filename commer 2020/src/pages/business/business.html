@@ -1,0 +1,40 @@
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Empresas </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list>
+
+
+    <ion-item-divider>Empresas</ion-item-divider>
+    <button ion-item *ngFor="let companies of business | paginate: { itemsPerPage: 20, currentPage: p }" (click)="ProductBusiness(companies)">
+
+      <ion-thumbnail item-left *ngIf="companies.logo_emp.includes('http')">
+        <!--<ion-img src="{{companies.logo_emp}}"></ion-img>-->
+        <img-loader src="{{companies.logo_emp}}" useImg></img-loader>
+      </ion-thumbnail>
+
+      <ion-thumbnail item-left *ngIf="companies.logo_emp.includes('uploads/')">
+        <img-loader src="http://www.commerapp.com/ionic-php-mysql/{{companies.logo_emp}}" useImg></img-loader>
+      </ion-thumbnail>
+
+      {{ companies['nombre_emp'] }}
+    </button>
+
+    <pagination-controls class="my-pagination" (pageChange)="p = $event" maxSize="12" directionLinks="true" autoHide="true"
+      responsive="true" previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Pagination"
+      screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page">
+    </pagination-controls>
+
+  </ion-list>
+
+</ion-content>

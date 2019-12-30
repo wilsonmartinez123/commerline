@@ -1,0 +1,118 @@
+<!--
+  Generated template for the EditProductOfertPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Editar producto en oferta</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+
+<ion-content padding>
+
+
+
+  <ion-list no-line>
+
+
+
+    <ion-item>
+      <ion-icon name="list" item-start></ion-icon>
+      <ion-label>Categoría</ion-label>
+      <ion-select [(ngModel)]="categorias" name="categoria" #categoria (ionChange)="subcategories($event)">
+        <ion-option *ngFor="let category of categories; let i = index" value="{{category.categoria}}">{{category.categoria}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <!--Subcategoria-->
+
+    <ion-item *ngFor="let x of selectedSubcategory">
+      <ion-icon name="list" item-start></ion-icon>
+      <ion-label>Subcategoria</ion-label>
+      <ion-select [(ngModel)]="subcategorias" name="subcategoria" #subcategoria>
+        <ion-option *ngFor="let subcategory of x.subcategoria" value="{{subcategory.subcategoria}}">{{subcategory.subcategoria}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-icon name="calendar" item-start></ion-icon>
+      <ion-label>Fecha y hora Inicio de Oferta*</ion-label>
+      <ion-datetime name="fechaInicioOferta" #fechaInicioOferta displayFormat="MMM/DD/YYYY, h:mm A" [(ngModel)]="fechaInicio"
+        (ionChange)="changedate($event)" min="2019" max="2030" cancelText='cancelar' doneText='Hecho' monthNames="Enero, Febrero, Marzo, Abril , Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre"
+        monthShortNames="Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic"></ion-datetime>
+    </ion-item>
+
+
+    <ion-item *ngIf="minDate">
+      <ion-icon name="calendar" item-start></ion-icon>
+      <ion-label>Fecha y hora Fin de Oferta*</ion-label>
+      <ion-datetime name="fechaFinOferta" #fechaFinOferta displayFormat="MMM/DD/YYYY, h:mm A" min="{{minDate}}" max="2030"
+        [(ngModel)]="fechaFin" (ionChange)="changeFinDate($event)" cancelText='cancelar' doneText='Hecho' monthNames="Enero, Febrero, Marzo, Abril , Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre"
+        monthShortNames="Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic"></ion-datetime>
+    </ion-item>
+
+
+
+    <ion-item>
+      <ion-icon name="basket" item-start></ion-icon>
+      <ion-label floating>Nombre</ion-label>
+      <ion-input id="newName" type="text" name="newName" #newName [(ngModel)]="name"></ion-input>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-icon name="pricetag" item-start></ion-icon>
+      <ion-label floating>Precio Normal</ion-label>
+      <ion-input id="newPrice" type="text" name="newPrice" #newPrice [(ngModel)]="price"></ion-input>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-icon name="cash" item-start></ion-icon>
+      <ion-label stacked>Precio Oferta</ion-label>
+      <ion-input type="number" name="precioOferta" #precioOferta [(ngModel)]="priceAnterior"></ion-input>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-icon name="paper" item-start></ion-icon>
+      <ion-label floating>Descripción del producto</ion-label>
+      <ion-textarea id="newDescription" rows="6" maxLength="500" name="newDescription" #newDescription [(ngModel)]="description"></ion-textarea>
+    </ion-item>
+
+    <br />
+
+    <div *ngIf="imagen && !isSelected">
+      <h5>Imagen de producto</h5>
+      <img width="250" height="250" src="http://www.commerapp.com/ionic-php-mysql/{{imagen}}">
+    </div>
+
+    <ion-item>
+      <ion-icon name="image" item-start></ion-icon>
+      <ion-label stacked>Cambiar imagen del producto</ion-label>
+      <ion-input type="file" accept="image/*" (change)="selectFileToUpload($event)"></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="isSelected">
+      <img [src]="newImage" width="250" height="250" />
+    </ion-item>
+
+
+
+    <div>
+      <button ion-button round outline block (click)="edit()">Actualizar</button>
+    </div>
+
+
+  </ion-list>
+
+
+
+
+</ion-content>

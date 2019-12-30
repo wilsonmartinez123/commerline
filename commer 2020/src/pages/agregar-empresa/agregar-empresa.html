@@ -1,0 +1,221 @@
+<!--
+  Generated template for the AgregarEmpresaPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Agregar Empresa</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+
+
+
+<ion-content padding>
+
+  <div class="logo">
+    <img src="assets/img/commer.jpeg" alt="Logo">
+  </div>
+
+  <h2>Registre su empresa</h2><br>
+
+
+  <h5 text-wrap>Señor empresario por favor complete los campo de su establecimiento, una vez finalizado pueda registrar
+    su
+    productos, ten en cuenta que solo se puede registrar una empresa, si requiere modificar empresa escoge la opcion de
+    ver empresa y sucursal(es) Gracias.</h5><br>
+
+  <p>Todos los campos con * son obligatorios</p>
+
+  <h5 text-wrap>Tenga en cuenta que si su establecimiento tiene pagina web, no tienes necesidad de ingresar los
+    productos
+    manualmente
+    podemos extraerlos directamente de tu pagina web.
+  </h5><br>
+
+  <form  [formGroup]="form" (ngSubmit)="onSubmit()">
+
+
+    <ion-list no-line>
+
+
+
+      <ion-item [ngClass]="{'error-border':!form.controls.name.valid && form.controls.name.touched}">
+        <ion-icon name="briefcase" item-start></ion-icon>
+        <ion-label stacked>Nombre de la Empresa*</ion-label>
+        <ion-input type="text" name="name" #name formControlName="name"></ion-input>
+      </ion-item>
+
+
+      <div *ngIf="form.controls.name.hasError('required') && form.controls.name.touched">
+        <p>Nombre de Empresa es requerido!</p>
+      </div>
+
+
+      <ion-title> Su empresa tiene página web?</ion-title>
+
+      <ion-row radio-group formControlName="option" [(ngModel)]="pagina">
+        <ion-col col-6>
+          <ion-item>
+            <ion-icon name="checkmark" item-left></ion-icon>
+            <ion-label>Si</ion-label>
+            <ion-radio value="si"></ion-radio>
+          </ion-item>
+        </ion-col>
+        <ion-col col-6>
+          <ion-item>
+            <ion-icon name="close" item-left></ion-icon>
+            <ion-label>No</ion-label>
+            <ion-radio value="no"></ion-radio>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+
+
+      <div *ngIf=" (pagina =='si')">
+        <ion-item>
+          <ion-icon name="link" item-start></ion-icon>
+          <ion-label stacked>Ingrese su página web</ion-label>
+          <ion-input type="text" name="paginaWeb" #paginaWeb formControlName="link"></ion-input>
+        </ion-item>
+
+        <div *ngIf="form.controls.link.hasError('required') && form.controls.link.touched">
+          <p>Página web es requerido!</p>
+        </div>
+
+        <div *ngIf="form.controls.link.hasError('pattern') && form.controls.link.touched">
+          <p>Dirección de página web no válida</p>
+        </div>
+      </div>
+
+      <div *ngIf=" (pagina =='no')">
+        <ion-item [hidden]="!value">
+          <ion-icon name="link" item-start></ion-icon>
+          <ion-label stacked>Ingrese su página web</ion-label>
+          <ion-input type="text" name="paginaWeb" #paginaWeb formControlName="link"></ion-input>
+        </ion-item>
+      </div>
+
+
+      <ion-item [ngClass]="{'error-border':!form.controls.direction.valid && form.controls.direction.touched}">
+        <ion-icon name="navigate" item-start></ion-icon>
+        <ion-label stacked>Dirección de la Empresa*</ion-label>
+        <ion-input type="text" name="direccion" #direccion placeholder="CR 16 N 41-10 LOCAL 260" formControlName="direction"></ion-input>
+      </ion-item>
+
+      <div *ngIf="form.controls.direction.hasError('required') && form.controls.direction.touched">
+        <p>Dirección de Empresa es requerido!</p>
+      </div>
+
+
+      <!---->
+      <ion-item>
+        <ion-icon name="list" item-start></ion-icon>
+        <ion-label>Departamento</ion-label>
+        <ion-select name="departamento" #departamento formControlName="country" (ionChange)="CountryChange($event)">
+          <ion-option *ngFor="let department of ubicacion; let i = index" value="{{department.departamento}}">{{department.departamento}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <div *ngIf="form.controls.country.hasError('required') && form.controls.country.touched">
+        <p>Departamento es requerido!</p>
+      </div>
+
+
+      <ion-item *ngFor="let x of selectedMunicipality">
+        <ion-icon name="list" item-start></ion-icon>
+        <ion-label>Municipio</ion-label>
+        <ion-select name="municipio" #municipio formControlName="state">
+          <ion-option *ngFor="let municipio of x.ciudades" value="{{municipio}}">{{municipio}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <div *ngIf="form.controls.state.hasError('required') && form.controls.state.touched">
+        <p>Municipio es requerido!</p>
+      </div>
+
+
+      <ion-item [ngClass]="{'error-border':!form.controls.Horario.valid && form.controls.Horario.touched}">
+        <ion-icon name="clock" item-start></ion-icon>
+        <ion-label stacked>Horario de Atención*</ion-label>
+        <ion-input type="text" name="horario" #horario placeholder="Lun-dom 10:00 am a 8:30 pm" formControlName="Horario"></ion-input>
+      </ion-item>
+
+      <div *ngIf="form.controls.Horario.hasError('required') && form.controls.Horario.touched">
+        <p>Horario de Empresa es requerido!</p>
+      </div>
+
+
+      <ion-row radio-group formControlName="tipo_contacto">
+        <ion-col col-6>
+          <ion-item>
+            <ion-icon name="call" item-left></ion-icon>
+            <ion-label>Telefono</ion-label>
+            <ion-radio value="Telefono"></ion-radio>
+          </ion-item>
+        </ion-col>
+        <ion-col col-6>
+          <ion-item>
+            <ion-icon name="phone-portrait" item-left></ion-icon>
+            <ion-label>Celular</ion-label>
+            <ion-radio value="Celular"></ion-radio>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <div *ngIf="form.controls.tipo_contacto.hasError('required') && form.controls.tipo_contacto.touched">
+        <p>El tipo de contacto es requerido!</p>
+      </div>
+
+      <ion-item>
+        <ion-icon name="call" item-left></ion-icon>
+        <ion-label stacked>Numero de contacto:</ion-label>
+        <ion-input formControlName="numero_contacto" type="number" placeholder="Numero de contacto" name="numero_contacto"
+          #numero_contacto>
+        </ion-input>
+      </ion-item>
+
+      <div *ngIf="form.controls.numero_contacto.hasError('required') && form.controls.numero_contacto.touched">
+        <p>Numero de contacto de la Empresa es requerido!</p>
+      </div>
+
+      <p *ngIf="form.controls.numero_contacto.hasError('phoneSize')" class="error">
+        El numero de telefono no puede contener mas de 7 caracteres
+      </p>
+      <p *ngIf="form.controls.numero_contacto.hasError('cellPhoneSize')" class="error">
+        El numero de celular no puede contener mas de 10 caracteres
+      </p>
+
+      <ion-item>
+        <ion-icon name="image" item-start></ion-icon>
+        <ion-label text-wrap>Imagen o logo de la empresa*</ion-label>
+        <ion-input type="file" accept="image/*" (change)="selectFileToUpload($event)" formControlName="image"></ion-input>
+      </ion-item>
+
+      <div *ngIf="form.controls.image.hasError('required') && form.controls.image.touched">
+        <p>Imagen de la Empresa es requerido!</p>
+      </div>
+
+      <ion-item *ngIf="isSelected">
+        <img [src]="image" width="250" height="250" />
+      </ion-item>
+
+      <div>
+        <button class="registrar" ion-button round outline block color="primary" [disabled]="!form.valid" style="margin-top: 20px;"
+          type="submit">Registrar
+          Empresa</button>
+
+      </div>
+
+    </ion-list>
+
+  </form>
+
+
+</ion-content>

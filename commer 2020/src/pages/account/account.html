@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Cuenta</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="outer-content">
+
+
+  <div padding-top text-center *ngIf="username">
+    <!--<img src="http://www.gravatar.com/avatar?d=mm&s=140" alt="avatar">-->
+    <!--<h2>{{username}}</h2>-->
+
+
+
+    <div *ngFor="let item of users">
+      <div *ngIf="(item.correo_cli === username || item.correo_cli.toUpperCase() === username)">
+        <h2>Bienvenido: {{item.nombre_cli}}
+        </h2>
+
+        <h4>Para poder registrar productos primero registre su Empresa, Gracias.</h4>
+
+
+
+        <ion-list inset>
+
+
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label>Empresa</ion-label>
+                <button ion-button col-8 col-sm (click)="agregarEmpresa(item)">Agregar Empresa </button>
+                <button ion-button col-8 col-sm (click)="verEmpresa(item)">Ver Empresa</button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <br />
+
+
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label>Productos</ion-label>
+                <button ion-button col-8 col-sm (click)="agregarProducto(item)">Agregar Producto</button>
+                <button ion-button col-8 col-sm (click)="verProducto(item)">Ver mis productos</button>
+                <!--col-lg-6 col-md-12 col-sm-12 col-xs-12-->
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <br />
+
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label>Mis datos</ion-label>
+                <button ion-button col-8 col-sm (click)="updateData(item)">Actualizar mis datos</button>
+                <button ion-button col-8 col-sm (click)="changePassword(item)">Cambiar contraseña </button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+
+          <button ion-item col-12 col-sm (click)="support()">Contactanos</button>
+          <button ion-item col-12 col-sm (click)="logout()">Salir</button>
+
+
+        </ion-list>
+
+      </div>
+
+    </div>
+
+
+
+
+  </div>
+
+
+
+
+
+</ion-content>

@@ -1,0 +1,173 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Comparar</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+
+
+  <div>
+
+    <ion-item>
+      <ion-label>Ordenar por</ion-label>
+      <ion-select [(ngModel)]="pricefilter">
+        <ion-option value="max">Precio: Mayor a menor</ion-option>
+        <ion-option value="min">Precio: Menor a mayor</ion-option>
+      </ion-select>
+    </ion-item>
+    <!--
+         Embed the ngx-datatable component with following property bindings/values:
+         1. sorttype - allow data to be sorted on multiple columns
+         2. headerHeight - Set height of table header at 50 pixels
+         3. footerHeight - Set height of table footer at 50 pixels
+         4. rowHeight - Set height of table rows at 50 pixels
+         5. rows - Derives the data for the table rows from the component class
+                   property of rows
+         6. columns - Derives the names for the table columns from the component
+                      class property of columns
+         7. columnMode - Use of standard, flex or force - Force value makes columns
+                         equidistant and span the width of the parent container
+         8. limit - the number of records to display before paginating the results
+      -->
+
+
+
+    <div *ngIf=" (  !pricefilter )  ">
+
+      <ngx-datatable class="material" [sortType]="'multi'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="200"
+        [rows]="rows" [columns]="columns" [columnMode]="'force'" [scrollbarH]="true" [limit]="20"
+        [sortType]="'multi'">
+
+
+        <ngx-datatable-column name="Empresa">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+
+            <div *ngIf="row.logo_emp.includes('http')">
+              <img-loader src="{{row.logo_emp}}" useImg></img-loader>
+            </div>
+
+
+            <div *ngIf="row.logo_emp.includes('uploads/')">
+              <img-loader src="http://www.commerapp.com/ionic-php-mysql/{{row.logo_emp}}" useImg></img-loader>
+            </div>
+
+
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column [width]="350" name="Nombre">
+
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{row.nombre_pro}}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="Imagen">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+
+            <div *ngIf="row.imagen_pro.includes('http')">
+              <img-loader src="{{row.imagen_pro}}" useImg></img-loader>
+            </div>
+
+
+            <div *ngIf="row.imagen_pro.includes('uploads/')">
+              <img-loader src="http://www.commerapp.com/ionic-php-mysql/{{row.imagen_pro}}" useImg></img-loader>
+            </div>
+
+
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column [sortable]="true" name="Precio">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            ${{row.precioNuevo_pro | number | replace}}
+          </ng-template>
+        </ngx-datatable-column>
+
+
+        <ngx-datatable-column name="Detalles">
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            <button ion-button small outline (click)="postDetail(row)">Ver</button>
+          </ng-template>
+        </ngx-datatable-column>
+
+
+      </ngx-datatable>
+
+    </div>
+
+  </div>
+
+  <div *ngIf=" (  pricefilter=='max')  ">
+
+    <ngx-datatable [sortType]="'multi'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="200" [rows]="rows"
+      [columns]="columns" [columnMode]="'force'" [scrollbarH]="true" [limit]="20" [sortType]="'multi'"
+      [sorts]="[{prop: 'precioNuevo_pro', dir: 'desc'}]">
+
+      <!--<div *ngFor="let row of rows| replace: 'precioNuevo_pro'  | orderBy: 'precioNuevo_pro': false">-->
+
+      <ngx-datatable-column name="Empresa">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+
+          <div *ngIf="row.logo_emp.includes('http')">
+            <img-loader src="{{row.logo_emp}}" useImg></img-loader>
+          </div>
+
+
+          <div *ngIf="row.logo_emp.includes('uploads/')">
+            <img-loader src="http://www.commerapp.com/ionic-php-mysql/{{row.logo_emp}}" useImg></img-loader>
+          </div>
+
+
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [width]="350" name="Nombre">
+
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{row.nombre_pro}}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Imagen">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+
+          <div *ngIf="row.imagen_pro.includes('http')">
+            <img-loader src="{{row.imagen_pro}}" useImg></img-loader>
+          </div>
+
+
+          <div *ngIf="row.imagen_pro.includes('uploads/')">
+            <img-loader src="http://www.commerapp.com/ionic-php-mysql/{{row.imagen_pro}}" useImg></img-loader>
+          </div>
+
+
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Precio" prop="precioNuevo_pro">
+        <ng-template let-row="row" let-sort="sortFn" ngx-datatable-cell-template>
+          ${{row.precioNuevo_pro | number | replace}}
+        </ng-template>
+      </ngx-datatable-column>
+
+
+      <ngx-datatable-column name="Detalles">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <button ion-button small outline (click)="postDetail(row)">Ver</button>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!--</div>-->
+
+    </ngx-datatable>
+
+  </div>
+
+
+</ion-content>

@@ -1,0 +1,339 @@
+<!--
+  Generated template for the HomePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Mis productos</ion-title>
+  </ion-navbar>
+
+
+  <ion-toolbar no-border-top>
+    <ion-searchbar color="primary" (ionInput)="getItems($event)" placeholder="Buscar">
+    </ion-searchbar>
+  </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+
+  <div *ngIf="items?.length == 0">
+    <h2>Aun no ha registrado productos, por favor registra primero su empresa y luego sus productos, Gracias.</h2>
+  </div>
+
+
+  <div *ngIf="items?.length != 0">
+
+    <ion-item>
+      <button class="add" ion-button item-right icon-right margin-bottom color="primary" (click)="Post()">
+        Agregar Producto
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Ordenar por</ion-label>
+      <ion-select [(ngModel)]="pricefilter">
+        <ion-option value="max">Precio: Mayor a menor</ion-option>
+        <ion-option value="min">Precio: Menor a mayor</ion-option>
+        <ion-option value="az">Producto: A-Z</ion-option>
+        <ion-option value="za">Porducto: Z-A</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <div *ngIf="showButton">
+      <button ion-button icon-end color="secondary" item-right (click)="deletePost2()">Eliminar Elementos
+        seleccionados
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </div>
+
+
+
+    <div *ngIf=" (  !pricefilter )  ">
+
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-12 *ngFor="let product of items | paginate: { itemsPerPage: 20, currentPage: p }">
+
+
+            <ion-item text-wrap>
+
+              <ion-label>
+
+                <ion-checkbox color="danger" (ionChange)="addCheckbox($event,product)"></ion-checkbox>
+
+                <ion-thumbnail item-left>
+                  <img-loader src="http://www.commerapp.com/ionic-php-mysql/{{product.imagen_pro}}" useImg></img-loader>
+                </ion-thumbnail>
+
+
+                <div *ngIf="product.diasOferta_pro">
+                  <ion-badge class="color">Oferta</ion-badge>
+                  <h2 ion-text color="primary"> Fecha inicio de oferta: {{product.inicioOferta_pro}}</h2>
+                  <h2 ion-text color="primary">Fin de oferta: {{product.finOferta_pro}}</h2>
+                </div>
+
+                <h2>{{ product.nombre_pro }} </h2>
+                <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+                <h2 *ngIf="product.diasOferta_pro">precio oferta: $ {{product.precioAnterior_pro | number | replace}}</h2>
+                <p>descripción: {{product.desripcion_pro}}</p>
+
+
+
+                <button *ngIf="product.diasOferta_pro" ion-button icon-end color="light" item-right (click)="editProductOfert(product)">Editar
+                  <ion-icon name="create"></ion-icon>
+                </button>
+
+                <button *ngIf="product.diasOferta_pro == ''" ion-button icon-end color="primary" item-right (click)="editPost(product)">Editar
+                  <ion-icon name="create"></ion-icon>
+                </button>
+
+                <button ion-button icon-end color="secondary" item-right (click)="deletePost(product)">Eliminar
+                  <ion-icon name="close"></ion-icon>
+                </button>
+
+
+              </ion-label>
+
+            </ion-item>
+
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+    </div>
+
+
+    <div *ngIf=" (  pricefilter=='max')  ">
+
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-12 *ngFor=" let product of items  | replace: 'precioNuevo_pro'  | orderBy: 'precioNuevo_pro': false | paginate: { itemsPerPage: 20, currentPage: p } ">
+
+            <ion-item text-wrap>
+
+              <ion-label>
+
+                <ion-checkbox color="danger" (ionChange)="addCheckbox($event,product)"></ion-checkbox>
+
+                <ion-thumbnail item-left>
+                  <img-loader src="http://www.commerapp.com/ionic-php-mysql/{{product.imagen_pro}}" useImg></img-loader>
+                </ion-thumbnail>
+
+
+                <div *ngIf="product.diasOferta_pro">
+                  <ion-badge class="color">Oferta</ion-badge>
+                  <h2 ion-text color="primary"> Fecha inicio de oferta: {{product.inicioOferta_pro}}</h2>
+                  <h2 ion-text color="primary">Fin de oferta: {{product.finOferta_pro}}</h2>
+                </div>
+
+                <h2>{{ product.nombre_pro }} </h2>
+                <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+                <h2 *ngIf="product.diasOferta_pro">precio oferta: $ {{product.precioAnterior_pro | number | replace}}</h2>
+                <p>descripción: {{product.desripcion_pro}}</p>
+
+
+
+                <button *ngIf="product.diasOferta_pro" ion-button icon-end color="light" item-right (click)="editProductOfert(product)">Editar
+                  <ion-icon name="create"></ion-icon>
+                </button>
+
+                <button *ngIf="product.diasOferta_pro == ''" ion-button icon-end color="primary" item-right (click)="editPost(product)">Editar
+                  <ion-icon name="create"></ion-icon>
+                </button>
+
+                <button ion-button icon-end color="secondary" item-right (click)="deletePost(product)">Eliminar
+                  <ion-icon name="close"></ion-icon>
+                </button>
+
+
+              </ion-label>
+
+            </ion-item>
+
+
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <div *ngIf=" (  pricefilter=='min')  ">
+
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-12 *ngFor=" let product of items | replace: 'precioNuevo_pro' | orderBy:'precioNuevo_pro':true | paginate: { itemsPerPage: 20, currentPage: p } ">
+
+            <ion-item text-wrap>
+
+              <ion-label>
+
+                <ion-checkbox color="danger" (ionChange)="addCheckbox($event,product)"></ion-checkbox>
+
+                <ion-thumbnail item-left>
+                  <img-loader src="http://www.commerapp.com/ionic-php-mysql/{{product.imagen_pro}}" useImg></img-loader>
+                </ion-thumbnail>
+
+
+                <div *ngIf="product.diasOferta_pro">
+                  <ion-badge class="color">Oferta</ion-badge>
+                  <h2 ion-text color="primary"> Fecha inicio de oferta: {{product.inicioOferta_pro}}</h2>
+                  <h2 ion-text color="primary">Fin de oferta: {{product.finOferta_pro}}</h2>
+                </div>
+
+                <h2>{{ product.nombre_pro }} </h2>
+                <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+                <h2 *ngIf="product.diasOferta_pro">precio oferta: $ {{product.precioAnterior_pro | number | replace}}</h2>
+                <p>descripción: {{product.desripcion_pro}}</p>
+
+
+
+                <button *ngIf="product.diasOferta_pro" ion-button icon-end color="light" item-right (click)="editProductOfert(product)">Editar
+                  <ion-icon name="create"></ion-icon>
+                </button>
+
+                <button *ngIf="product.diasOferta_pro == ''" ion-button icon-end color="primary" item-right (click)="editPost(product)">Editar
+                  <ion-icon name="create"></ion-icon>
+                </button>
+
+                <button ion-button icon-end color="secondary" item-right (click)="deletePost(product)">Eliminar
+                  <ion-icon name="close"></ion-icon>
+                </button>
+
+
+              </ion-label>
+
+            </ion-item>
+
+
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <div *ngIf=" (  pricefilter=='az')  ">
+
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-12 *ngFor=" let product of items | orderBy:'nombre_pro':true | paginate: { itemsPerPage: 20, currentPage: p } ">
+
+            <ion-item text-wrap>
+
+              <ion-label>
+
+                <ion-checkbox color="danger" (ionChange)="addCheckbox($event,product)"></ion-checkbox>
+
+                <ion-thumbnail item-left>
+                  <img-loader src="http://www.commerapp.com/ionic-php-mysql/{{product.imagen_pro}}" useImg></img-loader>
+                </ion-thumbnail>
+
+
+                <div *ngIf="product.diasOferta_pro">
+                  <ion-badge class="color">Oferta</ion-badge>
+                  <h2 ion-text color="primary"> Fecha inicio de oferta: {{product.inicioOferta_pro}}</h2>
+                  <h2 ion-text color="primary">Fin de oferta: {{product.finOferta_pro}}</h2>
+                </div>
+
+                <h2>{{ product.nombre_pro }} </h2>
+                <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+                <h2 *ngIf="product.diasOferta_pro">precio oferta: $ {{product.precioAnterior_pro | number | replace}}</h2>
+                <p>descripción: {{product.desripcion_pro}}</p>
+
+
+
+                <button *ngIf="product.diasOferta_pro" ion-button icon-end color="light" item-right (click)="editProductOfert(product)">Editar
+                  <ion-icon name="create"></ion-icon>
+                </button>
+
+                <button *ngIf="product.diasOferta_pro == ''" ion-button icon-end color="primary" item-right (click)="editPost(product)">Editar
+                  <ion-icon name="create"></ion-icon>
+                </button>
+
+                <button ion-button icon-end color="secondary" item-right (click)="deletePost(product)">Eliminar
+                  <ion-icon name="close"></ion-icon>
+                </button>
+
+
+              </ion-label>
+
+            </ion-item>
+
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <div *ngIf=" (  pricefilter=='za')  ">
+
+      <ion-grid>
+        <ion-row>
+          <ion-col col-lg-6 col-md-12 col-sm-12 col-12 *ngFor=" let product of items | orderBy:'nombre_pro':false | paginate: { itemsPerPage: 20, currentPage: p } ">
+
+            <ion-item text-wrap>
+
+              <ion-label>
+
+                <ion-checkbox color="danger" (ionChange)="addCheckbox($event,product)"></ion-checkbox>
+
+                <ion-thumbnail item-left>
+                  <img-loader src="http://www.commerapp.com/ionic-php-mysql/{{product.imagen_pro}}" useImg></img-loader>
+                </ion-thumbnail>
+
+
+                <div *ngIf="product.diasOferta_pro">
+                  <ion-badge class="color">Oferta</ion-badge>
+                  <h2 ion-text color="primary"> Fecha inicio de oferta: {{product.inicioOferta_pro}}</h2>
+                  <h2 ion-text color="primary">Fin de oferta: {{product.finOferta_pro}}</h2>
+                </div>
+
+                <h2>{{ product.nombre_pro }} </h2>
+                <h2>precio: $ {{product.precioNuevo_pro | number | replace}}</h2>
+                <h2 *ngIf="product.diasOferta_pro">precio oferta: $ {{product.precioAnterior_pro | number | replace}}</h2>
+                <p>descripción: {{product.desripcion_pro}}</p>
+
+
+
+                <button *ngIf="product.diasOferta_pro" ion-button icon-end color="light" item-right (click)="editProductOfert(product)">Editar
+                  <ion-icon name="create"></ion-icon>
+                </button>
+
+                <button *ngIf="product.diasOferta_pro == ''" ion-button icon-end color="primary" item-right (click)="editPost(product)">Editar
+                  <ion-icon name="create"></ion-icon>
+                </button>
+
+                <button ion-button icon-end color="secondary" item-right (click)="deletePost(product)">Eliminar
+                  <ion-icon name="close"></ion-icon>
+                </button>
+
+
+              </ion-label>
+
+            </ion-item>
+
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <div *ngIf="showButton">
+      <button ion-button icon-end color="secondary" item-right (click)="deletePost2()">Eliminar Elementos
+        seleccionados
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </div>
+
+    <pagination-controls class="my-pagination" (pageChange)="p = $event" maxSize="12" directionLinks="true" autoHide="true"
+      responsive="true" previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Pagination"
+      screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page">
+    </pagination-controls>
+
+  </div>
+</ion-content>

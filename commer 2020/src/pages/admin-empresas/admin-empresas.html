@@ -1,0 +1,91 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Empresas</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+
+  <!--
+             Embed the ngx-datatable component with following property bindings/values:
+             1. sorttype - allow data to be sorted on multiple columns
+             2. headerHeight - Set height of table header at 50 pixels
+             3. footerHeight - Set height of table footer at 50 pixels
+             4. rowHeight - Set height of table rows at 50 pixels
+             5. rows - Derives the data for the table rows from the component class
+                       property of rows
+             6. columns - Derives the names for the table columns from the component
+                          class property of columns
+             7. columnMode - Use of standard, flex or force - Force value makes columns
+                             equidistant and span the width of the parent container
+             8. limit - the number of records to display before paginating the results
+          -->
+  <ngx-datatable [sortType]="'multi'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="200" [rows]="rows" [columns]="columns"
+    [columnMode]="'force'" [scrollbarH]="true" [sortType]="'multi'">
+
+    <ngx-datatable-column name="Nombre">
+
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <button ion-button small outline (click)="view(row.id_empresa)"> {{row.nombre_emp}}</button>
+      </ng-template>
+    </ngx-datatable-column>
+
+
+    <ngx-datatable-column name="Dirección">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.direccion_emp}}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Horario">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.horario_emp}}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Teléfono">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.telefono_emp}}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Logo">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+
+        <div *ngIf="row.logo_emp.includes('http')">
+          <img-loader src="{{row.logo_emp}}" useImg></img-loader>
+        </div>
+
+
+        <div *ngIf="row.logo_emp.includes('uploads/')">
+          <img-loader src="http://www.commerapp.com/ionic-php-mysql/{{row.logo_emp}}" useImg></img-loader>
+        </div>
+
+
+      </ng-template>
+    </ngx-datatable-column>
+
+
+    <ngx-datatable-column name="Acción">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <button ion-button small outline (click)="delete(row)">Eliminar</button>
+      </ng-template>
+    </ngx-datatable-column>
+
+
+    <ngx-datatable-column name="Acción">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <button ion-button small outline (click)="edit(row)">Editar</button>
+      </ng-template>
+    </ngx-datatable-column>
+
+
+  </ngx-datatable>
+
+
+
+</ion-content>
